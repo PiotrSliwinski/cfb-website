@@ -132,15 +132,23 @@ jobs:
       - name: Start Supabase local instance
         run: |
           supabase start
-          # Export local Supabase credentials
-          # The .env file is created in the supabase directory by supabase start
-          if [ -f supabase/.env ]; then
-            source supabase/.env
-          elif [ -f .env ]; then
-            source .env
-          else
-            echo "ERROR: Could not find .env file"
-            exit 1
+          env_file="$(mktemp)"
+          if supabase status -o env | awk '/^[A-Z0-9_]+=/{print}' > "$env_file"; then
+            # shellcheck disable=SC1090
+            source "$env_file"
+          fi
+          rm -f "$env_file"
+          if [ -z "${API_URL:-}" ] || [ -z "${ANON_KEY:-}" ] || [ -z "${SERVICE_ROLE_KEY:-}" ]; then
+            if [ -f supabase/.env ]; then
+              # shellcheck disable=SC1091
+              source supabase/.env
+            elif [ -f .env ]; then
+              # shellcheck disable=SC1091
+              source .env
+            else
+              echo "ERROR: Could not load Supabase environment variables"
+              exit 1
+            fi
           fi
           echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL" >> $GITHUB_ENV
           echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY" >> $GITHUB_ENV
