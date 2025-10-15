@@ -132,6 +132,10 @@ jobs:
       - name: Start Supabase local instance
         run: |
           supabase start
+          # Debug: Show full supabase status output
+          echo "=== Full supabase status -o env output ==="
+          supabase status -o env
+          echo "=== End of supabase status output ==="
           # Export local Supabase credentials
           # Note: supabase status -o env outputs keys in format: VARNAME="value" or VARNAME=value
           # We need to extract the value and remove any surrounding quotes
