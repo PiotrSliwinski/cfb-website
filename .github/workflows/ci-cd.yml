@@ -132,16 +132,29 @@ jobs:
       - name: Start Supabase local instance
         run: |
           supabase start
-          # Export local Supabase credentials (cut -d'=' -f2- handles keys with = in them)
+          # Export local Supabase credentials
+          # Note: supabase status -o env outputs keys in format: VARNAME="value" or VARNAME=value
+          # We need to extract the value and remove any surrounding quotes
           echo "NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321" >> $GITHUB_ENV
-          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$(supabase status -o env | grep 'ANON_KEY=' | cut -d'=' -f2-)" >> $GITHUB_ENV
-          echo "SUPABASE_SERVICE_ROLE_KEY=$(supabase status -o env | grep 'SERVICE_ROLE_KEY=' | cut -d'=' -f2-)" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$(supabase status -o env | grep 'SUPABASE_ANON_KEY=' | cut -d'=' -f2- | tr -d '"')" >> $GITHUB_ENV
+          echo "SUPABASE_SERVICE_ROLE_KEY=$(supabase status -o env | grep 'SUPABASE_SERVICE_ROLE_KEY=' | cut -d'=' -f2- | tr -d '"')" >> $GITHUB_ENV
 
       - name: Verify Supabase credentials
         run: |
           echo "Supabase URL: $NEXT_PUBLIC_SUPABASE_URL"
           echo "Anon key length: ${#NEXT_PUBLIC_SUPABASE_ANON_KEY}"
           echo "Service role key length: ${#SUPABASE_SERVICE_ROLE_KEY}"
+          echo "Anon key (first 50 chars): ${NEXT_PUBLIC_SUPABASE_ANON_KEY:0:50}..."
+          echo "Service role key (first 50 chars): ${SUPABASE_SERVICE_ROLE_KEY:0:50}..."
+          # Validate key lengths (JWT tokens should be ~250+ chars)
+          if [ ${#NEXT_PUBLIC_SUPABASE_ANON_KEY} -lt 200 ]; then
+            echo "ERROR: Anon key too short (${#NEXT_PUBLIC_SUPABASE_ANON_KEY} chars)"
+            exit 1
+          fi
+          if [ ${#SUPABASE_SERVICE_ROLE_KEY} -lt 200 ]; then
+            echo "ERROR: Service role key too short (${#SUPABASE_SERVICE_ROLE_KEY} chars)"
+            exit 1
+          fi
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
