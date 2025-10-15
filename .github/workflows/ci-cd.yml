@@ -132,16 +132,11 @@ jobs:
       - name: Start Supabase local instance
         run: |
           supabase start
-          # Debug: Show full supabase status output
-          echo "=== Full supabase status -o env output ==="
-          supabase status -o env
-          echo "=== End of supabase status output ==="
           # Export local Supabase credentials
-          # Note: supabase status -o env outputs keys in format: VARNAME="value" or VARNAME=value
-          # We need to extract the value and remove any surrounding quotes
+          # Variable names in supabase status -o env are: ANON_KEY, SERVICE_ROLE_KEY (not SUPABASE_* prefixed)
           echo "NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321" >> $GITHUB_ENV
-          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$(supabase status -o env | grep 'SUPABASE_ANON_KEY=' | cut -d'=' -f2- | tr -d '"')" >> $GITHUB_ENV
-          echo "SUPABASE_SERVICE_ROLE_KEY=$(supabase status -o env | grep 'SUPABASE_SERVICE_ROLE_KEY=' | cut -d'=' -f2- | tr -d '"')" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$(supabase status -o env | grep '^ANON_KEY=' | cut -d'=' -f2- | tr -d '"')" >> $GITHUB_ENV
+          echo "SUPABASE_SERVICE_ROLE_KEY=$(supabase status -o env | grep '^SERVICE_ROLE_KEY=' | cut -d'=' -f2- | tr -d '"')" >> $GITHUB_ENV
 
       - name: Verify Supabase credentials
         run: |
