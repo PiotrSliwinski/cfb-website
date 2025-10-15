@@ -163,7 +163,7 @@ jobs:
       always() &&
       !cancelled() &&
       (needs.build.result == 'success') &&
-      (needs.test-routes.result == 'success' || needs.test-routes.result == 'skipped') &&
+      (needs['test-routes'].result == 'success' || needs['test-routes'].result == 'skipped') &&
       (
         github.event_name == 'workflow_dispatch' ||
         (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'))
