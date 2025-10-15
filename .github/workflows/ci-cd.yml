@@ -132,10 +132,16 @@ jobs:
       - name: Start Supabase local instance
         run: |
           supabase start
-          # Export local Supabase credentials
+          # Export local Supabase credentials (cut -d'=' -f2- handles keys with = in them)
           echo "NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321" >> $GITHUB_ENV
-          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$(supabase status -o env | grep ANON_KEY | cut -d'=' -f2)" >> $GITHUB_ENV
-          echo "SUPABASE_SERVICE_ROLE_KEY=$(supabase status -o env | grep SERVICE_ROLE_KEY | cut -d'=' -f2)" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$(supabase status -o env | grep 'ANON_KEY=' | cut -d'=' -f2-)" >> $GITHUB_ENV
+          echo "SUPABASE_SERVICE_ROLE_KEY=$(supabase status -o env | grep 'SERVICE_ROLE_KEY=' | cut -d'=' -f2-)" >> $GITHUB_ENV
+
+      - name: Verify Supabase credentials
+        run: |
+          echo "Supabase URL: $NEXT_PUBLIC_SUPABASE_URL"
+          echo "Anon key length: ${#NEXT_PUBLIC_SUPABASE_ANON_KEY}"
+          echo "Service role key length: ${#SUPABASE_SERVICE_ROLE_KEY}"
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
