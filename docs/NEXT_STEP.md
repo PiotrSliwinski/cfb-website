@@ -4,7 +4,7 @@
 
 - ✅ Google Reviews integration fully implemented
 - ✅ Dev server running on **http://localhost:3000**
-- ✅ Google API key configured: `AIzaSyCvqO2trFeioqL0InLD7vAwiNJJAiTG_vU`
+- ✅ Google API key configured (set in environment variables)
 - ✅ Places API enabled in Google Cloud Console
 - ✅ All code and components ready
 

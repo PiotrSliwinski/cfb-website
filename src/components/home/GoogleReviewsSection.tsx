@@ -62,7 +62,7 @@ export default function GoogleReviewsSection() {
         <div className="container mx-auto px-4">
           <div className="flex justify-center items-center min-h-[400px]">
             <div className="animate-pulse text-gray-400">
-              <p className="text-lg">{t('loading', 'A carregar avaliações...')}</p>
+              <p className="text-lg">{t('loading')}</p>
             </div>
           </div>
         </div>
@@ -77,7 +77,7 @@ export default function GoogleReviewsSection() {
           <div className="max-w-2xl mx-auto text-center">
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
               <p className="text-yellow-800 mb-2">
-                <strong>{t('configRequired', 'Configuração Necessária')}</strong>
+                <strong>{t('configRequired')}</strong>
               </p>
               <p className="text-sm text-yellow-700">{error}</p>
             </div>
@@ -99,17 +99,17 @@ export default function GoogleReviewsSection() {
           <div className="inline-flex items-center gap-2 mb-4">
             <div className="w-1.5 h-1.5 rounded-full bg-primary-600"></div>
             <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-              {t('label', 'Testemunhos')}
+              {t('label')}
             </span>
             <div className="w-1.5 h-1.5 rounded-full bg-primary-600"></div>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#0098AA' }}>
-            {t('title', 'O que dizem os nossos pacientes')}
+            {t('title')}
           </h2>
           <div className="flex items-center justify-center gap-4 mb-2">
             <StarRating rating={reviewsData.totalRating} size="lg" showNumber />
             <span className="text-gray-600">
-              {t('basedOn', 'Baseado em')} {reviewsData.totalReviews} {t('reviews', 'avaliações')}
+              {t('basedOn')} {reviewsData.totalReviews} {t('reviews')}
             </span>
           </div>
           <a
@@ -118,7 +118,7 @@ export default function GoogleReviewsSection() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 transition-colors text-sm"
           >
-            {t('viewAllReviews', 'Ver todas as avaliações no Google')}
+            {t('viewAllReviews')}
             <ExternalLink className="w-4 h-4" />
           </a>
         </div>
@@ -200,7 +200,7 @@ export default function GoogleReviewsSection() {
                       d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                     />
                   </svg>
-                  <span>{t('postedOn', 'Publicado no Google')}</span>
+                  <span>{t('postedOn')}</span>
                 </div>
               </div>
             </div>

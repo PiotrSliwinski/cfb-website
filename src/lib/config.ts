@@ -236,7 +236,7 @@ export function getMaxFileSize(type: 'image' | 'icon'): number {
  * // Returns: ['image/png', 'image/jpeg', 'image/webp']
  * ```
  */
-export function getAllowedMimeTypes(type: 'images' | 'icons'): string[] {
+export function getAllowedMimeTypes(type: 'images' | 'icons'): readonly string[] {
   return storageConfig.allowedMimeTypes[type];
 }
 

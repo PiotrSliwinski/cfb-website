@@ -25,7 +25,7 @@ export function FAQSection() {
             <div className="inline-flex items-center gap-2 mb-4">
               <div className="w-1.5 h-1.5 rounded-full bg-primary-600"></div>
               <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-                {t('label', 'Perguntas Frequentes')}
+                {t('label')}
               </span>
               <div className="w-1.5 h-1.5 rounded-full bg-primary-600"></div>
             </div>

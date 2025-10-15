@@ -281,7 +281,7 @@ function SectionRenderer({ section, locale }: SectionRendererProps) {
       if (!testimonialsData) return null;
       return (
         <TestimonialsSection
-          content={section.content}
+          content={section.content as { label?: string; title: string; subtitle?: string }}
           settings={section.settings || {}}
           testimonials={testimonialsData}
         />
@@ -291,7 +291,7 @@ function SectionRenderer({ section, locale }: SectionRendererProps) {
       if (!galleryData) return null;
       return (
         <GallerySection
-          content={section.content}
+          content={section.content as { label?: string; title: string; subtitle?: string }}
           settings={section.settings || {}}
           images={galleryData}
         />
@@ -300,7 +300,7 @@ function SectionRenderer({ section, locale }: SectionRendererProps) {
     case 'two_column':
       return (
         <TwoColumnSection
-          content={section.content}
+          content={section.content as { label?: string; title: string; subtitle?: string; [key: string]: any }}
           settings={section.settings || {}}
         />
       );
@@ -309,7 +309,7 @@ function SectionRenderer({ section, locale }: SectionRendererProps) {
       if (!treatmentsData) return null;
       return (
         <TreatmentsGridSection
-          content={section.content}
+          content={section.content as { label?: string; title: string; subtitle?: string; footer_text?: string; cta_text?: string }}
           settings={section.settings || {}}
           treatments={treatmentsData}
           locale={locale}

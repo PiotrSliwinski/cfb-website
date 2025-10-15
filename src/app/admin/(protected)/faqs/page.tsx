@@ -70,7 +70,7 @@ export default async function FAQsPage() {
           <tbody className="bg-white divide-y divide-gray-200">
             {faqs?.map((faq) => {
               const translation = faq.treatment_faq_translations[0]
-              const treatment = faq.treatments
+              const treatment = Array.isArray(faq.treatments) ? faq.treatments[0] : faq.treatments
               const treatmentTranslation = treatment?.treatment_translations?.[0]
               return (
                 <tr key={faq.id} className="hover:bg-gray-50">

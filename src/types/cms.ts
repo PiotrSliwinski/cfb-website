@@ -46,8 +46,11 @@ export type SectionType =
   | 'cta'
   | 'text_block'
   | 'treatments_showcase'
+  | 'treatments_grid'
   | 'team_showcase'
   | 'testimonials'
+  | 'gallery'
+  | 'two_column'
   | 'faq';
 
 export interface CMSPageSection {

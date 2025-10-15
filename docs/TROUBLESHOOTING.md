@@ -16,9 +16,9 @@ You're seeing this error because the **Places API** needs to be enabled in your 
 
 ### Step 2: Verify Your API Key
 
-Your API key is already configured:
-```
-AIzaSyCvqO2trFeioqL0InLD7vAwiNJJAiTG_vU
+Your API key should be configured in `.env.local`:
+```bash
+NEXT_PUBLIC_GOOGLE_API_KEY=your_api_key_here
 ```
 
 Make sure this key has:
@@ -37,10 +37,10 @@ The Place ID in `.env.local` might need to be updated. Here's how to find it:
 
 **Method 2: Use the API Directly**
 ```bash
-curl "https://maps.googleapis.com/maps/api/place/textsearch/json?query=Clinica+Ferreira+Borges+Lisboa+Rua+Ferreira+Borges+173C&key=AIzaSyCvqO2trFeioqL0InLD7vAwiNJJAiTG_vU"
+curl "https://maps.googleapis.com/maps/api/place/textsearch/json?query=Clinica+Ferreira+Borges+Lisboa+Rua+Ferreira+Borges+173C&key=YOUR_API_KEY_HERE"
 ```
 
-Look for `"place_id"` in the response.
+Replace `YOUR_API_KEY_HERE` with your actual API key from `.env.local`. Look for `"place_id"` in the response.
 
 ### Step 4: Update .env.local
 
