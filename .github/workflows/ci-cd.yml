@@ -133,8 +133,15 @@ jobs:
         run: |
           supabase start
           # Export local Supabase credentials
-          # Use direct extraction from .env file which has the actual keys (not masked like supabase status -o env)
-          source .env
+          # The .env file is created in the supabase directory by supabase start
+          if [ -f supabase/.env ]; then
+            source supabase/.env
+          elif [ -f .env ]; then
+            source .env
+          else
+            echo "ERROR: Could not find .env file"
+            exit 1
+          fi
           echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL" >> $GITHUB_ENV
           echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY" >> $GITHUB_ENV
           echo "SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY" >> $GITHUB_ENV
