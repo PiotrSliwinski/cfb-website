@@ -12,17 +12,17 @@ const BASE_URL = process.env.TEST_BASE_URL || 'http://localhost:3002';
 const routes = [
   // Public Frontend Routes
   { path: '/', method: 'GET', expectedStatus: 200, description: 'Homepage (Portuguese)', category: 'Frontend - Public' },
-  { path: '/pt', method: 'GET', expectedStatus: 200, description: 'Homepage (explicit PT)', category: 'Frontend - Public' },
+  { path: '/pt', method: 'GET', expectedStatus: 307, description: 'Homepage (explicit PT - redirects to /)', category: 'Frontend - Public' },
   { path: '/en', method: 'GET', expectedStatus: 200, description: 'Homepage (English)', category: 'Frontend - Public' },
-  { path: '/pt/contacto', method: 'GET', expectedStatus: 200, description: 'Contact page (PT)', category: 'Frontend - Public' },
+  { path: '/pt/contacto', method: 'GET', expectedStatus: 307, description: 'Contact page (PT - redirects to /contacto)', category: 'Frontend - Public' },
   { path: '/en/contacto', method: 'GET', expectedStatus: 200, description: 'Contact page (EN)', category: 'Frontend - Public' },
-  { path: '/pt/equipa', method: 'GET', expectedStatus: 200, description: 'Team page (PT)', category: 'Frontend - Public' },
+  { path: '/pt/equipa', method: 'GET', expectedStatus: 307, description: 'Team page (PT - redirects to /equipa)', category: 'Frontend - Public' },
   { path: '/en/equipa', method: 'GET', expectedStatus: 200, description: 'Team page (EN)', category: 'Frontend - Public' },
-  { path: '/pt/tecnologia', method: 'GET', expectedStatus: 200, description: 'Technology page (PT)', category: 'Frontend - Public' },
+  { path: '/pt/tecnologia', method: 'GET', expectedStatus: 307, description: 'Technology page (PT - redirects to /tecnologia)', category: 'Frontend - Public' },
   { path: '/en/tecnologia', method: 'GET', expectedStatus: 200, description: 'Technology page (EN)', category: 'Frontend - Public' },
-  { path: '/pt/pagamentos', method: 'GET', expectedStatus: 200, description: 'Payments page (PT)', category: 'Frontend - Public' },
+  { path: '/pt/pagamentos', method: 'GET', expectedStatus: 307, description: 'Payments page (PT - redirects to /pagamentos)', category: 'Frontend - Public' },
   { path: '/en/pagamentos', method: 'GET', expectedStatus: 200, description: 'Payments page (EN)', category: 'Frontend - Public' },
-  { path: '/pt/termos-condicoes', method: 'GET', expectedStatus: 200, description: 'Terms & Conditions (PT)', category: 'Frontend - Public' },
+  { path: '/pt/termos-condicoes', method: 'GET', expectedStatus: 307, description: 'Terms & Conditions (PT - redirects to /termos-condicoes)', category: 'Frontend - Public' },
   { path: '/en/termos-condicoes', method: 'GET', expectedStatus: 200, description: 'Terms & Conditions (EN)', category: 'Frontend - Public' },
 
   // Admin Routes - Public
@@ -58,11 +58,12 @@ const routes = [
   { path: '/api/cta-sections', method: 'GET', expectedStatus: 200, description: 'Get CTA sections', category: 'API - Public' },
 
   // API Routes - Admin
+  // Note: The following admin API routes are write-only (POST/PUT/DELETE) and don't support GET:
+  // - /api/admin/faqs (POST, PUT, DELETE only)
+  // - /api/admin/submissions (PUT, DELETE only)
+  // - /api/admin/clinic-settings (PUT only)
+  // - /api/admin/settings/contact (POST, PUT, DELETE only)
   { path: '/api/admin/languages', method: 'GET', expectedStatus: 200, description: 'Get languages', category: 'API - Admin' },
-  { path: '/api/admin/faqs', method: 'GET', expectedStatus: 200, description: 'Get FAQs', category: 'API - Admin' },
-  { path: '/api/admin/submissions', method: 'GET', expectedStatus: 200, description: 'Get submissions', category: 'API - Admin' },
-  { path: '/api/admin/clinic-settings', method: 'GET', expectedStatus: 200, description: 'Get clinic settings', category: 'API - Admin' },
-  { path: '/api/admin/settings/contact', method: 'GET', expectedStatus: 200, description: 'Get contact settings', category: 'API - Admin' },
 ];
 
 async function testRoute(route) {
