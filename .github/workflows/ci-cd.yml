@@ -109,7 +109,7 @@ jobs:
     name: Route Tests
     runs-on: ubuntu-latest
     needs: build
-    if: github.event.inputs.skip_tests != 'true'
+    if: github.event.inputs.skip_tests != 'true' || github.event_name != 'workflow_dispatch'
 
     steps:
       - name: Checkout code
@@ -222,7 +222,7 @@ jobs:
       )
     environment:
       name: staging
-      url: https://cfb-website-staging-${{ secrets.GCP_PROJECT_ID }}.a.run.app
+      url: https://cfb-website-staging.run.app
 
     steps:
       - name: Checkout code
