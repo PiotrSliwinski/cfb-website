@@ -1,0 +1,33 @@
+{
+  "collectionName": "components_schedule_operating_hours",
+  "info": {
+    "displayName": "Operating Hours",
+    "description": "Daily operating hours for the clinic"
+  },
+  "options": {},
+  "attributes": {
+    "dayOfWeek": {
+      "type": "enumeration",
+      "enum": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "required": true
+    },
+    "openTime": {
+      "type": "time"
+    },
+    "closeTime": {
+      "type": "time"
+    },
+    "isClosed": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

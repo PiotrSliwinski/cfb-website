@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_blocks_teams",
+  "info": {
+    "displayName": "Team"
+  },
+  "options": {},
+  "attributes": {
+    "teams": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::team.team"
+    }
+  },
+  "config": {}
+}

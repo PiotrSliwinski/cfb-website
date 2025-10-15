@@ -1,0 +1,34 @@
+{
+  "collectionName": "components_blocks_hero_sections",
+  "info": {
+    "displayName": "Hero Section"
+  },
+  "options": {},
+  "attributes": {
+    "SubHeading": {
+      "type": "string"
+    },
+    "MainHeading": {
+      "type": "string"
+    },
+    "Text": {
+      "type": "text"
+    },
+    "Links": {
+      "type": "component",
+      "component": "elements.link",
+      "repeatable": true
+    },
+    "Image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    }
+  },
+  "config": {}
+}

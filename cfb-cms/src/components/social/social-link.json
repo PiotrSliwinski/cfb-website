@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_social_social_links",
+  "info": {
+    "displayName": "Social Link",
+    "description": "Social media links and profiles"
+  },
+  "options": {},
+  "attributes": {
+    "platform": {
+      "type": "enumeration",
+      "enum": [
+        "Facebook",
+        "Instagram",
+        "Twitter",
+        "LinkedIn",
+        "YouTube",
+        "TikTok",
+        "WhatsApp"
+      ],
+      "required": true
+    },
+    "url": {
+      "type": "string",
+      "required": true
+    },
+    "displayName": {
+      "type": "string"
+    }
+  }
+}

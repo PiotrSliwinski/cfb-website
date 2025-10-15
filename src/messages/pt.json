@@ -1,0 +1,671 @@
+{
+  "common": {
+    "bookAppointment": "Marcar Consulta",
+    "contactUs": "Contacte-nos",
+    "learnMore": "Saber Mais",
+    "callNow": "Ligar Agora"
+  },
+  "nav": {
+    "home": "Início",
+    "clinic": "Clínica",
+    "team": "Equipa",
+    "treatments": "Tratamentos",
+    "payments": "Preços e Financiamento",
+    "location": "Localização",
+    "bookAppointment": "Marcar Consulta",
+    "practice": {
+      "title": "A Nossa Clínica",
+      "subtitle": "Conheça a nossa equipa e instalações",
+      "team": "Equipa",
+      "teamDesc": "Conheça os nossos profissionais especializados",
+      "technology": "Tecnologia",
+      "technologyDesc": "Equipamento de última geração",
+      "payments": "Preços e Financiamento",
+      "paymentsDesc": "Tabela de preços e opções de financiamento",
+      "location": "Contacto",
+      "locationDesc": "Entre em contacto connosco"
+    },
+    "services": {
+      "title": "Tratamentos",
+      "subtitle": "Serviços dentários completos para toda a família",
+      "viewAll": "Ver Todos"
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Onde cada sorriso conta uma história",
+      "subtitle": "Na Clínica Ferreira Borges, em Campo Ourique, Lisboa, acreditamos que cada sorriso é único...",
+      "trustBadge": "Clínica de Confiança desde 2004",
+      "yearsLabel": "Anos",
+      "responseLabel": "Resposta"
+    },
+    "services": {
+      "title": "Serviços Que Vai Adorar",
+      "subtitle": "Na nossa clínica dentária, oferecemos uma ampla variedade de serviços personalizados, pensados no seu bem-estar e saúde oral. Desde tratamentos estéticos a procedimentos complexos, tudo é realizado com a máxima precisão e cuidado, garantindo um sorriso que você vai adorar.",
+      "learnMore": "Saber Mais",
+      "sectionLabel": "Tratamentos Especializados",
+      "notFound": "Não encontra o tratamento que procura?",
+      "talkToUs": "Fale Connosco",
+      "aparelho-invisivel": {
+        "title": "Aparelho Invisível",
+        "description": "Obtenha um sorriso perfeito com discrição total usando o nosso aparelho invisível. Na Clínica Ferreira Borges, a estética encontra a funcionalidade para resultados impressionantes."
+      },
+      "branqueamento": {
+        "title": "Branqueamento",
+        "description": "Ilumine o seu sorriso com o nosso avançado branqueamento dentário. Na Clínica Ferreira Borges, oferecemos tratamentos seguros e eficazes, feitos à sua medida. Visite-nos para um sorriso radiante e um tratamento dentário excecional."
+      },
+      "cirurgia-oral": {
+        "title": "Cirurgia Oral",
+        "description": "Confie na nossa equipa de cirurgia oral para tratamentos avançados com segurança e precisão. Na Clínica Ferreira Borges, a sua saúde oral está em boas mãos."
+      },
+      "consulta-dentaria": {
+        "title": "Consulta Dentária",
+        "description": "Agende a sua consulta dentária na Clínica Ferreira Borges e dê o primeiro passo em direção a um sorriso saudável e radiante. Cuidado personalizado à sua disposição."
+      },
+      "dentisteria": {
+        "title": "Dentisteria",
+        "description": "Descubra a excelência em dentisteria na Clínica Ferreira Borges. Combinamos tecnologia de ponta e uma abordagem personalizada para restaurar a saúde e beleza dos seus dentes."
+      },
+      "dor-orofacial": {
+        "title": "Dor Orofacial",
+        "description": "Encontre alívio para a dor orofacial com a nossa abordagem especializada. Na Clínica Ferreira Borges, combinamos conhecimento e tecnologia para tratar eficazmente a sua dor."
+      },
+      "endodontia": {
+        "title": "Endodontia",
+        "description": "Preserve a sua saúde dentária com tratamentos endodônticos de ponta. Na Clínica Ferreira Borges zelamos sempre que possível pela preservação dos seus dentes, mantendo a sua integridade e beleza."
+      },
+      "implantes-dentarios": {
+        "title": "Implantes Dentários",
+        "description": "Transforme o seu sorriso com os nossos implantes dentários de última geração. Recupere a confiança e desfrute de uma vida plena com soluções personalizadas na Clínica Ferreira Borges."
+      },
+      "limpeza-dentaria": {
+        "title": "Limpeza Dentária",
+        "description": "Mantenha o seu sorriso brilhante com a nossa limpeza dentária e destartarização, utilizando o Guided Biofilm Therapy (GBT). Visite a Clínica Ferreira Borges para cuidados preventivos e preserve a saúde dos seus dentes com a tecnologia mais avançada em higiene oral."
+      },
+      "medicina-dentaria-do-sono": {
+        "title": "Medicina Dentária do Sono",
+        "description": "Redescubra o prazer de dormir bem. As nossas soluções inovadoras em medicina dentária do sono combatem eficazmente a apneia, promovendo noites tranquilas e dias energizados."
+      },
+      "odontopediatria": {
+        "title": "Odontopediatria",
+        "description": "Garanta um sorriso saudável dos mais pequenos com a nossa equipa de Odontopediatria. Na Clínica Ferreira Borges, cuidamos do sorriso da sua família desde a primeira infância."
+      },
+      "ortodontia": {
+        "title": "Ortodontia",
+        "description": "Sorria com confiança com os nossos tratamentos ortodônticos. Na Clínica Ferreira Borges, oferecemos soluções personalizadas que garantem resultados estéticos e funcionais excelentes."
+      },
+      "periodontologia": {
+        "title": "Periodontologia",
+        "description": "Proteja as fundações do seu sorriso com os nossos tratamentos periodontais. Na Clínica Ferreira Borges, cuidamos da saúde das suas gengivas com a máxima eficácia."
+      },
+      "reabilitacao-oral": {
+        "title": "Reabilitação Oral",
+        "description": "Restaure a funcionalidade e estética do seu sorriso com a nossa reabilitação oral completa. A Clínica Ferreira Borges oferece soluções integradas para todas as suas necessidades dentárias."
+      },
+      "restauracao-estetica": {
+        "title": "Restauração Estética",
+        "description": "Revitalize o seu sorriso com restaurações estéticas na Clínica Ferreira Borges. As nossas soluções combinam arte e ciência para devolver a beleza natural dos seus dentes."
+      }
+    },
+    "commitment": {
+      "label": "Compromisso",
+      "title": "Um compromisso com a excelência",
+      "years": "15+ Anos",
+      "yearsDescription": "a servir a comunidade de Campo Ourique, Lisboa"
+    },
+    "certifications": {
+      "label": "Certificações",
+      "title": "Reconhecimento e Confiança",
+      "subtitle": "Comprometidos com a excelência e segurança dos nossos pacientes",
+      "omd": {
+        "title": "Certificado OMD",
+        "description": "Ordem dos Médicos Dentistas"
+      },
+      "excellence": {
+        "title": "Excelência",
+        "description": "20+ Anos de Experiência"
+      },
+      "patients": {
+        "title": "5000+ Pacientes",
+        "description": "Satisfeitos e Felizes"
+      },
+      "technology": {
+        "title": "Tecnologia Avançada",
+        "description": "Equipamento Moderno"
+      },
+      "safety": {
+        "title": "Protocolos de Segurança",
+        "description": "Esterilização Certificada"
+      },
+      "rating": {
+        "title": "4.9 Estrelas",
+        "description": "Avaliação Google"
+      }
+    },
+    "safety": {
+      "label": "Segurança e Higiene",
+      "title": "Protocolos de Higiene e Segurança",
+      "subtitle": "Mantemos os mais altos padrões de segurança e higiene para garantir a saúde e bem-estar de todos os nossos pacientes.",
+      "sterilization": {
+        "title": "Esterilização Avançada",
+        "description": "Autoclave de última geração para esterilização de todos os instrumentos"
+      },
+      "protocols": {
+        "title": "Protocolos de Segurança",
+        "description": "Seguimos rigorosamente todas as normas de segurança e higiene da DGS"
+      },
+      "temperature": {
+        "title": "Controlo de Temperatura",
+        "description": "Monitorização constante das condições ambientais da clínica"
+      },
+      "cleaning": {
+        "title": "Limpeza Profunda",
+        "description": "Desinfeção completa entre consultas e limpeza profissional diária"
+      },
+      "traceability": {
+        "title": "Rastreabilidade",
+        "description": "Sistema de rastreamento completo de todos os procedimentos e materiais"
+      },
+      "training": {
+        "title": "Equipa Treinada",
+        "description": "Formação contínua em protocolos de segurança e higiene"
+      },
+      "trustStatement": "A segurança dos nossos pacientes está no centro de tudo o que fazemos.",
+      "certification": "Certificados pela Ordem dos Médicos Dentistas e DGS"
+    },
+    "teamCredentials": {
+      "label": "Equipa de Excelência",
+      "title": "Profissionais Qualificados ao Seu Serviço",
+      "subtitle": "A nossa equipa é formada por médicos dentistas altamente qualificados, com vasta experiência e dedicação à excelência no cuidado oral.",
+      "training": {
+        "title": "Formação de Excelência",
+        "description": "Médicos dentistas com formação nas melhores universidades nacionais e internacionais",
+        "stats": "100% Licenciados pela OMD"
+      },
+      "specialization": {
+        "title": "Especialização Avançada",
+        "description": "Pós-graduações e especializações em áreas específicas da medicina dentária",
+        "stats": "15+ Especializações"
+      },
+      "dedication": {
+        "title": "Dedicação ao Paciente",
+        "description": "Atendimento personalizado e humanizado, focado nas necessidades individuais",
+        "stats": "4.9/5 Satisfação"
+      },
+      "multidisciplinary": {
+        "title": "Equipa Multidisciplinar",
+        "description": "Profissionais especializados em todas as áreas da medicina dentária",
+        "stats": "10+ Profissionais"
+      },
+      "experience": {
+        "value": "20+",
+        "title": "Anos de Experiência",
+        "subtitle": "Combinada da equipa"
+      },
+      "patients": {
+        "value": "5000+",
+        "title": "Pacientes Tratados",
+        "subtitle": "Com sucesso"
+      },
+      "certified": {
+        "value": "100%",
+        "title": "Certificados OMD",
+        "subtitle": "Ordem dos Médicos Dentistas"
+      },
+      "meetTeam": "Conheça a Nossa Equipa",
+      "missionStatement": "A nossa missão é proporcionar cuidados dentários de excelência, combinando expertise técnica com um atendimento humano e personalizado. Cada sorriso é único e merece o melhor tratamento.",
+      "teamSignature": "Equipa Clínica Ferreira Borges"
+    },
+    "faqs": {
+      "label": "Perguntas Frequentes",
+      "title": "Perguntas Frequentes",
+      "subtitle": "Encontre respostas para as suas dúvidas mais comuns",
+      "q1": {
+        "question": "Quanto tempo demora uma consulta?",
+        "answer": "Uma consulta de rotina demora geralmente entre 30 a 60 minutos. Consultas mais complexas podem requerer mais tempo."
+      },
+      "q2": {
+        "question": "Aceitam seguros de saúde?",
+        "answer": "Sim, trabalhamos com as principais seguradoras de saúde em Portugal. Contacte-nos para confirmar se o seu seguro é aceite."
+      },
+      "q3": {
+        "question": "Qual é a política de cancelamento?",
+        "answer": "Pedimos que cancele com pelo menos 24 horas de antecedência. Cancelamentos de última hora podem estar sujeitos a uma taxa."
+      },
+      "q4": {
+        "question": "Oferecem planos de financiamento?",
+        "answer": "Sim, temos parcerias com várias instituições financeiras para oferecer soluções de financiamento flexíveis aos nossos pacientes."
+      },
+      "q5": {
+        "question": "Têm estacionamento?",
+        "answer": "Há estacionamento gratuito disponível nas ruas próximas da clínica. Também temos parcerias com parques de estacionamento na área."
+      },
+      "q6": {
+        "question": "Como posso marcar uma consulta?",
+        "answer": "Pode marcar através do nosso número de telefone 935 189 807, por email, ou através do formulário de contacto no nosso website."
+      }
+    }
+  },
+  "treatments": {
+    "title": "Nossos Tratamentos",
+    "viewAll": "Ver Todos os Tratamentos",
+    "list": {
+      "aparelho-invisivel": "Aparelho Invisível",
+      "branqueamento": "Branqueamento",
+      "cirurgia-oral": "Cirurgia Oral",
+      "consulta-dentaria": "Consulta Dentária",
+      "dentisteria": "Dentisteria",
+      "dor-orofacial": "Dor Orofacial",
+      "endodontia": "Endodontia",
+      "implantes-dentarios": "Implantes Dentários",
+      "limpeza-dentaria": "Limpeza Dentária",
+      "medicina-dentaria-sono": "Medicina Dentária do Sono",
+      "odontopediatria": "Odontopediatria",
+      "ortodontia": "Ortodontia",
+      "periodontologia": "Periodontologia",
+      "reabilitacao-oral": "Reabilitação Oral",
+      "restauracao-estetica": "Restauração Estética"
+    }
+  },
+  "testimonials": {
+    "label": "Testemunhos",
+    "title": "O que dizem os nossos pacientes",
+    "loading": "A carregar avaliações...",
+    "configRequired": "Configuração Necessária",
+    "basedOn": "Baseado em",
+    "reviews": "avaliações",
+    "viewAllReviews": "Ver todas as avaliações no Google",
+    "postedOn": "Publicado no Google"
+  },
+  "location": {
+    "title": "Visite-nos",
+    "subtitle": "Estamos no coração de Campo de Ourique, Lisboa",
+    "contactTitle": "Entre em Contacto",
+    "sendMessage": "Envie-nos uma Mensagem",
+    "address": "Morada",
+    "phone": "Telefone",
+    "hours": "Horário",
+    "openInMaps": "Abrir no Google Maps"
+  },
+  "footer": {
+    "address": "Rua Ferreira Borges 173C, Campo de Ourique, 1350-130 Lisboa",
+    "phone": "(+351) 935 189 807",
+    "hours": "Horário: 10:00 - 20:00 (Segunda-Sábado)",
+    "followUs": "Siga-nos",
+    "regulatory": {
+      "title": "Entidade Reguladora da Saúde",
+      "ersNumber": "N.º Registo ERS: 25393",
+      "establishment": "Estabelecimento Fixo: E128470",
+      "license": "Licença nº 10984/2015"
+    },
+    "contact": "Contacto",
+    "hoursTitle": "Horário",
+    "schedule": {
+      "weekdays": "Seg - Sex: 10:00 - 20:00",
+      "saturday": "Sábado: 10:00 - 14:00",
+      "sunday": "Domingo",
+      "closed": "Fechado"
+    },
+    "contactButton": "Contacto",
+    "copyright": "Clínica Ferreira Borges. Todos os direitos reservados.",
+    "privacy": "Privacidade",
+    "terms": "Termos",
+    "complaints": "Reclamações"
+  },
+  "payments": {
+    "metaTitle": "Preços e Financiamento - Clínica Ferreira Borges",
+    "metaDescription": "Transparência nos preços e soluções de financiamento flexíveis para tornar o seu tratamento dentário mais acessível.",
+    "label": "Preços",
+    "title": "Preços e Financiamento",
+    "subtitle": "Transparência nos preços e soluções de financiamento flexíveis para tornar o seu tratamento dentário mais acessível.",
+    "priceList": {
+      "label": "Preços",
+      "title": "Tabela de Preços",
+      "subtitle": "Preços indicativos dos nossos principais tratamentos",
+      "treatment": "Tratamento",
+      "description": "Descrição",
+      "price": "Preço",
+      "free": "Gratuito",
+      "disclaimer": "* Preços sujeitos a alteração após avaliação. Consulte-nos para orçamento personalizado."
+    },
+    "financing": {
+      "label": "Financiamento",
+      "title": "Soluções de Financiamento",
+      "subtitle": "Parcerias com instituições financeiras para facilitar o acesso aos seus tratamentos",
+      "amount": "Montante",
+      "term": "Prazo",
+      "months": "meses",
+      "interestRate": "Taxa de Juro",
+      "apr": "TAEG",
+      "terms": "Termos:",
+      "learnMore": "Saber Mais"
+    },
+    "insurance": {
+      "label": "Seguros",
+      "title": "Seguros Aceites",
+      "subtitle": "Trabalhamos com as principais seguradoras de saúde em Portugal",
+      "visitWebsite": "Visitar Website",
+      "notListed": "Não vê o seu seguro? Contacte-nos para verificar a cobertura do seu plano."
+    },
+    "cta": {
+      "label": "Orçamento",
+      "title": "Precisa de um orçamento personalizado?",
+      "subtitle": "Entre em contacto connosco para uma avaliação gratuita e orçamento sem compromisso."
+    }
+  },
+  "team": {
+    "label": "Equipa",
+    "title": "A Nossa Equipa",
+    "subtitle": "Profissionais dedicados ao seu sorriso",
+    "specialties": "Especialidades",
+    "cta": {
+      "title": "Agende a sua consulta",
+      "subtitle": "Entre em contacto connosco hoje mesmo"
+    }
+  },
+  "contact": {
+    "label": "Contacto",
+    "title": "Entre em Contacto",
+    "subtitle": "Estamos aqui para ajudar. Entre em contacto connosco.",
+    "infoTitle": "Informações de Contacto",
+    "address": "Morada",
+    "phone": "Telefone",
+    "hours": "Horário",
+    "weekdays": "Seg - Sex",
+    "saturday": "Sábado",
+    "sunday": "Domingo: Fechado",
+    "openMaps": "Abrir no Google Maps",
+    "sendMessage": "Envie-nos uma Mensagem",
+    "regulatoryInfo": "Informação Regulamentar"
+  },
+  "contactForm": {
+    "success": "Mensagem enviada com sucesso! Entraremos em contacto em breve.",
+    "name": "Nome",
+    "email": "Email",
+    "phone": "Telefone",
+    "treatmentInterest": "Tratamento de interesse",
+    "selectTreatment": "Selecione um tratamento",
+    "treatments": {
+      "dentalImplants": "Implantes Dentários",
+      "clearAligners": "Aparelho Invisível",
+      "whitening": "Branqueamento",
+      "orthodontics": "Ortodontia",
+      "other": "Outro"
+    },
+    "message": "Mensagem",
+    "required": "*",
+    "sending": "A enviar...",
+    "submit": "Enviar Mensagem"
+  },
+  "treatment": {
+    "label": "Tratamento",
+    "hero": {
+      "bookConsultation": "Marcar Consulta",
+      "callNow": "Ligar Agora",
+      "trustBadge": "Mais de 5.000 pacientes satisfeitos"
+    },
+    "stats": {
+      "patients": "5.000+ Pacientes",
+      "years": "20+ Anos",
+      "treatedPatients": "Tratados com Sucesso",
+      "experience": "Experiência",
+      "satisfaction": "98% Satisfação",
+      "rating": "4.9/5 Avaliação"
+    },
+    "benefits": {
+      "label": "Benefícios",
+      "title": "Porquê Escolher Este Tratamento?",
+      "subtitle": "Descubra as vantagens que irão transformar o seu sorriso e qualidade de vida",
+      "expertise": {
+        "title": "Experiência Especializada",
+        "description": "A nossa equipa de médicos dentistas em Campo de Ourique, Lisboa, conta com mais de 20 anos de experiência em tratamentos dentários avançados, combinando formação internacional com técnicas de última geração para resultados excecionais"
+      },
+      "technology": {
+        "title": "Tecnologia Avançada",
+        "description": "A nossa clínica dentária em Lisboa dispõe da mais recente tecnologia dentária, incluindo scanners intraorais 3D, radiologia digital e imagiologia CBCT para diagnósticos precisos e tratamentos confortáveis"
+      },
+      "care": {
+        "title": "Cuidado Personalizado",
+        "description": "Cada tratamento dentário na nossa clínica em Campo de Ourique é adaptado às suas necessidades únicas, garantindo uma experiência confortável e resultados ótimos do seu médico dentista em Lisboa"
+      },
+      "location": {
+        "title": "Localização Premium em Lisboa",
+        "description": "Convenientemente localizada em Campo de Ourique, a nossa clínica dentária oferece fácil acesso por transportes públicos e estacionamento, tornando os cuidados dentários de qualidade acessíveis no coração de Lisboa"
+      },
+      "availability": {
+        "title": "Horário Flexível",
+        "description": "Oferecemos horário alargado e marcações flexíveis para se adaptar à sua agenda, garantindo que o tratamento dentário de qualidade se integra perfeitamente na sua vida em Lisboa"
+      },
+      "results": {
+        "title": "Resultados Comprovados",
+        "description": "Com milhares de tratamentos dentários bem-sucedidos realizados na nossa clínica em Lisboa, entregamos resultados consistentes e duradouros que transformam sorrisos e aumentam a confiança"
+      }
+    },
+    "process": {
+      "label": "Processo",
+      "title": "Como Funciona",
+      "subtitle": "Um processo simples e transparente, passo a passo, até ao seu sorriso perfeito",
+      "step1": {
+        "title": "Consulta Inicial",
+        "description": "Agende a sua avaliação na nossa clínica dentária em Campo de Ourique, Lisboa. O seu médico dentista realizará um exame completo e discutirá os seus objetivos e expectativas para o tratamento"
+      },
+      "step2": {
+        "title": "Plano de Tratamento Personalizado",
+        "description": "Receba um plano de tratamento dentário personalizado adaptado às suas necessidades, com cronograma detalhado e preços transparentes da nossa experiente equipa de dentistas em Lisboa"
+      },
+      "step3": {
+        "title": "Tratamento Avançado",
+        "description": "Experimente cuidados dentários confortáveis e precisos usando tecnologia de ponta na nossa moderna clínica em Lisboa, com tratamentos realizados por médicos dentistas especializados"
+      },
+      "step4": {
+        "title": "Acompanhamento e Manutenção",
+        "description": "Beneficie de apoio contínuo e consultas de acompanhamento regulares na nossa clínica em Campo de Ourique para garantir resultados duradouros e saúde oral ótima"
+      }
+    },
+    "whyUs": {
+      "label": "Porquê Nós",
+      "title": "Porquê Escolher a Clínica Ferreira Borges?",
+      "subtitle": "Excelência e experiência ao serviço do seu sorriso",
+      "experience": {
+        "title": "20+ Anos de Experiência",
+        "description": "Duas décadas a transformar sorrisos com os mais altos padrões de qualidade"
+      },
+      "technology": {
+        "title": "Tecnologia Avançada",
+        "description": "Equipamento de última geração para tratamentos mais precisos e confortáveis"
+      },
+      "team": {
+        "title": "Equipa Especializada",
+        "description": "Profissionais altamente qualificados com formação internacional"
+      },
+      "care": {
+        "title": "Cuidado Personalizado",
+        "description": "Plano de tratamento único, adaptado às suas necessidades específicas"
+      }
+    },
+    "whyChoose": {
+      "label": "Porquê Escolher-nos",
+      "title": "Porquê Escolher a Nossa Clínica Dentária em Lisboa?",
+      "subtitle": "Excelência em cuidados dentários em Campo de Ourique, servindo Lisboa com dedicação",
+      "excellence": {
+        "title": "Excelência Clínica",
+        "description": "A nossa clínica dentária em Campo de Ourique, Lisboa, mantém os mais altos padrões de qualidade em cada tratamento. Com mais de 20 anos a servir a comunidade, combinamos experiência comprovada com inovação contínua nos cuidados dentários"
+      },
+      "humanized": {
+        "title": "Cuidado Humanizado",
+        "description": "Na nossa clínica dentária em Lisboa, cada paciente recebe atenção personalizada dos nossos médicos dentistas. Priorizamos o seu conforto e bem-estar, criando um ambiente acolhedor para todas as suas necessidades de tratamento dentário em Campo de Ourique"
+      },
+      "safety": {
+        "title": "Segurança e Higiene",
+        "description": "A sua segurança é a nossa prioridade na nossa clínica em Lisboa. Seguimos protocolos rigorosos de esterilização e diretrizes da DGS, garantindo os mais altos padrões de higiene em cada procedimento dentário nas nossas instalações em Campo de Ourique"
+      },
+      "convenience": {
+        "title": "Localização Conveniente",
+        "description": "Localizada no coração de Campo de Ourique, a nossa clínica dentária oferece fácil acesso para os residentes de Lisboa com estacionamento próximo e excelentes ligações de transportes públicos, tornando os seus cuidados dentários verdadeiramente acessíveis"
+      }
+    },
+    "results": {
+      "label": "Resultados",
+      "title": "Resultados Comprovados",
+      "subtitle": "Transformações reais que mudaram a vida dos nossos pacientes",
+      "successRate": "Taxa de Sucesso",
+      "satisfiedPatients": "Pacientes Satisfeitos",
+      "yearsExperience": "Anos de Experiência"
+    },
+    "testimonials": {
+      "label": "Testemunhos",
+      "title": "O Que Dizem os Nossos Pacientes",
+      "subtitle": "Histórias reais de transformação e confiança renovada",
+      "readMore": "Ler Mais Testemunhos"
+    },
+    "pricing": {
+      "label": "Investimento",
+      "title": "Investimento no Seu Sorriso",
+      "subtitle": "Preços transparentes e soluções de financiamento flexíveis",
+      "from": "Desde",
+      "consultation": "Consulta de Avaliação",
+      "consultationPrice": "Sob consulta",
+      "payment": "Pagamento",
+      "paymentOptions": "À vista ou faseado até 36 meses",
+      "insurance": "Seguros",
+      "insuranceAccepted": "Aceitamos principais seguros",
+      "getQuote": "Obter Orçamento Personalizado"
+    },
+    "urgency": {
+      "label": "Agende Hoje",
+      "title": "Vagas Limitadas Disponíveis",
+      "subtitle": "Reserve a sua consulta de avaliação esta semana",
+      "available": "Disponível Esta Semana",
+      "limited": "Últimas Vagas",
+      "bookNow": "Marcar Agora"
+    },
+    "faq": {
+      "label": "FAQ",
+      "title": "Perguntas Frequentes",
+      "subtitle": "Respostas claras às suas dúvidas mais comuns sobre este tratamento"
+    },
+    "finalCta": {
+      "label": "Próximo Passo",
+      "title": "Transforme o Seu Sorriso Hoje",
+      "subtitle": "Não adie mais a sua felicidade. Agende a sua consulta de avaliação e dê o primeiro passo para o sorriso dos seus sonhos.",
+      "guarantee": "Garantia de Satisfação",
+      "guaranteeText": "Compromisso com a excelência e satisfação dos nossos pacientes",
+      "bookConsultation": "Marcar Consulta",
+      "callUs": "Ligar: 935 189 807",
+      "responseTime": "Resposta em menos de 24h"
+    },
+    "cta": {
+      "label": "Consulta",
+      "title": "Pronto para Transformar o Seu Sorriso?",
+      "subtitle": "Agende a sua consulta de avaliação hoje e descubra como podemos ajudá-lo."
+    },
+    "intro": {
+      "title": "Tratamento Dentário Especializado em Lisboa",
+      "description": "Na Clínica Ferreira Borges, oferecemos tratamentos dentários de excelência em Campo de Ourique, Lisboa. Com mais de 20 anos de experiência, tecnologia avançada e uma equipa altamente qualificada, garantimos resultados superiores e duradouros para o seu sorriso. Cada tratamento é personalizado de acordo com as necessidades específicas de cada paciente, assegurando o máximo conforto e satisfação."
+    },
+    "content": {
+      "technology": {
+        "label": "Tecnologia",
+        "title": "Tecnologia Dentária de Última Geração em Lisboa",
+        "p1": "A nossa clínica dentária em Campo de Ourique dispõe da tecnologia mais avançada disponível na medicina dentária moderna. Desde scanners intraorais 3D a radiologia digital e imagiologia CBCT, investimos em equipamento de ponta para garantir precisão e conforto em cada tratamento.",
+        "p2": "Esta excelência tecnológica permite aos nossos médicos dentistas em Lisboa realizar diagnósticos mais precisos, planear tratamentos com maior previsibilidade e entregar resultados superiores. Cada procedimento dentário beneficia do nosso compromisso com a inovação e cuidados de qualidade.",
+        "p3": "Experimente a diferença que a tecnologia dentária avançada faz na nossa clínica em Campo de Ourique. O nosso equipamento moderno não só melhora os resultados dos tratamentos como também aumenta o conforto do paciente, tornando a sua experiência de cuidados dentários em Lisboa verdadeiramente excecional."
+      },
+      "team": {
+        "label": "A Nossa Equipa",
+        "title": "Médicos Dentistas Experientes em Campo de Ourique, Lisboa",
+        "p1": "A nossa equipa de médicos dentistas é composta por profissionais altamente qualificados com vasta experiência em tratamentos especializados. Cada dentista na nossa clínica em Lisboa traz formação internacional e um compromisso com a educação contínua, garantindo que recebe cuidados dentários de classe mundial.",
+        "p2": "Com mais de 20 anos de experiência combinada a servir a comunidade de Campo de Ourique, os nossos médicos dentistas completaram com sucesso milhares de tratamentos dentários. Especializamo-nos em cuidados orais abrangentes, desde medicina dentária preventiva a restaurações complexas e procedimentos estéticos.",
+        "p3": "O que distingue a nossa clínica dentária é a nossa abordagem centrada no paciente. Cada membro da nossa equipa em Lisboa dedica-se a tornar a sua experiência dentária confortável e sem stress, enquanto entrega resultados excecionais que transformam sorrisos e aumentam a confiança."
+      }
+    },
+    "footer": {
+      "title": "Transforme o Seu Sorriso na Nossa Clínica Dentária em Lisboa",
+      "p1": "Na Clínica Ferreira Borges em Campo de Ourique, estamos comprometidos em fornecer cuidados dentários excecionais à comunidade de Lisboa. Os nossos médicos dentistas experientes, tecnologia avançada e abordagem focada no paciente fazem-nos a escolha preferida para tratamento dentário de qualidade.",
+      "p2": "Quer esteja à procura de cuidados preventivos, medicina dentária estética ou restaurações complexas, a nossa clínica em Lisboa oferece soluções abrangentes adaptadas às suas necessidades únicas. Aceitamos os principais planos de seguro e oferecemos financiamento flexível para tornar os cuidados dentários de qualidade acessíveis.",
+      "p3": "Agende a sua consulta hoje e descubra porque milhares de pacientes confiam na nossa clínica dentária em Campo de Ourique para a sua saúde oral. Contacte-nos pelo 935 189 807 ou marque online para horários de consulta convenientes que se adaptam à sua agenda."
+    },
+    "seo": {
+      "whatIs": {
+        "label": "O Que É",
+        "title": "O Que É Este Tratamento Dentário?",
+        "content": "Este tratamento dentário avançado é realizado na nossa clínica em Campo de Ourique, Lisboa, utilizando tecnologia de última geração e técnicas modernas. Com mais de 20 anos de experiência, a nossa equipa especializada de médicos dentistas garante resultados excepcionais e duradouros, sempre com foco no conforto e satisfação dos nossos pacientes. Cada procedimento é cuidadosamente planeado e executado com precisão para garantir os melhores resultados."
+      },
+      "forWhom": {
+        "label": "Para Quem",
+        "title": "Para Quem É Este Tratamento Dentário?",
+        "content": "Este tratamento dentário é ideal para pacientes que procuram melhorar a saúde e estética oral. Indicado para adultos e jovens que desejam resultados eficazes e duradouros. Durante a consulta de avaliação na nossa clínica em Lisboa, o nosso médico dentista experiente analisará o seu caso específico, realizará um diagnóstico completo e recomendará o melhor plano de tratamento personalizado para as suas necessidades individuais."
+      },
+      "duration": {
+        "label": "Duração",
+        "title": "Quanto Tempo Demora?",
+        "content": "A duração do tratamento varia conforme cada caso individual. Na consulta inicial, realizamos uma avaliação completa e apresentamos um plano de tratamento detalhado, incluindo o tempo estimado. A nossa clínica em Lisboa oferece horários flexíveis para se adaptar à sua rotina."
+      },
+      "location": {
+        "label": "Localização",
+        "title": "Clínica em Campo de Ourique, Lisboa",
+        "content": "A Clínica Ferreira Borges está localizada em Campo de Ourique, uma das zonas mais emblemáticas de Lisboa, com fácil acesso por transportes públicos e estacionamento nas proximidades. As nossas modernas instalações proporcionam um ambiente confortável e acolhedor para todos os nossos pacientes."
+      },
+      "technology": {
+        "label": "Tecnologia",
+        "title": "Tecnologia e Equipamento",
+        "content": "Investimos continuamente em tecnologia de ponta para garantir os melhores resultados. A nossa clínica está equipada com scanners intraorais 3D, radiologia digital, microscopia e outros equipamentos modernos que permitem diagnósticos precisos e tratamentos mais confortáveis e eficazes."
+      },
+      "aftercare": {
+        "label": "Cuidados Posteriores",
+        "title": "Cuidados Após o Tratamento",
+        "content": "Após o tratamento, fornecemos instruções detalhadas sobre os cuidados necessários para garantir os melhores resultados a longo prazo. A nossa equipa está sempre disponível para esclarecer dúvidas e realizar consultas de acompanhamento, assegurando que o seu tratamento tem o sucesso esperado."
+      }
+    }
+  },
+  "technology": {
+    "label": "Tecnologia",
+    "title": "Tecnologia Avançada",
+    "subtitle": "Equipamento de última geração para tratamentos mais precisos, confortáveis e eficientes",
+    "intraoralScanner": {
+      "title": "Scanners Intraorais",
+      "description": "Tecnologia de digitalização 3D de última geração para capturas precisas e confortáveis da sua cavidade oral, eliminando a necessidade de moldagens tradicionais.",
+      "benefit1": "Maior precisão nos tratamentos",
+      "benefit2": "Conforto durante o procedimento",
+      "benefit3": "Resultados imediatos",
+      "benefit4": "Menor tempo de consulta"
+    },
+    "cbct": {
+      "title": "CBCT - Tomografia Computorizada",
+      "description": "Sistema de imagiologia 3D de alta resolução que permite visualizar estruturas dentárias e ósseas com detalhe excepcional para diagnósticos mais precisos.",
+      "benefit1": "Diagnóstico detalhado",
+      "benefit2": "Planeamento cirúrgico preciso",
+      "benefit3": "Menor exposição à radiação",
+      "benefit4": "Imagens 3D completas"
+    },
+    "smileDesign": {
+      "title": "Design de Sorriso 3D",
+      "description": "Software avançado que permite visualizar o resultado final do seu tratamento antes mesmo de começar, proporcionando um planeamento personalizado e previsível.",
+      "benefit1": "Visualização prévia do resultado",
+      "benefit2": "Planeamento personalizado",
+      "benefit3": "Maior previsibilidade",
+      "benefit4": "Decisão informada"
+    },
+    "moreTech": {
+      "title": "Mais Tecnologias",
+      "subtitle": "Equipamento complementar para cuidados completos"
+    },
+    "digitalRadiology": {
+      "title": "Radiologia Digital",
+      "description": "Equipamento de radiografia digital com menor exposição a radiação e resultados instantâneos."
+    },
+    "microscopy": {
+      "title": "Microscopia Dentária",
+      "description": "Amplificação visual para tratamentos de precisão e resultados superiores."
+    },
+    "photography": {
+      "title": "Fotografia Intraoral",
+      "description": "Sistema de fotografia especializado para documentação clínica detalhada."
+    },
+    "trustStatement": "Investimos constantemente na tecnologia mais avançada para oferecer os melhores resultados e a melhor experiência aos nossos pacientes.",
+    "cta": {
+      "title": "Experimente a Diferença da Tecnologia Avançada",
+      "subtitle": "Agende a sua consulta e descubra como a tecnologia pode melhorar o seu tratamento"
+    }
+  }
+}

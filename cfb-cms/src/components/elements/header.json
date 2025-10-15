@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_elements_headers",
+  "info": {
+    "displayName": "Header"
+  },
+  "options": {},
+  "attributes": {
+    "SubHeder": {
+      "type": "string"
+    },
+    "Header": {
+      "type": "string"
+    },
+    "Text": {
+      "type": "text"
+    }
+  },
+  "config": {}
+}

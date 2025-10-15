@@ -1,0 +1,156 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --foreground-rgb: 0, 0, 0;
+    --background-rgb: 255, 255, 255;
+    --primary-color: #0098AA;
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --border: 240 5.9% 90%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  body {
+    color: rgb(var(--foreground-rgb));
+    background: rgb(var(--background-rgb));
+    line-height: 1.7;
+    letter-spacing: 0.01em;
+  }
+
+  /* Typography - Consistent text styles */
+  p {
+    line-height: 1.8;
+  }
+
+  /* Hero/Page Titles - Main headings on page top */
+  .page-title {
+    @apply text-4xl md:text-5xl font-bold mb-4;
+    color: var(--primary-color);
+  }
+
+  /* Section Headings - Discrete style for content sections */
+  .section-heading {
+    @apply text-2xl md:text-3xl font-semibold text-gray-700 mb-4;
+  }
+
+  /* Accent Section Headings - When you want to emphasize */
+  .section-heading-accent {
+    @apply text-2xl md:text-3xl font-semibold mb-4;
+    color: var(--primary-color);
+  }
+
+  /* Subsection Headings */
+  .subsection-heading {
+    @apply text-lg font-semibold text-gray-700 mb-4;
+  }
+
+  /* Card Titles */
+  .card-title {
+    @apply text-lg font-bold mb-2;
+    color: #4E5865;
+  }
+
+  /* Page Section Container */
+  .page-section {
+    @apply py-20 px-6;
+  }
+
+  /* Hero Section */
+  .hero-section {
+    @apply bg-white border-b border-gray-200 py-20;
+  }
+
+  /* Accent Badge - Small category/label badges */
+  .accent-badge {
+    @apply inline-flex items-center gap-2 mb-6;
+  }
+
+  .accent-badge::before,
+  .accent-badge::after {
+    content: '';
+    @apply w-1.5 h-1.5 rounded-full bg-primary-600;
+  }
+
+  /* Content Card - Standard white card with border (minimalistic hover) */
+  .content-card {
+    @apply bg-white rounded-xl p-6 border border-gray-200 hover:border-primary-400 transition-all;
+  }
+
+  /* Icon Containers - STANDARDIZED CIRCULAR ICONS */
+
+  /* Primary Icon - Accent background with white icon */
+  .icon-primary {
+    @apply w-12 h-12 rounded-full flex items-center justify-center;
+    background-color: var(--primary-color);
+  }
+
+  /* Secondary Icon - Light background with accent icon */
+  .icon-secondary {
+    @apply w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center border border-gray-200;
+  }
+
+  /* Large Icon - For hero/featured sections */
+  .icon-large {
+    @apply w-16 h-16 rounded-full flex items-center justify-center;
+    background-color: var(--primary-color);
+  }
+
+  /* Legacy support - deprecated, use icon-secondary instead */
+  .icon-circle {
+    @apply w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center border border-gray-200;
+  }
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+/* Smooth transitions for professional feel */
+* {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus styles for accessibility */
+a:focus-visible, button:focus-visible {
+  outline: 2px solid #0098AA;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground;
+  }
+}

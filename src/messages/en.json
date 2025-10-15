@@ -1,0 +1,723 @@
+{
+  "common": {
+    "bookAppointment": "Book Consultation",
+    "contactUs": "Contact Us",
+    "learnMore": "Learn More",
+    "callNow": "Call Now"
+  },
+  "nav": {
+    "home": "Home",
+    "clinic": "Clinic",
+    "team": "Team",
+    "treatments": "Treatments",
+    "payments": "Pricing & Financing",
+    "location": "Location",
+    "bookAppointment": "Book Consultation",
+    "practice": {
+      "title": "Our Clinic",
+      "subtitle": "Meet our team and facilities",
+      "team": "Team",
+      "teamDesc": "Meet our specialized professionals",
+      "technology": "Technology",
+      "technologyDesc": "State-of-the-art equipment",
+      "payments": "Pricing & Financing",
+      "paymentsDesc": "Price list and financing options",
+      "location": "Contact",
+      "locationDesc": "Get in touch with us"
+    },
+    "services": {
+      "title": "Treatments",
+      "subtitle": "Complete dental services for the whole family",
+      "viewAll": "View All"
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Where every smile tells a story",
+      "subtitle": "At Clínica Ferreira Borges, in Campo de Ourique, Lisbon, we believe that every smile is unique...",
+      "trustBadge": "Trusted Clinic since 2004",
+      "yearsLabel": "Years",
+      "responseLabel": "Response"
+    },
+    "services": {
+      "title": "Treatment You'll Love",
+      "subtitle": "At our dental clinic, we offer a wide range of personalized treatments, designed for your well-being and oral health. From aesthetic treatments to complex procedures, everything is performed with the utmost precision and care, ensuring a smile you will love.",
+      "learnMore": "Learn More",
+      "sectionLabel": "Specialized Treatments",
+      "notFound": "Can't find the treatment you're looking for?",
+      "talkToUs": "Talk to Us",
+      "aparelho-invisivel": {
+        "title": "Clear Aligners",
+        "description": "Get a perfect smile with total discretion using clear aligners. At Clínica Ferreira Borges, aesthetics meets functionality for impressive results."
+      },
+      "branqueamento": {
+        "title": "Whitening",
+        "description": "Brighten your smile with our advanced teeth whitening. At Ferreira Borges Clinic, we offer safe, effective treatments tailored to you. Visit us for a radiant smile and exceptional dental care."
+      },
+      "cirurgia-oral": {
+        "title": "Oral Surgery",
+        "description": "Trust our oral surgery team for advanced treatments with safety and precision. At Clínica Ferreira Borges, your oral health is in good hands."
+      },
+      "consulta-dentaria": {
+        "title": "Dental Consultation",
+        "description": "Schedule your dental appointment at Clínica Ferreira Borges and take the first step towards a healthy and radiant smile. Personalized care at your disposal."
+      },
+      "dentisteria": {
+        "title": "Aesthetic Restorations",
+        "description": "Discover excellence in dentistry at Clínica Ferreira Borges. We combine state-of-the-art technology and a personalized approach to restore the health and beauty of your teeth."
+      },
+      "dor-orofacial": {
+        "title": "Orofacial Pain",
+        "description": "Find relief for orofacial pain with our specialized approach. At Clínica Ferreira Borges, we combine knowledge and technology to effectively treat your pain."
+      },
+      "endodontia": {
+        "title": "Endodontics",
+        "description": "Preserve your dental health with cutting-edge endodontic treatments. At Clínica Ferreira Borges, we take care whenever possible to preserve your teeth, maintaining their integrity and beauty."
+      },
+      "implantes-dentarios": {
+        "title": "Dental Implants",
+        "description": "Transform your smile with our state-of-the-art dental implants. Regain trust and enjoy a full life with personalized solutions at Clínica Ferreira Borges."
+      },
+      "limpeza-dentaria": {
+        "title": "Dental Cleaning",
+        "description": "Keep your smile bright with our dental cleaning and detartarization, using Guided Biofilm Therapy (GBT). Visit the Ferreira Borges Clinic for preventive care and preserve the health of your teeth with the most advanced oral hygiene technology."
+      },
+      "medicina-dentaria-do-sono": {
+        "title": "Sleep Apnea",
+        "description": "Rediscover the pleasure of sleeping well. Our innovative dental sleep medicine solutions effectively combat apnea, promoting restful nights and energized days."
+      },
+      "odontopediatria": {
+        "title": "Paediatric Dentistry",
+        "description": "Ensure a healthy smile for your little ones with our pediatric dentistry team. At Clínica Ferreira Borges, we care for your family's smile since early childhood."
+      },
+      "ortodontia": {
+        "title": "Orthodontics",
+        "description": "Smile with confidence with our orthodontic treatments. At Clínica Ferreira Borges, we offer customized solutions that guarantee excellent aesthetic and functional results."
+      },
+      "periodontologia": {
+        "title": "Periodontology",
+        "description": "Protect the foundations of your smile with our periodontal treatments. At Clínica Ferreira Borges, we take care of your gum health with maximum effectiveness."
+      },
+      "reabilitacao-oral": {
+        "title": "Prosthodontics",
+        "description": "Restore the functionality and aesthetics of your smile with our prosthodontics solutions. Clínica Ferreira Borges offers integrated solutions for all your dental needs."
+      },
+      "restauracao-estetica": {
+        "title": "Cosmetic Dentistry",
+        "description": "Revitalize your smile with cosmetic dentistry at Clínica Ferreira Borges. Our solutions combine art and science to restore the natural beauty of your teeth."
+      }
+    },
+    "commitment": {
+      "label": "Commitment",
+      "title": "A commitment to excellence",
+      "years": "15+ Years",
+      "yearsDescription": "serving the Campo de Ourique community, Lisbon"
+    },
+    "certifications": {
+      "label": "Certifications",
+      "title": "Recognition and Trust",
+      "subtitle": "Committed to excellence and safety of our patients",
+      "omd": {
+        "title": "OMD Certified",
+        "description": "Portuguese Dental Association"
+      },
+      "excellence": {
+        "title": "Excellence",
+        "description": "20+ Years of Experience"
+      },
+      "patients": {
+        "title": "5000+ Patients",
+        "description": "Satisfied and Happy"
+      },
+      "technology": {
+        "title": "Advanced Technology",
+        "description": "Modern Equipment"
+      },
+      "safety": {
+        "title": "Safety Protocols",
+        "description": "Certified Sterilization"
+      },
+      "rating": {
+        "title": "4.9 Stars",
+        "description": "Google Rating"
+      }
+    },
+    "safety": {
+      "label": "Safety and Hygiene",
+      "title": "Hygiene and Safety Protocols",
+      "subtitle": "We maintain the highest standards of safety and hygiene to ensure the health and well-being of all our patients.",
+      "sterilization": {
+        "title": "Advanced Sterilization",
+        "description": "State-of-the-art autoclave for sterilization of all instruments"
+      },
+      "protocols": {
+        "title": "Safety Protocols",
+        "description": "We strictly follow all DGS safety and hygiene standards"
+      },
+      "temperature": {
+        "title": "Temperature Control",
+        "description": "Constant monitoring of the clinic's environmental conditions"
+      },
+      "cleaning": {
+        "title": "Deep Cleaning",
+        "description": "Complete disinfection between appointments and daily professional cleaning"
+      },
+      "traceability": {
+        "title": "Traceability",
+        "description": "Complete tracking system for all procedures and materials"
+      },
+      "training": {
+        "title": "Trained Team",
+        "description": "Continuous training in safety and hygiene protocols"
+      },
+      "trustStatement": "The safety of our patients is at the center of everything we do.",
+      "certification": "Certified by the Portuguese Dental Association and DGS"
+    },
+    "teamCredentials": {
+      "label": "Team of Excellence",
+      "title": "Qualified Professionals at Your Service",
+      "subtitle": "Our team is made up of highly qualified dentists, with extensive experience and dedication to excellence in oral care.",
+      "training": {
+        "title": "Excellence in Training",
+        "description": "Dentists trained at the best national and international universities",
+        "stats": "100% Licensed by OMD"
+      },
+      "specialization": {
+        "title": "Advanced Specialization",
+        "description": "Postgraduate degrees and specializations in specific areas of dentistry",
+        "stats": "15+ Specializations"
+      },
+      "dedication": {
+        "title": "Patient Dedication",
+        "description": "Personalized and humane care, focused on individual needs",
+        "stats": "4.9/5 Satisfaction"
+      },
+      "multidisciplinary": {
+        "title": "Multidisciplinary Team",
+        "description": "Professionals specialized in all areas of dentistry",
+        "stats": "10+ Professionals"
+      },
+      "experience": {
+        "value": "20+",
+        "title": "Years of Experience",
+        "subtitle": "Combined team experience"
+      },
+      "patients": {
+        "value": "5000+",
+        "title": "Patients Treated",
+        "subtitle": "Successfully"
+      },
+      "certified": {
+        "value": "100%",
+        "title": "OMD Certified",
+        "subtitle": "Portuguese Dental Association"
+      },
+      "meetTeam": "Meet Our Team",
+      "missionStatement": "Our mission is to provide excellent dental care, combining technical expertise with humane and personalized service. Every smile is unique and deserves the best treatment.",
+      "teamSignature": "Clínica Ferreira Borges Team"
+    },
+    "faqs": {
+      "label": "FAQs",
+      "title": "Frequently Asked Questions",
+      "subtitle": "Find answers to your most common questions",
+      "q1": {
+        "question": "How long does an appointment take?",
+        "answer": "A routine appointment typically takes between 30 to 60 minutes. More complex appointments may require additional time."
+      },
+      "q2": {
+        "question": "Do you accept health insurance?",
+        "answer": "Yes, we work with major health insurance providers in Portugal. Contact us to confirm if your insurance is accepted."
+      },
+      "q3": {
+        "question": "What is your cancellation policy?",
+        "answer": "We ask that you cancel with at least 24 hours notice. Last-minute cancellations may be subject to a fee."
+      },
+      "q4": {
+        "question": "Do you offer financing plans?",
+        "answer": "Yes, we have partnerships with several financial institutions to offer flexible financing solutions to our patients."
+      },
+      "q5": {
+        "question": "Do you have parking?",
+        "answer": "Free parking is available on streets near the clinic. We also have partnerships with parking facilities in the area."
+      },
+      "q6": {
+        "question": "How can I book an appointment?",
+        "answer": "You can book via our phone number 935 189 807, by email, or through the contact form on our website."
+      }
+    }
+  },
+  "treatments": {
+    "title": "Our Treatments",
+    "viewAll": "View All Treatments",
+    "list": {
+      "aparelho-invisivel": "Clear Aligners",
+      "branqueamento": "Whitening",
+      "cirurgia-oral": "Oral Surgery",
+      "consulta-dentaria": "Dental Consultation",
+      "dentisteria": "Cosmetic Dentistry",
+      "dor-orofacial": "Orofacial Pain",
+      "endodontia": "Endodontics",
+      "implantes-dentarios": "Dental Implants",
+      "limpeza-dentaria": "Dental Cleaning",
+      "medicina-dentaria-sono": "Sleep Apnea",
+      "odontopediatria": "Paediatric Dentistry",
+      "ortodontia": "Orthodontics",
+      "periodontologia": "Periodontology",
+      "reabilitacao-oral": "Prosthodontics",
+      "restauracao-estetica": "Aesthetic Restorations"
+    }
+  },
+  "testimonials": {
+    "label": "Testimonials",
+    "title": "What our patients say",
+    "loading": "Loading reviews...",
+    "configRequired": "Configuration Required",
+    "basedOn": "Based on",
+    "reviews": "reviews",
+    "viewAllReviews": "View all reviews on Google",
+    "postedOn": "Posted on Google"
+  },
+  "location": {
+    "title": "Visit Us",
+    "subtitle": "We are in the heart of Campo de Ourique, Lisbon",
+    "contactTitle": "Get in Touch",
+    "sendMessage": "Send Us a Message",
+    "address": "Address",
+    "phone": "Phone",
+    "hours": "Hours",
+    "openInMaps": "Open in Google Maps"
+  },
+  "footer": {
+    "address": "Rua Ferreira Borges 173C, Campo de Ourique, 1350-130 Lisbon",
+    "phone": "(+351) 935 189 807",
+    "hours": "Hours: 10:00 AM - 8:00 PM (Monday-Saturday)",
+    "followUs": "Follow Us",
+    "regulatory": {
+      "title": "Health Regulatory Entity",
+      "ersNumber": "ERS Registration No: 25393",
+      "establishment": "Fixed Establishment: E128470",
+      "license": "License nº 10984/2015"
+    },
+    "contact": "Contact",
+    "hoursTitle": "Hours",
+    "schedule": {
+      "weekdays": "Mon - Fri: 10:00 AM - 8:00 PM",
+      "saturday": "Saturday: 10:00 AM - 2:00 PM",
+      "sunday": "Sunday",
+      "closed": "Closed"
+    },
+    "contactButton": "Contact",
+    "copyright": "Clínica Ferreira Borges. All rights reserved.",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "complaints": "Complaints"
+  },
+  "payments": {
+    "metaTitle": "Pricing and Financing - Clínica Ferreira Borges",
+    "metaDescription": "Transparent pricing and flexible financing solutions to make your dental treatment more accessible.",
+    "label": "Pricing",
+    "title": "Pricing and Financing",
+    "subtitle": "Transparent pricing and flexible financing solutions to make your dental treatment more accessible.",
+    "priceList": {
+      "label": "Pricing",
+      "title": "Price List",
+      "subtitle": "Indicative prices for our main treatments",
+      "treatment": "Treatment",
+      "description": "Description",
+      "price": "Price",
+      "free": "Free",
+      "disclaimer": "* Prices subject to change after evaluation. Contact us for a personalized quote."
+    },
+    "financing": {
+      "label": "Financing",
+      "title": "Financing Solutions",
+      "subtitle": "Partnerships with financial institutions to facilitate access to your treatments",
+      "amount": "Amount",
+      "term": "Term",
+      "months": "months",
+      "interestRate": "Interest Rate",
+      "apr": "APR",
+      "terms": "Terms:",
+      "learnMore": "Learn More"
+    },
+    "insurance": {
+      "label": "Insurance",
+      "title": "Accepted Insurance",
+      "subtitle": "We work with major health insurance companies in Portugal",
+      "visitWebsite": "Visit Website",
+      "notListed": "Don't see your insurance? Contact us to verify your plan coverage."
+    },
+    "cta": {
+      "label": "Quote",
+      "title": "Need a personalized quote?",
+      "subtitle": "Contact us for a free evaluation and no-obligation quote."
+    }
+  },
+  "team": {
+    "label": "Team",
+    "title": "Our Team",
+    "subtitle": "Professionals dedicated to your smile",
+    "specialties": "Specialties",
+    "cta": {
+      "title": "Schedule your appointment",
+      "subtitle": "Contact us today"
+    }
+  },
+  "contact": {
+    "label": "Contact",
+    "title": "Get in Touch",
+    "subtitle": "We are here to help. Contact us.",
+    "infoTitle": "Contact Information",
+    "address": "Address",
+    "phone": "Phone",
+    "hours": "Hours",
+    "weekdays": "Mon - Fri",
+    "saturday": "Saturday",
+    "sunday": "Sunday: Closed",
+    "openMaps": "Open in Google Maps",
+    "sendMessage": "Send Us a Message",
+    "regulatoryInfo": "Regulatory Information"
+  },
+  "contactForm": {
+    "success": "Message sent successfully! We will contact you soon.",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "treatmentInterest": "Treatment of interest",
+    "selectTreatment": "Select a treatment",
+    "treatments": {
+      "dentalImplants": "Dental Implants",
+      "clearAligners": "Clear Aligners",
+      "whitening": "Whitening",
+      "orthodontics": "Orthodontics",
+      "other": "Other"
+    },
+    "message": "Message",
+    "required": "*",
+    "sending": "Sending...",
+    "submit": "Send Message"
+  },
+  "treatment": {
+    "label": "Treatment",
+    "hero": {
+      "bookConsultation": "Book Consultation",
+      "callNow": "Call Now",
+      "trustBadge": "Over 5,000 satisfied patients"
+    },
+    "stats": {
+      "patients": "5,000+ Patients",
+      "years": "20+ Years",
+      "treatedPatients": "Treated Successfully",
+      "experience": "Experience",
+      "satisfaction": "98% Satisfaction",
+      "rating": "4.9/5 Rating"
+    },
+    "benefits": {
+      "label": "Benefits",
+      "title": "Why Choose This Treatment?",
+      "subtitle": "Discover the advantages that will transform your smile and quality of life",
+      "expertise": {
+        "title": "Specialized Expertise",
+        "description": "Our dental team in Campo de Ourique, Lisbon, brings over 20 years of experience in advanced dental treatments, combining international training with state-of-the-art techniques for exceptional results"
+      },
+      "technology": {
+        "title": "Advanced Technology",
+        "description": "Our Lisbon dental clinic features the latest dental technology including 3D intraoral scanners, digital radiology, and CBCT imaging for precise diagnoses and comfortable treatments"
+      },
+      "care": {
+        "title": "Personalized Care",
+        "description": "Every dental treatment at our Campo de Ourique clinic is tailored to your unique needs, ensuring a comfortable experience and optimal results from your dentist in Lisbon"
+      },
+      "location": {
+        "title": "Prime Location in Lisbon",
+        "description": "Conveniently located in Campo de Ourique, our dental clinic offers easy access by public transport and parking, making quality dental care accessible in the heart of Lisbon"
+      },
+      "availability": {
+        "title": "Flexible Scheduling",
+        "description": "We offer extended hours and flexible appointment times to accommodate your busy schedule, ensuring quality dental treatment fits seamlessly into your life in Lisbon"
+      },
+      "results": {
+        "title": "Proven Results",
+        "description": "With thousands of successful dental treatments completed at our Lisbon clinic, we deliver consistent, long-lasting results that transform smiles and boost confidence"
+      }
+    },
+    "process": {
+      "label": "Process",
+      "title": "How It Works",
+      "subtitle": "A simple and transparent process, step by step, to your perfect smile",
+      "step1": {
+        "title": "Initial Consultation",
+        "description": "Schedule your evaluation at our dental clinic in Campo de Ourique, Lisbon. Your dentist will perform a comprehensive examination and discuss your goals and expectations for treatment"
+      },
+      "step2": {
+        "title": "Personalized Treatment Plan",
+        "description": "Receive a customized dental treatment plan tailored to your needs, complete with detailed timeline and transparent pricing from our experienced Lisbon dental team"
+      },
+      "step3": {
+        "title": "Advanced Treatment",
+        "description": "Experience comfortable, precise dental care using cutting-edge technology at our modern Lisbon clinic, with treatments performed by specialized dentists"
+      },
+      "step4": {
+        "title": "Follow-up & Maintenance",
+        "description": "Benefit from continuous support and regular follow-up appointments at our Campo de Ourique clinic to ensure long-lasting results and optimal oral health"
+      }
+    },
+    "whyUs": {
+      "label": "Why Us",
+      "title": "Why Choose Clínica Ferreira Borges?",
+      "subtitle": "Excellence and experience in the service of your smile",
+      "experience": {
+        "title": "20+ Years of Experience",
+        "description": "Two decades transforming smiles with the highest quality standards"
+      },
+      "technology": {
+        "title": "Advanced Technology",
+        "description": "State-of-the-art equipment for more precise and comfortable treatments"
+      },
+      "team": {
+        "title": "Specialized Team",
+        "description": "Highly qualified professionals with international training"
+      },
+      "care": {
+        "title": "Personalized Care",
+        "description": "Unique treatment plan, adapted to your specific needs"
+      }
+    },
+    "whyChoose": {
+      "label": "Why Choose Us",
+      "title": "Why Choose Our Dental Clinic in Lisbon?",
+      "subtitle": "Excellence in dental care at Campo de Ourique, serving Lisbon with dedication",
+      "excellence": {
+        "title": "Clinical Excellence",
+        "description": "Our dental clinic in Campo de Ourique, Lisbon, maintains the highest standards of quality in every treatment. With over 20 years serving the community, we combine proven expertise with continuous innovation in dental care"
+      },
+      "humanized": {
+        "title": "Humanized Care",
+        "description": "At our Lisbon dental clinic, every patient receives personalized attention from our caring dentists. We prioritize your comfort and well-being, creating a welcoming environment for all your dental treatment needs in Campo de Ourique"
+      },
+      "innovation": {
+        "title": "Innovation & Technology",
+        "description": "We invest continuously in the latest dental technology and modern techniques to ensure superior treatment outcomes. Our Campo de Ourique clinic features advanced equipment including 3D scanners, digital imaging, and state-of-the-art diagnostic tools for your optimal dental care in Lisbon"
+      },
+      "safety": {
+        "title": "Safety & Hygiene",
+        "description": "Your safety is our priority at our Lisbon clinic. We follow strict sterilization protocols and DGS guidelines, ensuring the highest hygiene standards for every dental procedure in our Campo de Ourique facility"
+      },
+      "convenience": {
+        "title": "Convenient Location",
+        "description": "Located in the heart of Campo de Ourique, our dental clinic offers easy access for Lisbon residents with nearby parking and excellent public transport connections, making your dental care truly accessible"
+      }
+    },
+    "results": {
+      "label": "Results",
+      "title": "Proven Results",
+      "subtitle": "Real transformations that changed our patients' lives",
+      "successRate": "Success Rate",
+      "satisfiedPatients": "Satisfied Patients",
+      "yearsExperience": "Years of Experience"
+    },
+    "testimonials": {
+      "label": "Testimonials",
+      "title": "What Our Patients Say",
+      "subtitle": "Real stories of transformation and renewed confidence",
+      "readMore": "Read More Testimonials"
+    },
+    "pricing": {
+      "label": "Investment",
+      "title": "Investment in Your Smile",
+      "subtitle": "Transparent pricing and flexible financing solutions",
+      "from": "From",
+      "consultation": {
+        "title": "Evaluation Consultation",
+        "description": "Comprehensive initial assessment and personalized treatment plan"
+      },
+      "consultationPrice": "Upon request",
+      "note": "Final pricing will be determined after your personalized evaluation. Contact us for a detailed, no-obligation quote.",
+      "payment": "Payment",
+      "paymentOptions": "Full payment or installments up to 36 months",
+      "insurance": "Insurance",
+      "insuranceAccepted": "We accept major insurance",
+      "getQuote": "Get Personalized Quote"
+    },
+    "urgency": {
+      "label": "Book Today",
+      "badge": "Limited Availability",
+      "title": "Limited Spots Available",
+      "subtitle": "Reserve your evaluation consultation this week",
+      "description": "Don't miss this opportunity to transform your smile. Our specialized dentists have limited availability this month. Book your consultation now and take the first step towards the smile you've always wanted.",
+      "available": "Available This Week",
+      "limited": "Last Spots",
+      "bookNow": "Book Now"
+    },
+    "faq": {
+      "label": "FAQ",
+      "title": "Frequently Asked Questions",
+      "subtitle": "Clear answers to your most common questions about this treatment"
+    },
+    "faqs": {
+      "label": "Common Questions",
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about this treatment",
+      "stillHaveQuestions": "Still have questions? Contact our team for personalized answers and clarifications about your dental treatment."
+    },
+    "finalCta": {
+      "label": "Next Step",
+      "title": "Transform Your Smile Today",
+      "subtitle": "Don't postpone your happiness. Schedule your evaluation consultation and take the first step towards your dream smile.",
+      "description": "Our experienced dental team in Campo de Ourique, Lisbon, is ready to help you achieve the smile you've always dreamed of. With personalized care, advanced technology, and proven results, we're committed to your satisfaction.",
+      "formTitle": "Schedule Your Free Consultation",
+      "guarantee": "Satisfaction Guarantee",
+      "guaranteeText": "Commitment to excellence and patient satisfaction",
+      "bookConsultation": "Book Consultation",
+      "callUs": "Call: 935 189 807",
+      "responseTime": "Response in less than 24h"
+    },
+    "cta": {
+      "label": "Consultation",
+      "title": "Ready to Transform Your Smile?",
+      "subtitle": "Schedule your evaluation consultation today and discover how we can help you."
+    },
+    "intro": {
+      "title": "Specialized Dental Treatment in Lisbon",
+      "description": "At Clínica Ferreira Borges, we offer excellent dental treatments in Campo de Ourique, Lisbon. With over 20 years of experience, advanced technology and a highly qualified team, we guarantee superior and lasting results for your smile. Each treatment is personalized according to the specific needs of each patient, ensuring maximum comfort and satisfaction."
+    },
+    "content": {
+      "technology": {
+        "label": "Technology",
+        "title": "State-of-the-Art Dental Technology in Lisbon",
+        "p1": "Our dental clinic in Campo de Ourique features the most advanced technology available in modern dentistry. From 3D intraoral scanners to digital radiology and CBCT imaging, we invest in cutting-edge equipment to ensure precision and comfort in every treatment.",
+        "p2": "This technological excellence allows our Lisbon dentists to perform more accurate diagnoses, plan treatments with greater predictability, and deliver superior results. Every dental procedure benefits from our commitment to innovation and quality care.",
+        "p3": "Experience the difference that advanced dental technology makes at our Campo de Ourique clinic. Our modern equipment not only improves treatment outcomes but also enhances patient comfort, making your dental care experience in Lisbon truly exceptional."
+      },
+      "team": {
+        "label": "Our Team",
+        "title": "Expert Dentists in Campo de Ourique, Lisbon",
+        "p1": "Our dental team comprises highly qualified professionals with extensive experience in specialized treatments. Each dentist at our Lisbon clinic brings international training and a commitment to continuous education, ensuring you receive world-class dental care.",
+        "p2": "With over 20 years of combined experience serving the Campo de Ourique community, our dentists have successfully completed thousands of dental treatments. We specialize in comprehensive oral care, from preventive dentistry to complex restorations and cosmetic procedures.",
+        "p3": "What sets our dental clinic apart is our patient-centered approach. Every member of our Lisbon team is dedicated to making your dental experience comfortable and stress-free, while delivering exceptional results that transform smiles and boost confidence."
+      }
+    },
+    "footer": {
+      "title": "Transform Your Smile at Our Lisbon Dental Clinic",
+      "p1": "At Clínica Ferreira Borges in Campo de Ourique, we're committed to providing exceptional dental care to the Lisbon community. Our experienced dentists, advanced technology, and patient-focused approach make us the preferred choice for quality dental treatment.",
+      "p2": "Whether you're seeking preventive care, cosmetic dentistry, or complex restorations, our Lisbon clinic offers comprehensive solutions tailored to your unique needs. We accept major insurance plans and offer flexible financing to make quality dental care accessible.",
+      "p3": "Schedule your consultation today and discover why thousands of patients trust our Campo de Ourique dental clinic for their oral health. Contact us at 935 189 807 or book online for convenient appointment times that fit your schedule."
+    },
+    "seo": {
+      "whatIs": {
+        "label": "What Is",
+        "title": "What Is This Dental Treatment?",
+        "content": "This advanced dental treatment is performed at our clinic in Campo de Ourique, Lisbon, using state-of-the-art technology and modern techniques. With over 20 years of experience, our specialized team of dentists guarantees exceptional and lasting results, always focusing on patient comfort and satisfaction. Each procedure is carefully planned and executed with precision to ensure the best results."
+      },
+      "forWhom": {
+        "label": "For Whom",
+        "title": "Who Is This Dental Treatment For?",
+        "content": "This dental treatment is ideal for patients looking to improve their oral health and aesthetics. Suitable for adults and young people seeking effective and lasting results. During the evaluation consultation at our Lisbon clinic, our experienced dentist will analyze your specific case, perform a complete diagnosis and recommend the best personalized treatment plan for your individual needs."
+      },
+      "duration": {
+        "label": "Duration",
+        "title": "How Long Does It Take?",
+        "content": "Treatment duration varies according to each individual case. During the initial consultation, we perform a complete evaluation and present a detailed treatment plan, including estimated time. Our Lisbon clinic offers flexible schedules to adapt to your routine."
+      },
+      "location": {
+        "label": "Location",
+        "title": "Clinic in Campo de Ourique, Lisbon",
+        "content": "Clínica Ferreira Borges is located in Campo de Ourique, one of Lisbon's most emblematic areas, with easy access by public transport and parking nearby. Our modern facilities provide a comfortable and welcoming environment for all our patients."
+      },
+      "technology": {
+        "label": "Technology",
+        "title": "Technology and Equipment",
+        "content": "We continuously invest in cutting-edge technology to ensure the best results. Our clinic is equipped with 3D intraoral scanners, digital radiology, microscopy and other modern equipment that allow accurate diagnoses and more comfortable and effective treatments."
+      },
+      "aftercare": {
+        "label": "Aftercare",
+        "title": "Post-Treatment Care",
+        "content": "After treatment, we provide detailed instructions on the necessary care to ensure the best long-term results. Our team is always available to answer questions and perform follow-up consultations, ensuring your treatment achieves the expected success."
+      }
+    },
+    "seoContent": {
+      "title": "Excellence in Dental Care at Campo de Ourique, Lisbon",
+      "subtitle": "Advanced dental treatment with proven results and personalized care",
+      "location": {
+        "title": "Prime Location in Campo de Ourique",
+        "description": "Our dental clinic is strategically located in Campo de Ourique, one of Lisbon's most accessible and charming neighborhoods. With convenient public transport connections and nearby parking, we make quality dental care easily accessible to all Lisbon residents and visitors."
+      },
+      "credentials": {
+        "title": "Qualified and Experienced Dentists",
+        "description": "Our team of dentists in Lisbon holds advanced degrees and international certifications, with over 20 years of combined experience. All our professionals are registered with the Portuguese Dental Association (OMD), ensuring the highest standards of dental care for every patient."
+      },
+      "technology": {
+        "title": "State-of-the-Art Dental Technology",
+        "description": "We invest in the most advanced dental equipment available, including 3D intraoral scanners, CBCT imaging, digital radiology, and dental microscopy. This cutting-edge technology allows for more accurate diagnoses, precise treatments, and superior patient comfort at our Lisbon clinic."
+      },
+      "availability": {
+        "title": "Flexible Scheduling Options",
+        "description": "Understanding the demands of modern life, our Campo de Ourique clinic offers extended hours and flexible appointment scheduling. We accommodate your busy lifestyle with convenient morning, afternoon, and evening appointments throughout the week."
+      },
+      "care": {
+        "title": "Personalized Patient Care",
+        "description": "Every patient at our Lisbon dental clinic receives individualized attention and a customized treatment plan. We take time to understand your concerns, goals, and expectations, ensuring a comfortable experience and optimal results tailored specifically to your needs."
+      },
+      "safety": {
+        "title": "Strict Safety and Hygiene Protocols",
+        "description": "Your safety is our top priority. We follow rigorous sterilization protocols and DGS health guidelines, using advanced autoclave systems and maintaining the highest standards of hygiene. Our Campo de Ourique clinic is fully certified and regularly inspected for compliance."
+      }
+    },
+    "seoFooter": {
+      "title": "Your Trusted Dental Clinic in Campo de Ourique, Lisbon",
+      "p1": "At Clínica Ferreira Borges, we're proud to serve the Campo de Ourique community and greater Lisbon area with exceptional dental care. Our commitment to clinical excellence, patient comfort, and continuous innovation has made us a trusted choice for thousands of patients seeking quality dental treatment in Lisbon.",
+      "p2": "Whether you're looking for preventive dental care, cosmetic dentistry, complex restorations, or specialized treatments, our experienced team of dentists in Campo de Ourique provides comprehensive solutions using the latest technology and proven techniques. We work with major insurance providers and offer flexible financing options to make quality dental care accessible and affordable.",
+      "p3": "Take the first step towards your perfect smile today. Contact our Lisbon dental clinic at 935 189 807 or book your consultation online. We offer convenient appointment times, multilingual service, and a welcoming environment where your oral health and satisfaction are our priorities. Discover why residents across Lisbon trust Clínica Ferreira Borges for their dental care needs."
+    }
+  },
+  "technology": {
+    "label": "Technology",
+    "title": "Advanced Technology",
+    "subtitle": "State-of-the-art equipment for more precise, comfortable and efficient treatments",
+    "intraoralScanner": {
+      "title": "Intraoral Scanners",
+      "description": "State-of-the-art 3D scanning technology for precise and comfortable captures of your oral cavity, eliminating the need for traditional impressions.",
+      "benefit1": "Greater precision in treatments",
+      "benefit2": "Comfort during the procedure",
+      "benefit3": "Immediate results",
+      "benefit4": "Less consultation time"
+    },
+    "cbct": {
+      "title": "CBCT - Computed Tomography",
+      "description": "High-resolution 3D imaging system that allows visualization of dental and bone structures with exceptional detail for more accurate diagnoses.",
+      "benefit1": "Detailed diagnosis",
+      "benefit2": "Precise surgical planning",
+      "benefit3": "Lower radiation exposure",
+      "benefit4": "Complete 3D images"
+    },
+    "smileDesign": {
+      "title": "3D Smile Design",
+      "description": "Advanced software that allows you to visualize the final result of your treatment before it even begins, providing personalized and predictable planning.",
+      "benefit1": "Preview of the result",
+      "benefit2": "Personalized planning",
+      "benefit3": "Greater predictability",
+      "benefit4": "Informed decision"
+    },
+    "moreTech": {
+      "title": "More Technologies",
+      "subtitle": "Complementary equipment for complete care"
+    },
+    "digitalRadiology": {
+      "title": "Digital Radiology",
+      "description": "Digital radiography equipment with lower radiation exposure and instant results."
+    },
+    "microscopy": {
+      "title": "Dental Microscopy",
+      "description": "Visual amplification for precision treatments and superior results."
+    },
+    "photography": {
+      "title": "Intraoral Photography",
+      "description": "Specialized photography system for detailed clinical documentation."
+    },
+    "trustStatement": "We constantly invest in the most advanced technology to offer the best results and the best experience to our patients.",
+    "cta": {
+      "title": "Experience the Difference of Advanced Technology",
+      "subtitle": "Schedule your consultation and discover how technology can improve your treatment"
+    }
+  }
+}
