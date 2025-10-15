@@ -124,6 +124,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start Supabase local instance
+        run: |
+          supabase start
+          # Export local Supabase credentials
+          echo "NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$(supabase status -o env | grep ANON_KEY | cut -d'=' -f2)" >> $GITHUB_ENV
+          echo "SUPABASE_SERVICE_ROLE_KEY=$(supabase status -o env | grep SERVICE_ROLE_KEY | cut -d'=' -f2)" >> $GITHUB_ENV
+
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
@@ -131,21 +144,15 @@ jobs:
 
       - name: Start application
         run: |
-          npm run build
-          npm run start &
+          PORT=3000 npm run dev &
           echo $! > server.pid
           # Wait for server to be ready
-          npx wait-on http://localhost:3000 -t 60000
+          npx wait-on http://localhost:3000 -t 120000
         env:
           PORT: 3000
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
       - name: Run route tests
-        run: npm run test:routes
-        env:
-          TEST_BASE_URL: http://localhost:3000
+        run: TEST_BASE_URL=http://localhost:3000 npm run test:routes
 
       - name: Stop application
         if: always()
@@ -153,6 +160,10 @@ jobs:
           if [ -f server.pid ]; then
             kill $(cat server.pid) || true
           fi
+
+      - name: Stop Supabase
+        if: always()
+        run: supabase stop --no-backup
 
   # Job 4: Build and Push Docker Image
   docker-build:
