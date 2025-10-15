@@ -186,7 +186,7 @@ Add translations in \`src/messages/pt.json\` and \`src/messages/en.json\`.
    - Supabase Storage buckets configured
    - 20 treatment FAQs created
    - Benefits and process steps (JSONB data)
-   - See [PHASE_3_COMPLETE.md](PHASE_3_COMPLETE.md) for details
+   - See [docs/PHASE_3_VISUAL_SUMMARY.md](docs/PHASE_3_VISUAL_SUMMARY.md) for details
 
 4. 🚧 Phase 4: Features & Integration
    - Analytics

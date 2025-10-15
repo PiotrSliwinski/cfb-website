@@ -262,8 +262,8 @@ To add a new language:
 
 - [Route Test Results](./ROUTE-TEST-RESULTS.md) - Latest test results
 - [Language Management Integration](./LANGUAGE-MANAGEMENT-INTEGRATION.md) - Language system guide
-- [Audit and Improvements](../AUDIT-AND-IMPROVEMENTS.md) - Architecture audit
-- [Improvements Implemented](../IMPROVEMENTS-IMPLEMENTED.md) - Recent changes
+- [Audit and Improvements](./AUDIT-AND-IMPROVEMENTS.md) - Architecture audit
+- [Improvements Implemented](./IMPROVEMENTS-IMPLEMENTED.md) - Recent changes
 
 ## 🔄 Updates
 

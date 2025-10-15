@@ -303,4 +303,4 @@ If you encounter issues:
 2. Check the server logs for database errors
 3. Verify migrations have been applied: `npx supabase db pull`
 4. Check that Supabase connection is working
-5. Review the [audit document](../AUDIT-AND-IMPROVEMENTS.md) for architecture details
+5. Review the [audit document](./AUDIT-AND-IMPROVEMENTS.md) for architecture details
