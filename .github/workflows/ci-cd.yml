@@ -130,46 +130,22 @@ jobs:
           version: latest
 
       - name: Start Supabase local instance
-        run: |
-          supabase start
-          env_file="$(mktemp)"
-          if supabase status -o env | awk '/^[A-Z0-9_]+=/{print}' > "$env_file"; then
-            # shellcheck disable=SC1090
-            source "$env_file"
-          fi
-          rm -f "$env_file"
-          if [ -z "${API_URL:-}" ] || [ -z "${ANON_KEY:-}" ] || [ -z "${SERVICE_ROLE_KEY:-}" ]; then
-            if [ -f supabase/.env ]; then
-              # shellcheck disable=SC1091
-              source supabase/.env
-            elif [ -f .env ]; then
-              # shellcheck disable=SC1091
-              source .env
-            else
-              echo "ERROR: Could not load Supabase environment variables"
-              exit 1
-            fi
-          fi
-          echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL" >> $GITHUB_ENV
-          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY" >> $GITHUB_ENV
-          echo "SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY" >> $GITHUB_ENV
+        run: supabase start
 
-      - name: Verify Supabase credentials
+      - name: Set Supabase environment variables
         run: |
-          echo "Supabase URL: $NEXT_PUBLIC_SUPABASE_URL"
-          echo "Anon key length: ${#NEXT_PUBLIC_SUPABASE_ANON_KEY}"
-          echo "Service role key length: ${#SUPABASE_SERVICE_ROLE_KEY}"
-          echo "Anon key (first 50 chars): ${NEXT_PUBLIC_SUPABASE_ANON_KEY:0:50}..."
-          echo "Service role key (first 50 chars): ${SUPABASE_SERVICE_ROLE_KEY:0:50}..."
-          # Validate key lengths (JWT tokens should be ~250+ chars)
-          if [ ${#NEXT_PUBLIC_SUPABASE_ANON_KEY} -lt 200 ]; then
-            echo "ERROR: Anon key too short (${#NEXT_PUBLIC_SUPABASE_ANON_KEY} chars)"
-            exit 1
-          fi
-          if [ ${#SUPABASE_SERVICE_ROLE_KEY} -lt 200 ]; then
-            echo "ERROR: Service role key too short (${#SUPABASE_SERVICE_ROLE_KEY} chars)"
-            exit 1
-          fi
+          # Supabase local uses well-documented default JWT keys (safe for testing)
+          # These are public keys used by all Supabase local instances
+          echo "NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0" >> $GITHUB_ENV
+          echo "SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU" >> $GITHUB_ENV
+
+      - name: Verify Supabase is running
+        run: |
+          echo "Waiting for Supabase to be ready..."
+          npx wait-on http://127.0.0.1:54321/rest/v1/ -t 30000
+          echo "✅ Supabase is ready"
+          echo "URL: http://127.0.0.1:54321"
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
