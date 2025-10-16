@@ -1,11 +1,8 @@
-'use client';
-
-import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { useLocale } from 'next-intl';
 import Image from 'next/image';
-import { useEffect, useState, useCallback } from 'react';
-import { apiClient } from '@/lib/api-client';
+import { getTranslations } from 'next-intl/server';
+
+import { getAllTreatments } from '@/lib/supabase/queries/treatments';
 
 interface Service {
   slug: string;
@@ -32,24 +29,13 @@ const serviceIcons: Record<string, string> = {
   'restauracao-estetica': '/images/services/restauracao-estetica.svg',
 };
 
-export function ServicesSection() {
-  const t = useTranslations('home.services');
-  const locale = useLocale();
-  const [treatments, setTreatments] = useState<any[]>([]);
+interface ServicesSectionProps {
+  locale: string;
+}
 
-  const loadTreatments = useCallback(async () => {
-    try {
-      const data = await apiClient.getTreatments(locale);
-      setTreatments(data);
-    } catch (error) {
-      console.error('Failed to load treatments:', error);
-      setTreatments([]);
-    }
-  }, [locale]);
-
-  useEffect(() => {
-    loadTreatments();
-  }, [loadTreatments]);
+export async function ServicesSection({ locale }: ServicesSectionProps) {
+  const t = await getTranslations({ namespace: 'home.services' });
+  const treatments = await getAllTreatments(locale);
 
   return (
     <section className="py-20 bg-white">
@@ -72,56 +58,62 @@ export function ServicesSection() {
 
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 max-w-7xl mx-auto">
-          {treatments.map((treatment) => {
-            const translation = treatment.treatment_translations?.[0];
-            const isPopular = treatment.is_popular;
-            const iconPath = serviceIcons[treatment.slug];
+          {treatments.length === 0 ? (
+            <div className="col-span-full text-center text-gray-600">
+              {t('notFound')}
+            </div>
+          ) : (
+            treatments.map((treatment) => {
+              const translation = treatment.treatment_translations?.[0];
+              const isPopular = treatment.is_popular;
+              const iconPath = serviceIcons[treatment.slug as keyof typeof serviceIcons];
 
-            return (
-              <Link
-                key={treatment.slug}
-                href={`/${locale}/tratamentos/${treatment.slug}`}
-                className="group relative bg-white rounded-xl p-6 transition-all duration-300 border border-gray-200 hover:border-primary-300 flex flex-col items-center text-center"
-                style={isPopular ? { backgroundColor: '#CCEFF3' } : {}}
-              >
-                {/* Popular Badge */}
-                {isPopular && (
-                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-primary-500 rounded-full"></div>
-                )}
-
-                {/* Icon */}
-                <div className="w-16 h-16 mb-4 relative flex items-center justify-center bg-gray-50 rounded-full group-hover:bg-primary-50 transition-colors duration-300">
-                  {iconPath && (
-                    <Image
-                      src={iconPath}
-                      alt={translation?.title || ''}
-                      width={40}
-                      height={40}
-                      className="object-contain"
-                    />
+              return (
+                <Link
+                  key={treatment.slug}
+                  href={`/${locale}/tratamentos/${treatment.slug}`}
+                  className="group relative bg-white rounded-xl p-6 transition-all duration-300 border border-gray-200 hover:border-primary-300 flex flex-col items-center text-center"
+                  style={isPopular ? { backgroundColor: '#CCEFF3' } : {}}
+                >
+                  {/* Popular Badge */}
+                  {isPopular && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-primary-500 rounded-full"></div>
                   )}
-                </div>
 
-                {/* Title */}
-                <h3 className="text-base font-semibold mb-2 group-hover:text-primary-600 transition-colors duration-300" style={{ color: '#4E5865' }}>
-                  {translation?.title}
-                </h3>
+                  {/* Icon */}
+                  <div className="w-16 h-16 mb-4 relative flex items-center justify-center bg-gray-50 rounded-full group-hover:bg-primary-50 transition-colors duration-300">
+                    {iconPath && (
+                      <Image
+                        src={iconPath}
+                        alt={translation?.title || ''}
+                        width={40}
+                        height={40}
+                        className="object-contain"
+                      />
+                    )}
+                  </div>
 
-                {/* Description */}
-                <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
-                  {translation?.subtitle}
-                </p>
+                  {/* Title */}
+                  <h3 className="text-base font-semibold mb-2 group-hover:text-primary-600 transition-colors duration-300" style={{ color: '#4E5865' }}>
+                    {translation?.title}
+                  </h3>
 
-                {/* Learn More Arrow */}
-                <div className="mt-4 flex items-center font-medium text-sm text-primary-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <span className="mr-1">{t('learnMore')}</span>
-                  <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </Link>
-            );
-          })}
+                  {/* Description */}
+                  <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
+                    {translation?.subtitle}
+                  </p>
+
+                  {/* Learn More Arrow */}
+                  <div className="mt-4 flex items-center font-medium text-sm text-primary-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span className="mr-1">{t('learnMore')}</span>
+                    <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </Link>
+              );
+            })
+          )}
         </div>
 
         {/* Bottom CTA */}

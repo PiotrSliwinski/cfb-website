@@ -1,10 +1,8 @@
-'use client';
-
 import { Shield, Award, Users, Heart, CheckCircle, Star } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
-export function CertificationBadges() {
-  const t = useTranslations('home.certifications');
+export async function CertificationBadges() {
+  const t = await getTranslations({ namespace: 'home.certifications' });
 
   const certifications = [
     {

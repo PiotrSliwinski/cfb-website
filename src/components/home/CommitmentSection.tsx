@@ -1,9 +1,7 @@
-'use client';
+import { getTranslations } from 'next-intl/server';
 
-import { useTranslations } from 'next-intl';
-
-export function CommitmentSection() {
-  const t = useTranslations('home.commitment');
+export async function CommitmentSection() {
+  const t = await getTranslations({ namespace: 'home.commitment' });
 
   return (
     <section className="py-20 bg-white">

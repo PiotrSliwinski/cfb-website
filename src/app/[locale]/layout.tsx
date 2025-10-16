@@ -2,7 +2,8 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { locales } from '@/lib/i18n/config';
-import { ConditionalLayout } from '@/components/layout/ConditionalLayout';
+import { Header } from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
 import { Poppins } from 'next/font/google';
 import '../globals.css';
 
@@ -36,7 +37,9 @@ export default async function LocaleLayout({
     <html lang={locale} className={poppins.variable}>
       <body className="flex min-h-screen flex-col font-sans">
         <NextIntlClientProvider messages={messages}>
-          <ConditionalLayout>{children}</ConditionalLayout>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
         </NextIntlClientProvider>
       </body>
     </html>
