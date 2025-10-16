@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
 
     // Parse request body
     const body = await request.json();
-    const { prompt, size = '1024x1024', quality = 'standard', style = 'natural' } = body;
+    const { prompt, size = '1024x1024', quality = 'standard', style = 'natural', model = 'dall-e-3' } = body;
 
     if (!prompt) {
       return NextResponse.json(
@@ -44,9 +44,9 @@ export async function POST(request: NextRequest) {
       apiKey: openaiApiKey,
     });
 
-    // Generate image using DALL-E 3
+    // Generate image using selected model
     const imageResponse = await openai.images.generate({
-      model: 'dall-e-3',
+      model: model as 'dall-e-2' | 'dall-e-3',
       prompt: prompt,
       n: 1,
       size: size as '1024x1024' | '1792x1024' | '1024x1792',

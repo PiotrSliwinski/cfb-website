@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
 
     // Parse request body
     const body = await request.json();
-    const { prompt, context, maxTokens = 500, temperature = 0.7 } = body;
+    const { prompt, context, maxTokens = 500, temperature = 0.7, model = 'gpt-4o-mini' } = body;
 
     if (!prompt) {
       return NextResponse.json(
@@ -57,9 +57,9 @@ export async function POST(request: NextRequest) {
       systemMessage = 'You are a dental expert. Provide clear, accurate, and helpful answers to frequently asked questions in Portuguese.';
     }
 
-    // Generate text using GPT-4
+    // Generate text using selected model
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini', // Using the more cost-effective model
+      model: model,
       messages: [
         { role: 'system', content: systemMessage },
         { role: 'user', content: prompt },

@@ -124,6 +124,7 @@ jobs:
           echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> .env.production
           echo "GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }}" >> .env.production
           echo "GOOGLE_PLACE_ID=${{ secrets.GOOGLE_PLACE_ID }}" >> .env.production
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env.production
 
       - name: Build Next.js application
         run: npm run build
@@ -169,6 +170,7 @@ jobs:
           echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> .env.production
           echo "GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }}" >> .env.production
           echo "GOOGLE_PLACE_ID=${{ secrets.GOOGLE_PLACE_ID }}" >> .env.production
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env.production
 
       - name: Build Next.js application
         run: npm run build
@@ -315,6 +317,7 @@ jobs:
             --build-arg SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} \
             --build-arg GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }} \
             --build-arg GOOGLE_PLACE_ID=${{ secrets.GOOGLE_PLACE_ID }} \
+            --build-arg OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
             -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:staging-${{ github.sha }} \
             -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:staging-latest \
             .
@@ -436,6 +439,7 @@ jobs:
             --build-arg SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} \
             --build-arg GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }} \
             --build-arg GOOGLE_PLACE_ID=${{ secrets.GOOGLE_PLACE_ID }} \
+            --build-arg OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
             -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
             -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest \
             .

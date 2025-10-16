@@ -11,6 +11,7 @@ interface AIImageGenerateProps {
   size?: '1024x1024' | '1792x1024' | '1024x1792';
   quality?: 'standard' | 'hd';
   className?: string;
+  defaultModel?: 'dall-e-2' | 'dall-e-3';
 }
 
 export function AIImageGenerate({
@@ -20,6 +21,7 @@ export function AIImageGenerate({
   size = '1024x1024',
   quality = 'standard',
   className = '',
+  defaultModel = 'dall-e-3',
 }: AIImageGenerateProps) {
   const [prompt, setPrompt] = useState(defaultPrompt);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -29,6 +31,7 @@ export function AIImageGenerate({
   const [showGenerator, setShowGenerator] = useState(false);
   const [selectedSize, setSelectedSize] = useState(size);
   const [selectedQuality, setSelectedQuality] = useState(quality);
+  const [selectedModel, setSelectedModel] = useState(defaultModel);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
@@ -51,6 +54,7 @@ export function AIImageGenerate({
           bucket,
           size: selectedSize,
           quality: selectedQuality,
+          model: selectedModel,
         }),
       });
 
@@ -137,35 +141,52 @@ export function AIImageGenerate({
       </div>
 
       {/* Options */}
-      <div className="grid grid-cols-2 gap-3">
-        <div>
+      <div>
+        <div className="mb-3">
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Size
+            AI Model
           </label>
           <select
-            value={selectedSize}
-            onChange={(e) => setSelectedSize(e.target.value as typeof selectedSize)}
+            value={selectedModel}
+            onChange={(e) => setSelectedModel(e.target.value as typeof selectedModel)}
             disabled={isGenerating}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 text-sm"
           >
-            <option value="1024x1024">Square (1024x1024)</option>
-            <option value="1792x1024">Landscape (1792x1024)</option>
-            <option value="1024x1792">Portrait (1024x1792)</option>
+            <option value="dall-e-3">DALL-E 3 (High Quality - $0.04/image)</option>
+            <option value="dall-e-2">DALL-E 2 (Fast & Cheap - $0.02/image)</option>
           </select>
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Quality
-          </label>
-          <select
-            value={selectedQuality}
-            onChange={(e) => setSelectedQuality(e.target.value as typeof selectedQuality)}
-            disabled={isGenerating}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 text-sm"
-          >
-            <option value="standard">Standard</option>
-            <option value="hd">HD (Higher cost)</option>
-          </select>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Size
+            </label>
+            <select
+              value={selectedSize}
+              onChange={(e) => setSelectedSize(e.target.value as typeof selectedSize)}
+              disabled={isGenerating}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 text-sm"
+            >
+              <option value="1024x1024">Square (1024x1024)</option>
+              <option value="1792x1024">Landscape (1792x1024)</option>
+              <option value="1024x1792">Portrait (1024x1792)</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Quality
+            </label>
+            <select
+              value={selectedQuality}
+              onChange={(e) => setSelectedQuality(e.target.value as typeof selectedQuality)}
+              disabled={isGenerating}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 text-sm"
+            >
+              <option value="standard">Standard</option>
+              <option value="hd">HD (Higher cost)</option>
+            </select>
+          </div>
         </div>
       </div>
 

@@ -11,6 +11,7 @@ interface AITextAssistProps {
   maxTokens?: number;
   buttonLabel?: string;
   className?: string;
+  defaultModel?: string;
 }
 
 export function AITextAssist({
@@ -21,12 +22,14 @@ export function AITextAssist({
   maxTokens = 500,
   buttonLabel = 'Generate with AI',
   className = '',
+  defaultModel = 'gpt-4o-mini',
 }: AITextAssistProps) {
   const [userPrompt, setUserPrompt] = useState(prompt);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedText, setGeneratedText] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showPromptInput, setShowPromptInput] = useState(false);
+  const [selectedModel, setSelectedModel] = useState(defaultModel);
 
   const handleGenerate = async () => {
     if (!userPrompt.trim()) {
@@ -48,6 +51,7 @@ export function AITextAssist({
           prompt: userPrompt,
           context: { type: contextType },
           maxTokens,
+          model: selectedModel,
         }),
       });
 
@@ -135,6 +139,24 @@ export function AITextAssist({
           disabled={isGenerating}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
         />
+      </div>
+
+      {/* Model Selection */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          AI Model
+        </label>
+        <select
+          value={selectedModel}
+          onChange={(e) => setSelectedModel(e.target.value)}
+          disabled={isGenerating}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+        >
+          <option value="gpt-4o-mini">GPT-4o Mini (Fast & Affordable - $0.15/1M tokens)</option>
+          <option value="gpt-4o">GPT-4o (Balanced - $2.50/1M tokens)</option>
+          <option value="gpt-4-turbo">GPT-4 Turbo (High Quality - $10/1M tokens)</option>
+          <option value="gpt-3.5-turbo">GPT-3.5 Turbo (Cheapest - $0.50/1M tokens)</option>
+        </select>
       </div>
 
       {/* Generate Button */}
