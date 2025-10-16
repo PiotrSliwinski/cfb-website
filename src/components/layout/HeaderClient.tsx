@@ -49,19 +49,21 @@ export function HeaderClient({
   const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Handle navigation with proper cleanup
-  const handleNavigation = (href: string) => {
-    // Clear any existing timeout
-    if (closeTimeoutRef.current) {
-      clearTimeout(closeTimeoutRef.current);
+  const handleNavigation = (href: string, event?: React.MouseEvent) => {
+    // Prevent default to ensure we control the navigation
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
     }
 
-    // Start navigation immediately
-    router.push(href);
+    console.log('[HeaderClient] Navigating to:', href);
 
-    // Close menu with a small delay to ensure navigation starts
-    closeTimeoutRef.current = setTimeout(() => {
-      setShowMegaMenu(false);
-    }, 100);
+    // Close menu immediately for better UX
+    setShowMegaMenu(false);
+
+    // Use native browser navigation for reliability
+    // This ensures navigation always works, even if router.push() fails
+    window.location.href = href;
   };
 
   return (
@@ -124,7 +126,7 @@ export function HeaderClient({
                     return (
                       <button
                         key={link.href}
-                        onClick={() => handleNavigation(link.href)}
+                        onClick={(e) => handleNavigation(link.href, e)}
                         className="group flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition-colors w-full text-left"
                       >
                         <IconComponent className="w-5 h-5 text-gray-400 group-hover:text-primary-600 transition-colors flex-shrink-0" />
@@ -154,7 +156,7 @@ export function HeaderClient({
                     return (
                       <button
                         key={treatment.id}
-                        onClick={() => handleNavigation(href)}
+                        onClick={(e) => handleNavigation(href, e)}
                         className={`group relative flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-colors text-left w-full ${
                           isPopular
                             ? 'bg-primary-50 hover:bg-primary-100'
