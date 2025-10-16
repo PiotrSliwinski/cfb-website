@@ -21,6 +21,9 @@ import {
   ChevronDown
 } from 'lucide-react';
 
+// Force dynamic rendering for this page (no static generation)
+export const dynamic = 'force-dynamic';
+
 export async function generateStaticParams() {
   // Return empty array to generate pages on-demand
   return [];
