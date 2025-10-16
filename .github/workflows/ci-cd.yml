@@ -34,7 +34,7 @@ on:
 env:
   NODE_VERSION: '20'
   REGISTRY: gcr.io
-  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  PROJECT_ID: ${{ secrets.GOOGLE_PROJECT_ID }}
   SERVICE_NAME: cfb-website
   REGION: europe-west1
 
@@ -202,7 +202,7 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          project_id: ${{ secrets.GOOGLE_PROJECT_ID }}
 
       - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v2
@@ -264,7 +264,7 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          project_id: ${{ secrets.GOOGLE_PROJECT_ID }}
 
       - name: Deploy to Cloud Run
         run: |
@@ -323,7 +323,7 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          project_id: ${{ secrets.GOOGLE_PROJECT_ID }}
 
       - name: Deploy to Cloud Run
         run: |
