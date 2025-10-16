@@ -16,7 +16,13 @@ import { TreatmentsGridSection } from './TreatmentsGridSection';
 import { localizeFeature, localizeCTA } from '@/types/cms';
 import { Locale } from '@/types';
 import { useEffect, useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
+import {
+  getFeatures,
+  getCTABySlug,
+  getTestimonials,
+  getGalleryImages,
+  getTreatmentsForGrid,
+} from '@/app/actions/cms';
 
 interface PageRendererProps {
   page: LocalizedPage;
@@ -42,23 +48,13 @@ function SectionRenderer({ section, locale }: SectionRendererProps) {
 
       if ((section.section_type as string) === 'features') {
         try {
-          const supabase = createClient();
-          const { data: features, error } = await supabase
-            .from('cms_features')
-            .select(`
-              *,
-              cms_feature_translations!inner(*)
-            `)
-            .eq('cms_feature_translations.language_code', locale)
-            .eq('is_active', true)
-            .order('display_order', { ascending: true });
-
-          if (error) throw error;
-
-          const localizedFeatures = (features || [])
-            .map(f => localizeFeature(f as any, locale))
-            .filter(Boolean);
-          setFeatureData(localizedFeatures);
+          const result = await getFeatures(locale);
+          if (result.success && result.data) {
+            const localizedFeatures = result.data
+              .map((f: any) => localizeFeature(f, locale))
+              .filter(Boolean);
+            setFeatureData(localizedFeatures);
+          }
         } catch (error) {
           console.error('Error loading features:', error);
         }
@@ -68,22 +64,9 @@ function SectionRenderer({ section, locale }: SectionRendererProps) {
         const ctaSlug = section.content.cta_slug || section.settings?.cta_slug;
         if (ctaSlug) {
           try {
-            const supabase = createClient();
-            const { data: cta, error } = await supabase
-              .from('cms_cta_sections')
-              .select(`
-                *,
-                cms_cta_translations!inner(*)
-              `)
-              .eq('slug', ctaSlug)
-              .eq('cms_cta_translations.language_code', locale)
-              .eq('is_active', true)
-              .single();
-
-            if (error) throw error;
-
-            if (cta) {
-              const localizedCTA = localizeCTA(cta as any, locale);
+            const result = await getCTABySlug(ctaSlug, locale);
+            if (result.success && result.data) {
+              const localizedCTA = localizeCTA(result.data as any, locale);
               setCTAData(localizedCTA);
             }
           } catch (error) {
@@ -94,32 +77,12 @@ function SectionRenderer({ section, locale }: SectionRendererProps) {
 
       if ((section.section_type as string) === 'testimonials') {
         try {
-          const supabase = createClient();
           const limit = section.settings?.limit || 10;
           const source = section.settings?.source;
-
-          let query = supabase
-            .from('cms_testimonials')
-            .select(`
-              *,
-              cms_testimonial_translations!inner(*)
-            `)
-            .eq('cms_testimonial_translations.language_code', locale)
-            .eq('is_published', true)
-            .order('display_order', { ascending: true });
-
-          if (source) {
-            query = query.eq('source', source);
+          const result = await getTestimonials(locale, { limit, source });
+          if (result.success && result.data) {
+            setTestimonialsData(result.data);
           }
-
-          if (limit) {
-            query = query.limit(limit);
-          }
-
-          const { data: testimonials, error } = await query;
-
-          if (error) throw error;
-          setTestimonialsData(testimonials || []);
         } catch (error) {
           console.error('Error loading testimonials:', error);
         }
@@ -127,27 +90,11 @@ function SectionRenderer({ section, locale }: SectionRendererProps) {
 
       if ((section.section_type as string) === 'gallery') {
         try {
-          const supabase = createClient();
           const category = section.settings?.category;
-
-          let query = supabase
-            .from('cms_gallery_images')
-            .select(`
-              *,
-              cms_gallery_image_translations!inner(*)
-            `)
-            .eq('cms_gallery_image_translations.language_code', locale)
-            .eq('is_published', true)
-            .order('display_order', { ascending: true });
-
-          if (category) {
-            query = query.eq('category', category);
+          const result = await getGalleryImages(locale, { category });
+          if (result.success && result.data) {
+            setGalleryData(result.data);
           }
-
-          const { data: images, error } = await query;
-
-          if (error) throw error;
-          setGalleryData(images || []);
         } catch (error) {
           console.error('Error loading gallery images:', error);
         }
@@ -155,19 +102,10 @@ function SectionRenderer({ section, locale }: SectionRendererProps) {
 
       if ((section.section_type as string) === 'treatments_grid') {
         try {
-          const supabase = createClient();
-          const { data: treatments, error } = await supabase
-            .from('treatments')
-            .select(`
-              *,
-              treatment_translations!inner(*)
-            `)
-            .eq('treatment_translations.language_code', locale)
-            .eq('is_published', true)
-            .order('display_order', { ascending: true });
-
-          if (error) throw error;
-          setTreatmentsData(treatments || []);
+          const result = await getTreatmentsForGrid(locale);
+          if (result.success && result.data) {
+            setTreatmentsData(result.data);
+          }
         } catch (error) {
           console.error('Error loading treatments:', error);
         }

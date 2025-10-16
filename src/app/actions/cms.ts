@@ -657,6 +657,188 @@ export async function getPageSections(pageId: string): Promise<ActionResult> {
   }
 }
 
+// ============================================================================
+// PUBLIC DATA FETCHING (for client components)
+// ============================================================================
+
+/**
+ * Fetch active features with translations for a specific locale
+ */
+export async function getFeatures(locale: string): Promise<ActionResult> {
+  try {
+    const supabase = await createClient();
+    const { data: features, error } = await supabase
+      .from('cms_features')
+      .select(`
+        *,
+        cms_feature_translations!inner(*)
+      `)
+      .eq('cms_feature_translations.language_code', locale)
+      .eq('is_active', true)
+      .order('display_order', { ascending: true });
+
+    if (error) throw error;
+
+    return {
+      success: true,
+      data: features || [],
+    };
+  } catch (error: any) {
+    console.error('Error loading features:', error);
+    return {
+      success: false,
+      error: error.message || 'Failed to load features',
+    };
+  }
+}
+
+/**
+ * Fetch a specific CTA section by slug with translations
+ */
+export async function getCTABySlug(slug: string, locale: string): Promise<ActionResult> {
+  try {
+    const supabase = await createClient();
+    const { data: cta, error } = await supabase
+      .from('cms_cta_sections')
+      .select(`
+        *,
+        cms_cta_translations!inner(*)
+      `)
+      .eq('slug', slug)
+      .eq('cms_cta_translations.language_code', locale)
+      .eq('is_active', true)
+      .single();
+
+    if (error) throw error;
+
+    return {
+      success: true,
+      data: cta,
+    };
+  } catch (error: any) {
+    console.error('Error loading CTA:', error);
+    return {
+      success: false,
+      error: error.message || 'Failed to load CTA',
+    };
+  }
+}
+
+/**
+ * Fetch testimonials with translations, optionally filtered by source
+ */
+export async function getTestimonials(
+  locale: string,
+  options?: { limit?: number; source?: string }
+): Promise<ActionResult> {
+  try {
+    const supabase = await createClient();
+    let query = supabase
+      .from('cms_testimonials')
+      .select(`
+        *,
+        cms_testimonial_translations!inner(*)
+      `)
+      .eq('cms_testimonial_translations.language_code', locale)
+      .eq('is_published', true)
+      .order('display_order', { ascending: true });
+
+    if (options?.source) {
+      query = query.eq('source', options.source);
+    }
+
+    if (options?.limit) {
+      query = query.limit(options.limit);
+    }
+
+    const { data: testimonials, error } = await query;
+
+    if (error) throw error;
+
+    return {
+      success: true,
+      data: testimonials || [],
+    };
+  } catch (error: any) {
+    console.error('Error loading testimonials:', error);
+    return {
+      success: false,
+      error: error.message || 'Failed to load testimonials',
+    };
+  }
+}
+
+/**
+ * Fetch gallery images with translations, optionally filtered by category
+ */
+export async function getGalleryImages(
+  locale: string,
+  options?: { category?: string }
+): Promise<ActionResult> {
+  try {
+    const supabase = await createClient();
+    let query = supabase
+      .from('cms_gallery_images')
+      .select(`
+        *,
+        cms_gallery_image_translations!inner(*)
+      `)
+      .eq('cms_gallery_image_translations.language_code', locale)
+      .eq('is_published', true)
+      .order('display_order', { ascending: true });
+
+    if (options?.category) {
+      query = query.eq('category', options.category);
+    }
+
+    const { data: images, error } = await query;
+
+    if (error) throw error;
+
+    return {
+      success: true,
+      data: images || [],
+    };
+  } catch (error: any) {
+    console.error('Error loading gallery images:', error);
+    return {
+      success: false,
+      error: error.message || 'Failed to load gallery images',
+    };
+  }
+}
+
+/**
+ * Fetch published treatments with translations
+ */
+export async function getTreatmentsForGrid(locale: string): Promise<ActionResult> {
+  try {
+    const supabase = await createClient();
+    const { data: treatments, error } = await supabase
+      .from('treatments')
+      .select(`
+        *,
+        treatment_translations!inner(*)
+      `)
+      .eq('treatment_translations.language_code', locale)
+      .eq('is_published', true)
+      .order('display_order', { ascending: true });
+
+    if (error) throw error;
+
+    return {
+      success: true,
+      data: treatments || [],
+    };
+  } catch (error: any) {
+    console.error('Error loading treatments:', error);
+    return {
+      success: false,
+      error: error.message || 'Failed to load treatments',
+    };
+  }
+}
+
 export async function updatePageSections(
   pageId: string,
   sections: PageSectionData[]

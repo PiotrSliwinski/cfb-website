@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { apiClient } from '@/lib/api-client';
 
 interface Service {
@@ -37,11 +37,7 @@ export function ServicesSection() {
   const locale = useLocale();
   const [treatments, setTreatments] = useState<any[]>([]);
 
-  useEffect(() => {
-    loadTreatments();
-  }, [locale]);
-
-  const loadTreatments = async () => {
+  const loadTreatments = useCallback(async () => {
     try {
       const data = await apiClient.getTreatments(locale);
       setTreatments(data);
@@ -49,7 +45,11 @@ export function ServicesSection() {
       console.error('Failed to load treatments:', error);
       setTreatments([]);
     }
-  };
+  }, [locale]);
+
+  useEffect(() => {
+    loadTreatments();
+  }, [loadTreatments]);
 
   return (
     <section className="py-20 bg-white">
