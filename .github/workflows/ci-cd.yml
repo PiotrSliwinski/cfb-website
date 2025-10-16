@@ -261,112 +261,11 @@ jobs:
         if: always()
         run: supabase stop --no-backup
 
-  # Job 6: Apply Database Migrations (Staging)
-  migrate-staging:
-    name: Apply Migrations (Staging)
-    runs-on: ubuntu-latest
-    needs: [determine-environment, test-routes]
-    environment: Staging
-    if: |
-      always() &&
-      !cancelled() &&
-      needs.determine-environment.outputs.is-staging == 'true' &&
-      (needs['test-routes'].result == 'success' || needs['test-routes'].result == 'skipped') &&
-      (
-        github.event_name == 'workflow_dispatch' ||
-        (github.event_name == 'push' && github.ref == 'refs/heads/develop')
-      )
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Supabase CLI
-        uses: supabase/setup-cli@v1
-        with:
-          version: latest
-
-      - name: Link to Supabase project
-        run: |
-          # Extract project reference from SUPABASE_URL
-          # Try vars first, fallback to secrets
-          SUPABASE_URL="${{ vars.SUPABASE_URL }}"
-          if [ -z "$SUPABASE_URL" ]; then
-            SUPABASE_URL="${{ secrets.SUPABASE_URL }}"
-          fi
-
-          PROJECT_REF=$(echo "$SUPABASE_URL" | sed -n 's/.*https:\/\/\([^.]*\).*/\1/p')
-          echo "Linking to project: $PROJECT_REF"
-
-          # Create connection string for linking
-          # Note: We need the database password from secrets
-          supabase link --project-ref "$PROJECT_REF" --password "${{ secrets.SUPABASE_DB_PASSWORD }}"
-
-      - name: Apply migrations
-        run: |
-          echo "Applying migrations to staging database..."
-          supabase db push --linked
-
-      - name: Verify migrations
-        run: |
-          echo "Checking migration status..."
-          supabase migration list --linked
-
-  # Job 7: Apply Database Migrations (Production)
-  migrate-production:
-    name: Apply Migrations (Production)
-    runs-on: ubuntu-latest
-    needs: [determine-environment, test-routes]
-    environment: Production
-    if: |
-      always() &&
-      !cancelled() &&
-      needs.determine-environment.outputs.is-production == 'true' &&
-      (needs['test-routes'].result == 'success' || needs['test-routes'].result == 'skipped') &&
-      (
-        github.event_name == 'workflow_dispatch' ||
-        (github.event_name == 'push' && github.ref == 'refs/heads/main')
-      )
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Supabase CLI
-        uses: supabase/setup-cli@v1
-        with:
-          version: latest
-
-      - name: Link to Supabase project
-        run: |
-          # Extract project reference from SUPABASE_URL
-          # Try vars first, fallback to secrets
-          SUPABASE_URL="${{ vars.SUPABASE_URL }}"
-          if [ -z "$SUPABASE_URL" ]; then
-            SUPABASE_URL="${{ secrets.SUPABASE_URL }}"
-          fi
-
-          PROJECT_REF=$(echo "$SUPABASE_URL" | sed -n 's/.*https:\/\/\([^.]*\).*/\1/p')
-          echo "Linking to project: $PROJECT_REF"
-
-          # Create connection string for linking
-          supabase link --project-ref "$PROJECT_REF" --password "${{ secrets.SUPABASE_DB_PASSWORD }}"
-
-      - name: Apply migrations
-        run: |
-          echo "Applying migrations to production database..."
-          supabase db push --linked
-
-      - name: Verify migrations
-        run: |
-          echo "Checking migration status..."
-          supabase migration list --linked
-
-  # Job 8: Build and Push Docker Image (Staging)
+  # Job 6: Build and Push Docker Image (Staging)
   docker-build-staging:
     name: Build & Push Docker Image (Staging)
     runs-on: ubuntu-latest
-    needs: [determine-environment, build-staging, test-routes, migrate-staging]
+    needs: [determine-environment, build-staging, test-routes]
     environment: Staging  # Use GitHub Environment
     if: |
       always() &&
@@ -374,7 +273,6 @@ jobs:
       needs.determine-environment.outputs.is-staging == 'true' &&
       (needs.build-staging.result == 'success') &&
       (needs['test-routes'].result == 'success' || needs['test-routes'].result == 'skipped') &&
-      (needs['migrate-staging'].result == 'success') &&
       (
         github.event_name == 'workflow_dispatch' ||
         (github.event_name == 'push' && github.ref == 'refs/heads/develop')
@@ -416,11 +314,62 @@ jobs:
           docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:staging-${{ github.sha }}
           docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:staging-latest
 
-  # Job 9: Build and Push Docker Image (Production)
+  # Job 7: Apply Database Migrations (Staging)
+  migrate-staging:
+    name: Apply Migrations (Staging)
+    runs-on: ubuntu-latest
+    needs: [determine-environment, docker-build-staging]
+    environment: Staging
+    if: |
+      always() &&
+      !cancelled() &&
+      needs.determine-environment.outputs.is-staging == 'true' &&
+      (needs['docker-build-staging'].result == 'success') &&
+      (
+        github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'push' && github.ref == 'refs/heads/develop')
+      )
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Link to Supabase project
+        run: |
+          # Extract project reference from SUPABASE_URL
+          # Try vars first, fallback to secrets
+          SUPABASE_URL="${{ vars.SUPABASE_URL }}"
+          if [ -z "$SUPABASE_URL" ]; then
+            SUPABASE_URL="${{ secrets.SUPABASE_URL }}"
+          fi
+
+          PROJECT_REF=$(echo "$SUPABASE_URL" | sed -n 's/.*https:\/\/\([^.]*\).*/\1/p')
+          echo "Linking to project: $PROJECT_REF"
+
+          # Create connection string for linking
+          # Note: We need the database password from secrets
+          supabase link --project-ref "$PROJECT_REF" --password "${{ secrets.SUPABASE_DB_PASSWORD }}"
+
+      - name: Apply migrations
+        run: |
+          echo "Applying migrations to staging database..."
+          supabase db push --linked
+
+      - name: Verify migrations
+        run: |
+          echo "Checking migration status..."
+          supabase migration list --linked
+
+  # Job 8: Build and Push Docker Image (Production)
   docker-build-production:
     name: Build & Push Docker Image (Production)
     runs-on: ubuntu-latest
-    needs: [determine-environment, build-production, test-routes, migrate-production]
+    needs: [determine-environment, build-production, test-routes]
     environment: Production  # Use GitHub Environment
     if: |
       always() &&
@@ -428,7 +377,6 @@ jobs:
       needs.determine-environment.outputs.is-production == 'true' &&
       (needs.build-production.result == 'success') &&
       (needs['test-routes'].result == 'success' || needs['test-routes'].result == 'skipped') &&
-      (needs['migrate-production'].result == 'success') &&
       (
         github.event_name == 'workflow_dispatch' ||
         (github.event_name == 'push' && github.ref == 'refs/heads/main')
@@ -470,16 +418,66 @@ jobs:
           docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
           docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:latest
 
+  # Job 9: Apply Database Migrations (Production)
+  migrate-production:
+    name: Apply Migrations (Production)
+    runs-on: ubuntu-latest
+    needs: [determine-environment, docker-build-production]
+    environment: Production
+    if: |
+      always() &&
+      !cancelled() &&
+      needs.determine-environment.outputs.is-production == 'true' &&
+      (needs['docker-build-production'].result == 'success') &&
+      (
+        github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'push' && github.ref == 'refs/heads/main')
+      )
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Link to Supabase project
+        run: |
+          # Extract project reference from SUPABASE_URL
+          # Try vars first, fallback to secrets
+          SUPABASE_URL="${{ vars.SUPABASE_URL }}"
+          if [ -z "$SUPABASE_URL" ]; then
+            SUPABASE_URL="${{ secrets.SUPABASE_URL }}"
+          fi
+
+          PROJECT_REF=$(echo "$SUPABASE_URL" | sed -n 's/.*https:\/\/\([^.]*\).*/\1/p')
+          echo "Linking to project: $PROJECT_REF"
+
+          # Create connection string for linking
+          supabase link --project-ref "$PROJECT_REF" --password "${{ secrets.SUPABASE_DB_PASSWORD }}"
+
+      - name: Apply migrations
+        run: |
+          echo "Applying migrations to production database..."
+          supabase db push --linked
+
+      - name: Verify migrations
+        run: |
+          echo "Checking migration status..."
+          supabase migration list --linked
+
   # Job 10: Deploy to Cloud Run (Staging)
   deploy-staging:
     name: Deploy to Cloud Run (Staging)
     runs-on: ubuntu-latest
-    needs: [determine-environment, docker-build-staging]
+    needs: [determine-environment, migrate-staging]
     if: |
       always() &&
       !cancelled() &&
       needs.determine-environment.outputs.is-staging == 'true' &&
-      (needs.docker-build-staging.result == 'success') &&
+      (needs['migrate-staging'].result == 'success') &&
       (
         (github.event_name == 'workflow_dispatch' && (github.event.inputs.environment == 'staging' || github.event.inputs.environment == 'both')) ||
         (github.event_name == 'push' && github.ref == 'refs/heads/develop')
@@ -534,12 +532,12 @@ jobs:
   deploy-production:
     name: Deploy to Cloud Run (Production)
     runs-on: ubuntu-latest
-    needs: [determine-environment, docker-build-production]
+    needs: [determine-environment, migrate-production]
     if: |
       always() &&
       !cancelled() &&
       needs.determine-environment.outputs.is-production == 'true' &&
-      (needs.docker-build-production.result == 'success') &&
+      (needs['migrate-production'].result == 'success') &&
       (
         (github.event_name == 'workflow_dispatch' && (github.event.inputs.environment == 'production' || github.event.inputs.environment == 'both')) ||
         (github.event_name == 'push' && github.ref == 'refs/heads/main')
