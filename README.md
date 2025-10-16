@@ -131,14 +131,14 @@ See [supabase/migrations/20251005223123_initial_schema.sql](supabase/migrations/
 Create a \`.env.local\` file with:
 
 \`\`\`env
-# Supabase
+# Supabase (NEXT_PUBLIC_ prefix required for client-side access)
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
-# Google Places API (for reviews)
-NEXT_PUBLIC_GOOGLE_PLACES_API_KEY=your_google_places_api_key
-NEXT_PUBLIC_GOOGLE_PLACE_ID=ChIJI6mkuRNzJA0RNwj5bykp9vk
+# Google Places API (server-only, no NEXT_PUBLIC_ prefix for security)
+GOOGLE_PLACES_API_KEY=your_google_places_api_key
+GOOGLE_PLACE_ID=ChIJI6mkuRNzJA0RNwj5bykp9vk
 \`\`\`
 
 For local development, Supabase variables are set automatically when you run \`npx supabase start\`.

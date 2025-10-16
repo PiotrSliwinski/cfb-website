@@ -27,21 +27,18 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const minRating = parseInt(searchParams.get('minRating') || '5');
 
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY;
-    const placeId = process.env.NEXT_PUBLIC_GOOGLE_PLACE_ID;
+    const apiKey = process.env.GOOGLE_PLACES_API_KEY;
+    const placeId = process.env.GOOGLE_PLACE_ID;
 
-    if (!apiKey || apiKey === 'your_google_places_api_key_here') {
+    // If credentials are not configured, return empty data with 200 status
+    // This allows the app to work in development/testing without Google API access
+    if (!apiKey || apiKey === 'your_google_places_api_key_here' || !placeId) {
       return NextResponse.json({
-        error: 'Google Places API key not configured',
-        message: 'Please add NEXT_PUBLIC_GOOGLE_PLACES_API_KEY to your .env.local file'
-      }, { status: 500 });
-    }
-
-    if (!placeId) {
-      return NextResponse.json({
-        error: 'Google Place ID not configured',
-        message: 'Please add NEXT_PUBLIC_GOOGLE_PLACE_ID to your .env.local file'
-      }, { status: 500 });
+        reviews: [],
+        totalRating: 0,
+        totalReviews: 0,
+        warning: 'Google Places API credentials not configured. Add GOOGLE_PLACES_API_KEY and GOOGLE_PLACE_ID to .env.local to enable reviews.'
+      });
     }
 
     // Fetch place details including reviews from Google Places API

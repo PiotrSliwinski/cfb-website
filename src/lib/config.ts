@@ -80,8 +80,8 @@ export const storageConfig = {
 // ============================================================================
 
 export const googleReviewsConfig = {
-  placeId: getEnvVar('GOOGLE_PLACES_ID', ''),
-  apiKey: getEnvVar('GOOGLE_MAPS_API_KEY', ''),
+  placeId: getEnvVar('GOOGLE_PLACE_ID', ''),
+  apiKey: getEnvVar('GOOGLE_PLACES_API_KEY', ''),
   minRating: 4,
   cacheDuration: 60 * 60 * 1000, // 1 hour
 } as const;
