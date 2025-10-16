@@ -7,6 +7,7 @@ import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 import { saveTreatmentFromEditor, type EditorTreatmentData } from '@/app/actions/treatments'
 import { JsonEditor } from '@/components/admin/JsonEditor'
+import { ImageUpload } from '@/components/admin/ImageUpload'
 
 const treatmentSchema = z.object({
   slug: z.string().min(1, 'Slug is required'),
@@ -176,27 +177,33 @@ export default function TreatmentEditor({ treatment }: TreatmentEditorProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Icon URL
-              </label>
-              <input
-                type="text"
-                {...register('icon_url')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="/images/treatments/icons/..."
+              <ImageUpload
+                label="Treatment Icon"
+                value={watchedValues.icon_url}
+                onChange={(url) => setValue('icon_url', url)}
+                onRemove={() => setValue('icon_url', null)}
+                bucket="treatments"
+                accept="image/svg+xml,image/png,image/webp"
+                maxSizeMB={2}
               />
+              <p className="mt-1 text-xs text-gray-500">
+                Recommended: SVG icon, 64x64px or larger
+              </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Hero Image URL
-              </label>
-              <input
-                type="text"
-                {...register('hero_image_url')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="/images/treatments/heroes/..."
+              <ImageUpload
+                label="Hero Image"
+                value={watchedValues.hero_image_url}
+                onChange={(url) => setValue('hero_image_url', url)}
+                onRemove={() => setValue('hero_image_url', null)}
+                bucket="treatments"
+                accept="image/jpeg,image/png,image/webp"
+                maxSizeMB={5}
               />
+              <p className="mt-1 text-xs text-gray-500">
+                Recommended: 1200x600px or larger, JPG/WebP format
+              </p>
             </div>
           </div>
 

@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 import { saveTeamMemberFromEditor, type EditorTeamMemberData } from '@/app/actions/team'
+import { ImageUpload } from '@/components/admin/ImageUpload'
 
 const teamMemberSchema = z.object({
   slug: z.string().min(1, 'Slug is required'),
@@ -191,14 +192,14 @@ export default function TeamMemberEditor({ member, treatments }: TeamMemberEdito
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Photo URL
-              </label>
-              <input
-                type="text"
-                {...register('photo_url')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="/images/team/dr-joao-silva.jpg"
+              <ImageUpload
+                label="Team Member Photo"
+                value={watchedValues.photo_url}
+                onChange={(url) => setValue('photo_url', url)}
+                onRemove={() => setValue('photo_url', null)}
+                bucket="team"
+                accept="image/jpeg,image/png,image/webp"
+                maxSizeMB={5}
               />
             </div>
 
