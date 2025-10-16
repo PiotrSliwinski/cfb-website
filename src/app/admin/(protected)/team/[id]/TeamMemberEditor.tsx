@@ -88,7 +88,13 @@ export default function TeamMemberEditor({ member, treatments }: TeamMemberEdito
   })
 
   const specialties = watch('specialties') || []
-  const watchedValues = watch()
+  const watchedPhotoUrl = watch('photo_url')
+  const watchedPtName = watch('pt_name')
+  const watchedPtTitle = watch('pt_title')
+  const watchedPtSpecialty = watch('pt_specialty')
+  const watchedEnName = watch('en_name')
+  const watchedEnTitle = watch('en_title')
+  const watchedEnSpecialty = watch('en_specialty')
 
   const toggleSpecialty = (treatmentId: string) => {
     const current = specialties || []
@@ -196,14 +202,14 @@ export default function TeamMemberEditor({ member, treatments }: TeamMemberEdito
             <div className="md:col-span-2">
               <ImageUpload
                 label="Team Member Photo"
-                value={watchedValues.photo_url}
+                value={watchedPhotoUrl}
                 onChange={(url) => setValue('photo_url', url, { shouldDirty: true })}
                 onRemove={() => setValue('photo_url', null, { shouldDirty: true })}
                 bucket="team"
                 accept="image/jpeg,image/png,image/webp"
                 maxSizeMB={5}
                 showAIGenerate={true}
-                aiPromptHint={`Professional headshot photo of ${watchedValues.pt_name || 'dental professional'}, modern dental clinic setting, warm professional lighting`}
+                aiPromptHint={`Professional headshot photo of ${watchedPtName || 'dental professional'}, modern dental clinic setting, warm professional lighting`}
               />
             </div>
 
@@ -360,7 +366,7 @@ export default function TeamMemberEditor({ member, treatments }: TeamMemberEdito
                   />
                   <div className="mt-2">
                     <AITextAssist
-                      prompt={`Write a professional biography in Portuguese for ${watchedValues.pt_name || 'a dental professional'}, ${watchedValues.pt_title || ''}, specializing in ${watchedValues.pt_specialty || 'dentistry'}. Include their expertise, approach to patient care, and professional background.`}
+                      prompt={`Write a professional biography in Portuguese for ${watchedPtName || 'a dental professional'}, ${watchedPtTitle || ''}, specializing in ${watchedPtSpecialty || 'dentistry'}. Include their expertise, approach to patient care, and professional background.`}
                       contextType="team_bio"
                       onApply={(text) => setValue('pt_bio', text, { shouldDirty: true })}
                       maxTokens={600}
@@ -380,7 +386,7 @@ export default function TeamMemberEditor({ member, treatments }: TeamMemberEdito
                   />
                   <div className="mt-2">
                     <AITextAssist
-                      prompt={`List professional credentials in Portuguese for ${watchedValues.pt_name || 'a dental professional'}, ${watchedValues.pt_title || ''}. Include relevant degrees, certifications, and professional memberships.`}
+                      prompt={`List professional credentials in Portuguese for ${watchedPtName || 'a dental professional'}, ${watchedPtTitle || ''}. Include relevant degrees, certifications, and professional memberships.`}
                       contextType="team_credentials"
                       onApply={(text) => setValue('pt_credentials', text, { shouldDirty: true })}
                       maxTokens={300}
@@ -441,7 +447,7 @@ export default function TeamMemberEditor({ member, treatments }: TeamMemberEdito
                   />
                   <div className="mt-2">
                     <AITextAssist
-                      prompt={`Write a professional biography in English for ${watchedValues.en_name || watchedValues.pt_name || 'a dental professional'}, ${watchedValues.en_title || ''}, specializing in ${watchedValues.en_specialty || 'dentistry'}. Include their expertise, approach to patient care, and professional background.`}
+                      prompt={`Write a professional biography in English for ${watchedEnName || watchedPtName || 'a dental professional'}, ${watchedEnTitle || ''}, specializing in ${watchedEnSpecialty || 'dentistry'}. Include their expertise, approach to patient care, and professional background.`}
                       contextType="team_bio"
                       onApply={(text) => setValue('en_bio', text, { shouldDirty: true })}
                       maxTokens={600}
@@ -461,7 +467,7 @@ export default function TeamMemberEditor({ member, treatments }: TeamMemberEdito
                   />
                   <div className="mt-2">
                     <AITextAssist
-                      prompt={`List professional credentials in English for ${watchedValues.en_name || watchedValues.pt_name || 'a dental professional'}, ${watchedValues.en_title || ''}. Include relevant degrees, certifications, and professional memberships.`}
+                      prompt={`List professional credentials in English for ${watchedEnName || watchedPtName || 'a dental professional'}, ${watchedEnTitle || ''}. Include relevant degrees, certifications, and professional memberships.`}
                       contextType="team_credentials"
                       onApply={(text) => setValue('en_credentials', text, { shouldDirty: true })}
                       maxTokens={300}

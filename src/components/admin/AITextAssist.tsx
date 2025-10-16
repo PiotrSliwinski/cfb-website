@@ -6,7 +6,7 @@ import { Sparkles, Loader2, Check, X, Copy, RotateCcw } from 'lucide-react';
 interface AITextAssistProps {
   onApply: (text: string) => void;
   prompt: string;
-  contextType?: 'treatment_title' | 'treatment_description' | 'team_bio' | 'faq_answer' | 'general';
+  contextType?: 'treatment_title' | 'treatment_subtitle' | 'treatment_description' | 'team_bio' | 'team_credentials' | 'faq_answer' | 'general';
   placeholder?: string;
   maxTokens?: number;
   buttonLabel?: string;

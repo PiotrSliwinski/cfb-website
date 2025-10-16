@@ -48,13 +48,17 @@ export async function POST(request: NextRequest) {
     let systemMessage = 'You are a helpful assistant for a dental clinic website content management system.';
 
     if (context?.type === 'treatment_title') {
-      systemMessage = 'You are a dental expert. Create professional, clear, and SEO-friendly treatment titles in Portuguese.';
+      systemMessage = 'You are a dental expert. Create professional, clear, and SEO-friendly treatment titles.';
+    } else if (context?.type === 'treatment_subtitle') {
+      systemMessage = 'You are a dental expert. Create engaging subtitles for dental treatments that complement the main title.';
     } else if (context?.type === 'treatment_description') {
-      systemMessage = 'You are a dental expert. Write informative, patient-friendly descriptions about dental treatments in Portuguese. Focus on benefits and clarity.';
+      systemMessage = 'You are a dental expert. Write informative, patient-friendly descriptions about dental treatments. Focus on benefits and clarity.';
     } else if (context?.type === 'team_bio') {
-      systemMessage = 'You are a professional copywriter. Write engaging and professional bios for dental team members in Portuguese.';
+      systemMessage = 'You are a professional copywriter. Write engaging and professional bios for dental team members.';
+    } else if (context?.type === 'team_credentials') {
+      systemMessage = 'You are a professional copywriter. List professional credentials, degrees, certifications, and memberships for dental professionals in a clear, organized format.';
     } else if (context?.type === 'faq_answer') {
-      systemMessage = 'You are a dental expert. Provide clear, accurate, and helpful answers to frequently asked questions in Portuguese.';
+      systemMessage = 'You are a dental expert. Provide clear, accurate, and helpful answers to frequently asked questions.';
     }
 
     // Generate text using selected model

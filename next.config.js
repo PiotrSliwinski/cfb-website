@@ -20,7 +20,7 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
   reactStrictMode: true,
-  swcMinify: true, // Use SWC minifier for better performance
+  // swcMinify is now default in Next.js 15 and the option is deprecated
   experimental: {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'], // Tree-shake icon imports
   },

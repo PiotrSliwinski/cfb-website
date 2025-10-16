@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
       style: style as 'natural' | 'vivid',
     });
 
-    const imageUrl = imageResponse.data[0]?.url;
+    const imageUrl = imageResponse.data?.[0]?.url;
 
     if (!imageUrl) {
       return NextResponse.json(
@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
       url: publicUrl,
       path: storagePath,
       fileName,
-      revisedPrompt: imageResponse.data[0]?.revised_prompt || prompt,
+      revisedPrompt: imageResponse.data?.[0]?.revised_prompt || prompt,
     });
   } catch (error) {
     console.error('AI image generation error:', error);
