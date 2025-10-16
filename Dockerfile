@@ -1,24 +1,19 @@
 # Multi-stage build for Next.js application
 # Optimized for Cloud Run deployment
 
-# Stage 1: Dependencies
-FROM node:20-alpine AS deps
-
-WORKDIR /app
-
-# Install dependencies based on the preferred package manager
-COPY package.json package-lock.json* ./
-
-RUN npm ci --only=production && \
-    npm cache clean --force
-
-# Stage 2: Builder
+# Stage 1: Builder (with all dependencies)
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy dependencies from deps stage
-COPY --from=deps /app/node_modules ./node_modules
+# Copy package files
+COPY package.json package-lock.json* ./
+
+# Install ALL dependencies (including devDependencies for build)
+RUN npm ci && \
+    npm cache clean --force
+
+# Copy application code
 COPY . .
 
 # Build arguments for environment variables (server-only)
@@ -36,13 +31,10 @@ ENV GOOGLE_PLACE_ID=$GOOGLE_PLACE_ID
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Install all dependencies (including devDependencies for build)
-RUN npm ci
-
 # Build the application
 RUN npm run build
 
-# Stage 3: Runner
+# Stage 2: Runner (production only)
 FROM node:20-alpine AS runner
 
 WORKDIR /app
