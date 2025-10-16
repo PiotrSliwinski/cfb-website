@@ -296,6 +296,15 @@ jobs:
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.REGISTRY }} --quiet
 
+      - name: Ensure Artifact Registry repository exists
+        run: |
+          gcloud artifacts repositories create ${{ env.REPOSITORY }} \
+            --repository-format=docker \
+            --location=${{ env.REGION }} \
+            --description="Docker images for CFB website" \
+            --project=${{ secrets.GOOGLE_PROJECT_ID }} \
+            2>/dev/null || echo "Repository already exists (OK)"
+
       - name: Build Docker image
         run: |
           # Support both vars and secrets for SUPABASE_URL
@@ -403,6 +412,15 @@ jobs:
 
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.REGISTRY }} --quiet
+
+      - name: Ensure Artifact Registry repository exists
+        run: |
+          gcloud artifacts repositories create ${{ env.REPOSITORY }} \
+            --repository-format=docker \
+            --location=${{ env.REGION }} \
+            --description="Docker images for CFB website" \
+            --project=${{ secrets.GOOGLE_PROJECT_ID }} \
+            2>/dev/null || echo "Repository already exists (OK)"
 
       - name: Build Docker image
         run: |
