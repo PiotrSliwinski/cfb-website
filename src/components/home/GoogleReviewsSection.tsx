@@ -1,76 +1,15 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
-import StarRating from '@/components/ui/StarRating';
-import { ExternalLink } from 'lucide-react';
 import Image from 'next/image';
+import { getTranslations } from 'next-intl/server';
+import { ExternalLink } from 'lucide-react';
 
-interface GoogleReview {
-  author_name: string;
-  author_url?: string;
-  language: string;
-  profile_photo_url: string;
-  rating: number;
-  relative_time_description: string;
-  text: string;
-  time: number;
-}
+import StarRating from '@/components/ui/StarRating';
+import { getGoogleReviews } from '@/lib/google-reviews';
 
-interface GoogleReviewsData {
-  reviews: GoogleReview[];
-  totalRating: number;
-  totalReviews: number;
-}
+export default async function GoogleReviewsSection() {
+  const t = await getTranslations({ namespace: 'testimonials' });
+  const reviewsData = await getGoogleReviews(5);
 
-export default function GoogleReviewsSection() {
-  const t = useTranslations('testimonials');
-  const [reviewsData, setReviewsData] = useState<GoogleReviewsData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchReviews() {
-      try {
-        const response = await fetch('/api/google-reviews?minRating=5');
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch reviews');
-        }
-
-        const data = await response.json();
-
-        if (data.error) {
-          setError(data.message || data.error);
-        } else {
-          setReviewsData(data);
-        }
-      } catch (err) {
-        console.error('Error fetching Google reviews:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load reviews');
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchReviews();
-  }, []);
-
-  if (loading) {
-    return (
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-center items-center min-h-[400px]">
-            <div className="animate-pulse text-gray-400">
-              <p className="text-lg">{t('loading')}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  if (error) {
+  if (reviewsData.warning && reviewsData.reviews.length === 0) {
     return (
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
@@ -79,7 +18,7 @@ export default function GoogleReviewsSection() {
               <p className="text-yellow-800 mb-2">
                 <strong>{t('configRequired')}</strong>
               </p>
-              <p className="text-sm text-yellow-700">{error}</p>
+              <p className="text-sm text-yellow-700">{reviewsData.warning}</p>
             </div>
           </div>
         </div>
@@ -87,7 +26,7 @@ export default function GoogleReviewsSection() {
     );
   }
 
-  if (!reviewsData || reviewsData.reviews.length === 0) {
+  if (!reviewsData.reviews.length) {
     return null;
   }
 

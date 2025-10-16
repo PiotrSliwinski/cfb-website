@@ -12,7 +12,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Content Types: Define custom collections (like Strapi's content types)
 CREATE TABLE content_types (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT UNIQUE NOT NULL,
   display_name TEXT NOT NULL,
   singular_name TEXT NOT NULL,
@@ -32,7 +32,7 @@ CREATE INDEX idx_content_types_kind ON content_types(kind);
 
 -- Content Type Fields: Define fields for each content type
 CREATE TABLE content_type_fields (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   content_type_id UUID NOT NULL REFERENCES content_types(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   display_name TEXT NOT NULL,
@@ -58,7 +58,7 @@ CREATE INDEX idx_content_type_fields_order ON content_type_fields(display_order)
 
 -- Dynamic Content: The actual content entries
 CREATE TABLE dynamic_content (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   content_type_id UUID NOT NULL REFERENCES content_types(id) ON DELETE CASCADE,
   status TEXT DEFAULT 'draft' CHECK (status IN ('draft', 'published', 'archived')),
   published_at TIMESTAMPTZ,
@@ -76,7 +76,7 @@ CREATE INDEX idx_dynamic_content_data ON dynamic_content USING GIN(data);
 
 -- Dynamic Content Translations: i18n support
 CREATE TABLE dynamic_content_translations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   content_id UUID NOT NULL REFERENCES dynamic_content(id) ON DELETE CASCADE,
   language_code TEXT NOT NULL,
   data JSONB NOT NULL DEFAULT '{}',
@@ -95,7 +95,7 @@ CREATE INDEX idx_dynamic_content_translations_data ON dynamic_content_translatio
 
 -- Components: Reusable field groups
 CREATE TABLE components (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT UNIQUE NOT NULL,
   display_name TEXT NOT NULL,
   category TEXT,
@@ -111,7 +111,7 @@ CREATE INDEX idx_components_category ON components(category);
 
 -- Component Fields: Fields within a component
 CREATE TABLE component_fields (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   component_id UUID NOT NULL REFERENCES components(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   display_name TEXT NOT NULL,
@@ -135,7 +135,7 @@ CREATE INDEX idx_component_fields_order ON component_fields(display_order);
 
 -- Content Relations: Define relations between content types
 CREATE TABLE content_type_relations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   source_content_type_id UUID NOT NULL REFERENCES content_types(id) ON DELETE CASCADE,
   target_content_type_id UUID NOT NULL REFERENCES content_types(id) ON DELETE CASCADE,
   relation_name TEXT NOT NULL,
@@ -150,7 +150,7 @@ CREATE INDEX idx_content_relations_target ON content_type_relations(target_conte
 
 -- Content Relation Data: Actual relation data
 CREATE TABLE dynamic_content_relations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   relation_id UUID NOT NULL REFERENCES content_type_relations(id) ON DELETE CASCADE,
   source_content_id UUID NOT NULL REFERENCES dynamic_content(id) ON DELETE CASCADE,
   target_content_id UUID NOT NULL REFERENCES dynamic_content(id) ON DELETE CASCADE,
@@ -168,7 +168,7 @@ CREATE INDEX idx_dynamic_content_relations_target ON dynamic_content_relations(t
 
 -- Media Library: Central asset management
 CREATE TABLE media_library (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   alternative_text TEXT,
   caption TEXT,
@@ -196,7 +196,7 @@ CREATE INDEX idx_media_library_created ON media_library(created_at);
 
 -- Admin Users
 CREATE TABLE admin_users (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email TEXT UNIQUE NOT NULL,
   username TEXT UNIQUE NOT NULL,
   password_hash TEXT NOT NULL,
@@ -215,7 +215,7 @@ CREATE INDEX idx_admin_users_active ON admin_users(is_active);
 
 -- Permissions
 CREATE TABLE permissions (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   role TEXT NOT NULL,
   content_type_id UUID REFERENCES content_types(id) ON DELETE CASCADE,
   action TEXT NOT NULL CHECK (action IN ('create', 'read', 'update', 'delete', 'publish')),
@@ -231,7 +231,7 @@ CREATE INDEX idx_permissions_content_type ON permissions(content_type_id);
 -- ============================================================================
 
 CREATE TABLE audit_log (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES admin_users(id),
   action TEXT NOT NULL,
   entity_type TEXT NOT NULL,

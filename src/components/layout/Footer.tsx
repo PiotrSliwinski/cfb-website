@@ -1,19 +1,28 @@
-'use client';
+import 'server-only';
 
-import { useTranslations, useLocale } from 'next-intl';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { Facebook, Instagram, Phone, Mail, MapPin } from 'lucide-react';
 import Link from 'next/link';
 
-export function Footer() {
-  const t = useTranslations('footer');
-  const locale = useLocale();
+import { getClinicSettings } from '@/lib/supabase/queries/clinic';
 
-  // Use fallback contact information
-  const phone = '+351935189807';
-  const phoneDisplay = '935 189 807';
-  const email = 'geral@clinicaferreiraborges.pt';
-  const address = t('address');
-  const businessHours = t('hours');
+export async function Footer() {
+  const locale = await getLocale();
+  const t = await getTranslations({ namespace: 'footer' });
+  const clinicSettings = await getClinicSettings();
+
+  const phone = clinicSettings?.phone || '+351935189807';
+  const phoneDisplay = phone.replace('+351', '').trim() || '935 189 807';
+  const email = clinicSettings?.email || 'geral@clinicaferreiraborges.pt';
+  const address = clinicSettings?.address_line1
+    ? [
+        clinicSettings.address_line1,
+        clinicSettings.address_line2,
+        `${clinicSettings.postal_code} ${clinicSettings.city}`.trim(),
+      ]
+        .filter(Boolean)
+        .join(', ')
+    : t('address');
 
   return (
     <footer style={{ backgroundColor: '#0098AA' }}>

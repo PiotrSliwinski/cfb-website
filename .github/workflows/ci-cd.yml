@@ -33,7 +33,8 @@ on:
 
 env:
   NODE_VERSION: '20'
-  REGISTRY: gcr.io
+  REGISTRY: europe-west1-docker.pkg.dev  # Artifact Registry (GCR is deprecated)
+  REPOSITORY: cfb-website  # Artifact Registry repository name
   PROJECT_ID: ${{ secrets.GOOGLE_PROJECT_ID }}
   SERVICE_NAME: cfb-website
   REGION: europe-west1
@@ -116,7 +117,9 @@ jobs:
 
       - name: Create .env file for build
         run: |
-          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env.production
+          # Support both vars and secrets (vars preferred for non-sensitive data like URLs)
+          SUPABASE_URL="${{ vars.SUPABASE_URL }}${{ secrets.SUPABASE_URL }}"
+          echo "SUPABASE_URL=$SUPABASE_URL" >> .env.production
           echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env.production
           echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> .env.production
           echo "GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }}" >> .env.production
@@ -159,7 +162,9 @@ jobs:
 
       - name: Create .env file for build
         run: |
-          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env.production
+          # Support both vars and secrets (vars preferred for non-sensitive data like URLs)
+          SUPABASE_URL="${{ vars.SUPABASE_URL }}${{ secrets.SUPABASE_URL }}"
+          echo "SUPABASE_URL=$SUPABASE_URL" >> .env.production
           echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env.production
           echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> .env.production
           echo "GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }}" >> .env.production
@@ -257,100 +262,11 @@ jobs:
         if: always()
         run: supabase stop --no-backup
 
-  # Job 6: Apply Database Migrations (Staging)
-  migrate-staging:
-    name: Apply Migrations (Staging)
-    runs-on: ubuntu-latest
-    needs: [determine-environment, test-routes]
-    environment: Staging
-    if: |
-      always() &&
-      !cancelled() &&
-      needs.determine-environment.outputs.is-staging == 'true' &&
-      (needs['test-routes'].result == 'success' || needs['test-routes'].result == 'skipped') &&
-      (
-        github.event_name == 'workflow_dispatch' ||
-        (github.event_name == 'push' && github.ref == 'refs/heads/develop')
-      )
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Supabase CLI
-        uses: supabase/setup-cli@v1
-        with:
-          version: latest
-
-      - name: Link to Supabase project
-        run: |
-          # Extract project reference from SUPABASE_URL
-          PROJECT_REF=$(echo "${{ secrets.SUPABASE_URL }}" | sed -n 's/.*https:\/\/\([^.]*\).*/\1/p')
-          echo "Linking to project: $PROJECT_REF"
-
-          # Create connection string for linking
-          # Note: We need the database password from secrets
-          supabase link --project-ref "$PROJECT_REF" --password "${{ secrets.SUPABASE_DB_PASSWORD }}"
-
-      - name: Apply migrations
-        run: |
-          echo "Applying migrations to staging database..."
-          supabase db push --linked
-
-      - name: Verify migrations
-        run: |
-          echo "Checking migration status..."
-          supabase migration list --linked
-
-  # Job 7: Apply Database Migrations (Production)
-  migrate-production:
-    name: Apply Migrations (Production)
-    runs-on: ubuntu-latest
-    needs: [determine-environment, test-routes]
-    environment: Production
-    if: |
-      always() &&
-      !cancelled() &&
-      needs.determine-environment.outputs.is-production == 'true' &&
-      (needs['test-routes'].result == 'success' || needs['test-routes'].result == 'skipped') &&
-      (
-        github.event_name == 'workflow_dispatch' ||
-        (github.event_name == 'push' && github.ref == 'refs/heads/main')
-      )
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Supabase CLI
-        uses: supabase/setup-cli@v1
-        with:
-          version: latest
-
-      - name: Link to Supabase project
-        run: |
-          # Extract project reference from SUPABASE_URL
-          PROJECT_REF=$(echo "${{ secrets.SUPABASE_URL }}" | sed -n 's/.*https:\/\/\([^.]*\).*/\1/p')
-          echo "Linking to project: $PROJECT_REF"
-
-          # Create connection string for linking
-          supabase link --project-ref "$PROJECT_REF" --password "${{ secrets.SUPABASE_DB_PASSWORD }}"
-
-      - name: Apply migrations
-        run: |
-          echo "Applying migrations to production database..."
-          supabase db push --linked
-
-      - name: Verify migrations
-        run: |
-          echo "Checking migration status..."
-          supabase migration list --linked
-
-  # Job 8: Build and Push Docker Image (Staging)
+  # Job 6: Build and Push Docker Image (Staging)
   docker-build-staging:
     name: Build & Push Docker Image (Staging)
     runs-on: ubuntu-latest
-    needs: [determine-environment, build-staging, test-routes, migrate-staging]
+    needs: [determine-environment, build-staging, test-routes]
     environment: Staging  # Use GitHub Environment
     if: |
       always() &&
@@ -358,7 +274,6 @@ jobs:
       needs.determine-environment.outputs.is-staging == 'true' &&
       (needs.build-staging.result == 'success') &&
       (needs['test-routes'].result == 'success' || needs['test-routes'].result == 'skipped') &&
-      (needs['migrate-staging'].result == 'success') &&
       (
         github.event_name == 'workflow_dispatch' ||
         (github.event_name == 'push' && github.ref == 'refs/heads/develop')
@@ -378,31 +293,101 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Configure Docker for GCR
-        run: gcloud auth configure-docker
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGISTRY }} --quiet
+
+      - name: Ensure Artifact Registry repository exists
+        run: |
+          gcloud artifacts repositories create ${{ env.REPOSITORY }} \
+            --repository-format=docker \
+            --location=${{ env.REGION }} \
+            --description="Docker images for CFB website" \
+            --project=${{ secrets.GOOGLE_PROJECT_ID }} \
+            2>/dev/null || echo "Repository already exists (OK)"
 
       - name: Build Docker image
         run: |
+          # Support both vars and secrets for SUPABASE_URL
+          SUPABASE_URL="${{ vars.SUPABASE_URL }}${{ secrets.SUPABASE_URL }}"
           docker build \
-            --build-arg SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+            --build-arg SUPABASE_URL="$SUPABASE_URL" \
             --build-arg SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
             --build-arg SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} \
             --build-arg GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }} \
             --build-arg GOOGLE_PLACE_ID=${{ secrets.GOOGLE_PLACE_ID }} \
-            -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:staging-${{ github.sha }} \
-            -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:staging-latest \
+            -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:staging-${{ github.sha }} \
+            -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:staging-latest \
             .
 
       - name: Push Docker image
         run: |
-          docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:staging-${{ github.sha }}
-          docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:staging-latest
+          docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:staging-${{ github.sha }}
+          docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:staging-latest
 
-  # Job 9: Build and Push Docker Image (Production)
+  # Job 7: Apply Database Migrations (Staging)
+  migrate-staging:
+    name: Apply Migrations (Staging)
+    runs-on: ubuntu-latest
+    needs: [determine-environment, docker-build-staging]
+    # Note: Using repository-level SUPABASE_ACCESS_TOKEN
+    # But environment-specific SUPABASE_URL and SUPABASE_DB_PASSWORD from Staging
+    environment: Staging
+    if: |
+      always() &&
+      !cancelled() &&
+      needs.determine-environment.outputs.is-staging == 'true' &&
+      (needs['docker-build-staging'].result == 'success') &&
+      (
+        github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'push' && github.ref == 'refs/heads/develop')
+      )
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Link to Supabase project
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          # Extract project reference from SUPABASE_URL
+          # Try vars first, fallback to secrets
+          SUPABASE_URL="${{ vars.SUPABASE_URL }}"
+          if [ -z "$SUPABASE_URL" ]; then
+            SUPABASE_URL="${{ secrets.SUPABASE_URL }}"
+          fi
+
+          PROJECT_REF=$(echo "$SUPABASE_URL" | sed -n 's/.*https:\/\/\([^.]*\).*/\1/p')
+          echo "Linking to project: $PROJECT_REF"
+
+          # Create connection string for linking
+          # Note: We need the database password from secrets
+          supabase link --project-ref "$PROJECT_REF" --password "${{ secrets.SUPABASE_DB_PASSWORD }}"
+
+      - name: Apply migrations
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          echo "Applying migrations to staging database..."
+          supabase db push --linked
+
+      - name: Verify migrations
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          echo "Checking migration status..."
+          supabase migration list --linked
+
+  # Job 8: Build and Push Docker Image (Production)
   docker-build-production:
     name: Build & Push Docker Image (Production)
     runs-on: ubuntu-latest
-    needs: [determine-environment, build-production, test-routes, migrate-production]
+    needs: [determine-environment, build-production, test-routes]
     environment: Production  # Use GitHub Environment
     if: |
       always() &&
@@ -410,7 +395,6 @@ jobs:
       needs.determine-environment.outputs.is-production == 'true' &&
       (needs.build-production.result == 'success') &&
       (needs['test-routes'].result == 'success' || needs['test-routes'].result == 'skipped') &&
-      (needs['migrate-production'].result == 'success') &&
       (
         github.event_name == 'workflow_dispatch' ||
         (github.event_name == 'push' && github.ref == 'refs/heads/main')
@@ -430,36 +414,103 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Configure Docker for GCR
-        run: gcloud auth configure-docker
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGISTRY }} --quiet
+
+      - name: Ensure Artifact Registry repository exists
+        run: |
+          gcloud artifacts repositories create ${{ env.REPOSITORY }} \
+            --repository-format=docker \
+            --location=${{ env.REGION }} \
+            --description="Docker images for CFB website" \
+            --project=${{ secrets.GOOGLE_PROJECT_ID }} \
+            2>/dev/null || echo "Repository already exists (OK)"
 
       - name: Build Docker image
         run: |
+          # Support both vars and secrets for SUPABASE_URL
+          SUPABASE_URL="${{ vars.SUPABASE_URL }}${{ secrets.SUPABASE_URL }}"
           docker build \
-            --build-arg SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+            --build-arg SUPABASE_URL="$SUPABASE_URL" \
             --build-arg SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
             --build-arg SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} \
             --build-arg GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }} \
             --build-arg GOOGLE_PLACE_ID=${{ secrets.GOOGLE_PLACE_ID }} \
-            -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
-            -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:latest \
+            -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
+            -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest \
             .
 
       - name: Push Docker image
         run: |
-          docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
-          docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:latest
+          docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest
+
+  # Job 9: Apply Database Migrations (Production)
+  migrate-production:
+    name: Apply Migrations (Production)
+    runs-on: ubuntu-latest
+    needs: [determine-environment, docker-build-production]
+    environment: Production
+    if: |
+      always() &&
+      !cancelled() &&
+      needs.determine-environment.outputs.is-production == 'true' &&
+      (needs['docker-build-production'].result == 'success') &&
+      (
+        github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'push' && github.ref == 'refs/heads/main')
+      )
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Link to Supabase project
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          # Extract project reference from SUPABASE_URL
+          # Try vars first, fallback to secrets
+          SUPABASE_URL="${{ vars.SUPABASE_URL }}"
+          if [ -z "$SUPABASE_URL" ]; then
+            SUPABASE_URL="${{ secrets.SUPABASE_URL }}"
+          fi
+
+          PROJECT_REF=$(echo "$SUPABASE_URL" | sed -n 's/.*https:\/\/\([^.]*\).*/\1/p')
+          echo "Linking to project: $PROJECT_REF"
+
+          # Create connection string for linking
+          supabase link --project-ref "$PROJECT_REF" --password "${{ secrets.SUPABASE_DB_PASSWORD }}"
+
+      - name: Apply migrations
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          echo "Applying migrations to production database..."
+          supabase db push --linked
+
+      - name: Verify migrations
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          echo "Checking migration status..."
+          supabase migration list --linked
 
   # Job 10: Deploy to Cloud Run (Staging)
   deploy-staging:
     name: Deploy to Cloud Run (Staging)
     runs-on: ubuntu-latest
-    needs: [determine-environment, docker-build-staging]
+    needs: [determine-environment, migrate-staging]
     if: |
       always() &&
       !cancelled() &&
       needs.determine-environment.outputs.is-staging == 'true' &&
-      (needs.docker-build-staging.result == 'success') &&
+      (needs['migrate-staging'].result == 'success') &&
       (
         (github.event_name == 'workflow_dispatch' && (github.event.inputs.environment == 'staging' || github.event.inputs.environment == 'both')) ||
         (github.event_name == 'push' && github.ref == 'refs/heads/develop')
@@ -485,7 +536,7 @@ jobs:
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy ${{ env.SERVICE_NAME }}-staging \
-            --image=${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:staging-${{ github.sha }} \
+            --image=${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:staging-${{ github.sha }} \
             --platform=managed \
             --region=${{ env.REGION }} \
             --allow-unauthenticated \
@@ -514,12 +565,12 @@ jobs:
   deploy-production:
     name: Deploy to Cloud Run (Production)
     runs-on: ubuntu-latest
-    needs: [determine-environment, docker-build-production]
+    needs: [determine-environment, migrate-production]
     if: |
       always() &&
       !cancelled() &&
       needs.determine-environment.outputs.is-production == 'true' &&
-      (needs.docker-build-production.result == 'success') &&
+      (needs['migrate-production'].result == 'success') &&
       (
         (github.event_name == 'workflow_dispatch' && (github.event.inputs.environment == 'production' || github.event.inputs.environment == 'both')) ||
         (github.event_name == 'push' && github.ref == 'refs/heads/main')
@@ -545,7 +596,7 @@ jobs:
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy ${{ env.SERVICE_NAME }} \
-            --image=${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
+            --image=${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
             --platform=managed \
             --region=${{ env.REGION }} \
             --allow-unauthenticated \

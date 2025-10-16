@@ -347,7 +347,7 @@ END $$;
 
 -- TESTIMONIALS (external sources like Google Reviews)
 CREATE TABLE IF NOT EXISTS cms_testimonials (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   source TEXT NOT NULL, -- 'google', 'manual', 'trustpilot'
   author_name TEXT NOT NULL,
   author_photo_url TEXT,
@@ -362,7 +362,7 @@ CREATE TABLE IF NOT EXISTS cms_testimonials (
 );
 
 CREATE TABLE IF NOT EXISTS cms_testimonial_translations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   testimonial_id UUID NOT NULL REFERENCES cms_testimonials(id) ON DELETE CASCADE,
   language_code TEXT NOT NULL,
   review_text TEXT NOT NULL,
@@ -400,7 +400,7 @@ CREATE INDEX idx_testimonial_translations_locale ON cms_testimonial_translations
 
 -- GALLERY IMAGES
 CREATE TABLE IF NOT EXISTS cms_gallery_images (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   image_url TEXT NOT NULL,
   thumbnail_url TEXT,
   alt_text TEXT,
@@ -412,7 +412,7 @@ CREATE TABLE IF NOT EXISTS cms_gallery_images (
 );
 
 CREATE TABLE IF NOT EXISTS cms_gallery_image_translations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   image_id UUID NOT NULL REFERENCES cms_gallery_images(id) ON DELETE CASCADE,
   language_code TEXT NOT NULL,
   caption TEXT,

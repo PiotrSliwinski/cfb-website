@@ -7,7 +7,7 @@
 -- 1. CMS PAGES (Main page definitions)
 -- ============================================================================
 CREATE TABLE cms_pages (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   slug TEXT UNIQUE NOT NULL,
   template TEXT NOT NULL, -- 'home', 'info', 'legal', 'custom'
   is_published BOOLEAN DEFAULT true,
@@ -24,7 +24,7 @@ CREATE INDEX idx_cms_pages_published ON cms_pages(is_published);
 -- 2. CMS PAGE TRANSLATIONS (Multilingual page metadata)
 -- ============================================================================
 CREATE TABLE cms_page_translations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   page_id UUID NOT NULL REFERENCES cms_pages(id) ON DELETE CASCADE,
   language_code TEXT NOT NULL,
   title TEXT NOT NULL,
@@ -46,7 +46,7 @@ CREATE INDEX idx_cms_page_translations_language ON cms_page_translations(languag
 -- 3. CMS PAGE SECTIONS (Ordered sections for each page)
 -- ============================================================================
 CREATE TABLE cms_page_sections (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   page_id UUID NOT NULL REFERENCES cms_pages(id) ON DELETE CASCADE,
   section_type TEXT NOT NULL, -- 'hero', 'features', 'cta', 'text_block', etc.
   display_order INT NOT NULL DEFAULT 0,
@@ -64,7 +64,7 @@ CREATE INDEX idx_cms_page_sections_order ON cms_page_sections(display_order);
 -- 4. CMS SECTION TRANSLATIONS (Multilingual section content)
 -- ============================================================================
 CREATE TABLE cms_section_translations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   section_id UUID NOT NULL REFERENCES cms_page_sections(id) ON DELETE CASCADE,
   language_code TEXT NOT NULL,
   content JSONB NOT NULL DEFAULT '{}', -- Flexible JSON content per section type
@@ -80,7 +80,7 @@ CREATE INDEX idx_cms_section_translations_language ON cms_section_translations(l
 -- 5. CMS FEATURES (Reusable feature cards)
 -- ============================================================================
 CREATE TABLE cms_features (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   slug TEXT UNIQUE NOT NULL,
   icon TEXT, -- Lucide icon name
   icon_color TEXT DEFAULT '#0098AA',
@@ -97,7 +97,7 @@ CREATE INDEX idx_cms_features_active ON cms_features(is_active);
 -- 6. CMS FEATURE TRANSLATIONS
 -- ============================================================================
 CREATE TABLE cms_feature_translations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   feature_id UUID NOT NULL REFERENCES cms_features(id) ON DELETE CASCADE,
   language_code TEXT NOT NULL,
   title TEXT NOT NULL,
@@ -113,7 +113,7 @@ CREATE INDEX idx_cms_feature_translations_feature ON cms_feature_translations(fe
 -- 7. CMS CTA SECTIONS (Reusable call-to-action blocks)
 -- ============================================================================
 CREATE TABLE cms_cta_sections (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   slug TEXT UNIQUE NOT NULL,
   style TEXT DEFAULT 'primary', -- 'primary', 'secondary', 'urgent'
   button_style TEXT DEFAULT 'filled', -- 'filled', 'outlined', 'text'
@@ -130,7 +130,7 @@ CREATE INDEX idx_cms_cta_sections_slug ON cms_cta_sections(slug);
 -- 8. CMS CTA TRANSLATIONS
 -- ============================================================================
 CREATE TABLE cms_cta_translations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   cta_id UUID NOT NULL REFERENCES cms_cta_sections(id) ON DELETE CASCADE,
   language_code TEXT NOT NULL,
   badge TEXT,
@@ -152,7 +152,7 @@ CREATE INDEX idx_cms_cta_translations_cta ON cms_cta_translations(cta_id);
 -- 9. CMS FAQS (General FAQs, not treatment-specific)
 -- ============================================================================
 CREATE TABLE cms_faqs (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   category TEXT, -- 'general', 'payments', 'appointments', etc.
   display_order INT DEFAULT 0,
   is_active BOOLEAN DEFAULT true,
@@ -166,7 +166,7 @@ CREATE INDEX idx_cms_faqs_category ON cms_faqs(category);
 -- 10. CMS FAQ TRANSLATIONS
 -- ============================================================================
 CREATE TABLE cms_faq_translations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   faq_id UUID NOT NULL REFERENCES cms_faqs(id) ON DELETE CASCADE,
   language_code TEXT NOT NULL,
   question TEXT NOT NULL,

@@ -1,12 +1,12 @@
-'use client';
-
 import { GraduationCap, Award, Heart, Users } from 'lucide-react';
-import { useTranslations } from 'next-intl';
-import { useLocale } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
-export function TeamCredentialsSection() {
-  const t = useTranslations('home.teamCredentials');
-  const locale = useLocale();
+interface TeamCredentialsSectionProps {
+  locale: string;
+}
+
+export async function TeamCredentialsSection({ locale }: TeamCredentialsSectionProps) {
+  const t = await getTranslations({ namespace: 'home.teamCredentials' });
 
   const credentials = [
     {

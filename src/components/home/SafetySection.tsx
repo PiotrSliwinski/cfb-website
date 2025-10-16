@@ -1,10 +1,8 @@
-'use client';
-
 import { Shield, Droplets, Thermometer, Sparkles, ClipboardCheck, Users } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
-export function SafetySection() {
-  const t = useTranslations('home.safety');
+export async function SafetySection() {
+  const t = await getTranslations({ namespace: 'home.safety' });
 
   const safetyMeasures = [
     {

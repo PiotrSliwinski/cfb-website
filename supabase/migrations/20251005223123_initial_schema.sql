@@ -1,9 +1,9 @@
--- Enable UUID extension
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- Note: Using gen_random_uuid() which is built into PostgreSQL 13+
+-- No extension required!
 
 -- Languages table
 CREATE TABLE languages (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   code VARCHAR(5) UNIQUE NOT NULL,
   name VARCHAR(50) NOT NULL,
   is_default BOOLEAN DEFAULT false,
@@ -17,7 +17,7 @@ INSERT INTO languages (code, name, is_default) VALUES
 
 -- Pages table
 CREATE TABLE pages (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   slug VARCHAR(255) NOT NULL,
   type VARCHAR(50) NOT NULL,
   is_published BOOLEAN DEFAULT false,
@@ -28,7 +28,7 @@ CREATE TABLE pages (
 
 -- Page translations
 CREATE TABLE page_translations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   page_id UUID REFERENCES pages(id) ON DELETE CASCADE,
   language_code VARCHAR(5) REFERENCES languages(code),
   title VARCHAR(255),
@@ -41,7 +41,7 @@ CREATE TABLE page_translations (
 
 -- Treatments table
 CREATE TABLE treatments (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   slug VARCHAR(255) UNIQUE NOT NULL,
   icon_url TEXT,
   display_order INT DEFAULT 0,
@@ -53,7 +53,7 @@ CREATE TABLE treatments (
 
 -- Treatment translations
 CREATE TABLE treatment_translations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   treatment_id UUID REFERENCES treatments(id) ON DELETE CASCADE,
   language_code VARCHAR(5) REFERENCES languages(code),
   title VARCHAR(255) NOT NULL,
@@ -68,14 +68,14 @@ CREATE TABLE treatment_translations (
 
 -- Treatment FAQs
 CREATE TABLE treatment_faqs (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   treatment_id UUID REFERENCES treatments(id) ON DELETE CASCADE,
   display_order INT DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE treatment_faq_translations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   faq_id UUID REFERENCES treatment_faqs(id) ON DELETE CASCADE,
   language_code VARCHAR(5) REFERENCES languages(code),
   question TEXT NOT NULL,
@@ -85,7 +85,7 @@ CREATE TABLE treatment_faq_translations (
 
 -- Team members
 CREATE TABLE team_members (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   slug VARCHAR(255) UNIQUE NOT NULL,
   photo_url TEXT,
   display_order INT DEFAULT 0,
@@ -97,7 +97,7 @@ CREATE TABLE team_members (
 );
 
 CREATE TABLE team_member_translations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   member_id UUID REFERENCES team_members(id) ON DELETE CASCADE,
   language_code VARCHAR(5) REFERENCES languages(code),
   name VARCHAR(255) NOT NULL,
@@ -110,7 +110,7 @@ CREATE TABLE team_member_translations (
 
 -- Testimonials
 CREATE TABLE testimonials (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   rating INT CHECK (rating >= 1 AND rating <= 5),
   display_order INT DEFAULT 0,
   is_published BOOLEAN DEFAULT true,
@@ -118,7 +118,7 @@ CREATE TABLE testimonials (
 );
 
 CREATE TABLE testimonial_translations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   testimonial_id UUID REFERENCES testimonials(id) ON DELETE CASCADE,
   language_code VARCHAR(5) REFERENCES languages(code),
   author_name VARCHAR(255),
@@ -128,7 +128,7 @@ CREATE TABLE testimonial_translations (
 
 -- Media gallery
 CREATE TABLE media_items (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   treatment_id UUID REFERENCES treatments(id) ON DELETE SET NULL,
   file_url TEXT NOT NULL,
   file_type VARCHAR(50),
@@ -139,7 +139,7 @@ CREATE TABLE media_items (
 
 -- Contact form submissions
 CREATE TABLE contact_submissions (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL,
   phone VARCHAR(50),
@@ -152,7 +152,7 @@ CREATE TABLE contact_submissions (
 
 -- Site settings
 CREATE TABLE site_settings (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   key VARCHAR(255) UNIQUE NOT NULL,
   value JSONB,
   created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -160,7 +160,7 @@ CREATE TABLE site_settings (
 );
 
 CREATE TABLE site_setting_translations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   setting_id UUID REFERENCES site_settings(id) ON DELETE CASCADE,
   language_code VARCHAR(5) REFERENCES languages(code),
   value JSONB,
