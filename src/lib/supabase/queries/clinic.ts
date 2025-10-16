@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { createClient } from '@/lib/supabase/server';
 import type { ClinicSettings, ClinicSettingsUpdate } from '@/types/admin/clinic';
 import type { ApiResponse } from '@/types/api/responses';
@@ -7,9 +8,10 @@ export type { ClinicSettings, ClinicSettingsUpdate };
 
 /**
  * Get clinic settings (there should only be one record)
+ * Memoized for the duration of the request to avoid duplicate queries
  * @returns ClinicSettings or null if not found or error occurs
  */
-export async function getClinicSettings(): Promise<ClinicSettings | null> {
+export const getClinicSettings = cache(async (): Promise<ClinicSettings | null> => {
   try {
     const supabase = await createClient();
 
@@ -28,7 +30,7 @@ export async function getClinicSettings(): Promise<ClinicSettings | null> {
     console.error('[getClinicSettings] Unexpected error:', error);
     return null;
   }
-}
+});
 
 /**
  * Update clinic settings

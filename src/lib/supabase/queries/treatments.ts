@@ -1,6 +1,8 @@
+import { cache } from 'react';
 import { createClient } from '@/lib/supabase/server';
 
-export async function getTreatmentBySlug(slug: string, locale: string) {
+// Memoize for the duration of the request to avoid duplicate queries
+export const getTreatmentBySlug = cache(async (slug: string, locale: string) => {
   const supabase = await createClient();
 
   const { data: treatment, error } = await supabase
@@ -27,9 +29,10 @@ export async function getTreatmentBySlug(slug: string, locale: string) {
   }
 
   return treatment;
-}
+});
 
-export async function getAllTreatments(locale: string) {
+// Memoize for the duration of the request to avoid duplicate queries
+export const getAllTreatments = cache(async (locale: string) => {
   const supabase = await createClient();
 
   const { data: treatments, error } = await supabase
@@ -48,9 +51,10 @@ export async function getAllTreatments(locale: string) {
   }
 
   return treatments;
-}
+});
 
-export async function getTestimonials(locale: string) {
+// Memoize for the duration of the request to avoid duplicate queries
+export const getTestimonials = cache(async (locale: string) => {
   const supabase = await createClient();
 
   const { data: testimonials, error } = await supabase
@@ -69,4 +73,4 @@ export async function getTestimonials(locale: string) {
   }
 
   return testimonials;
-}
+});

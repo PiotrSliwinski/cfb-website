@@ -2,13 +2,23 @@
 
 import { useTranslations } from 'next-intl';
 import { ArrowRight, Sparkles, Shield, Clock, Play, Pause } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 export function HeroSection() {
   const t = useTranslations('home.hero');
   const common = useTranslations('common');
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
+
+  useEffect(() => {
+    // Load video only after critical content is rendered and page is interactive
+    const timer = setTimeout(() => {
+      setShouldLoadVideo(true);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const toggleVideo = () => {
     if (videoRef.current) {
@@ -23,20 +33,26 @@ export function HeroSection() {
 
   return (
     <section className="relative bg-gray-900 py-24 md:py-32 overflow-hidden">
-      {/* Video Background */}
-      <div className="absolute inset-0">
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          playsInline
-          className="w-full h-full object-cover"
-        >
-          <source src="/videos/DJI_20250925180342_0012_D.mp4" type="video/mp4" />
-        </video>
-        {/* Lighter gradient overlay - only on left side for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent"></div>
-      </div>
+      {/* Fallback gradient background - shown while video loads */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-primary-900"></div>
+
+      {/* Video Background - Lazy loaded */}
+      {shouldLoadVideo && (
+        <div className="absolute inset-0">
+          <video
+            ref={videoRef}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover"
+          >
+            <source src="/videos/DJI_20250925180342_0012_D.mp4" type="video/mp4" />
+          </video>
+          {/* Lighter gradient overlay - only on left side for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent"></div>
+        </div>
+      )}
 
       {/* Play/Pause Control */}
       <button

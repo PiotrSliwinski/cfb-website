@@ -21,12 +21,28 @@ import {
   ChevronDown
 } from 'lucide-react';
 
-// Force dynamic rendering for this page (no static generation)
-export const dynamic = 'force-dynamic';
+// Enable static generation with revalidation
+export const revalidate = 3600; // Revalidate every hour
 
 export async function generateStaticParams() {
-  // Return empty array to generate pages on-demand
-  return [];
+  // Generate static pages for all treatments at build time
+  const locales = ['pt', 'en'];
+  const allParams: { locale: string; slug: string }[] = [];
+
+  for (const locale of locales) {
+    try {
+      const treatments = await getAllTreatments(locale);
+      const params = treatments.map((treatment: any) => ({
+        locale,
+        slug: treatment.slug
+      }));
+      allParams.push(...params);
+    } catch (error) {
+      console.error(`Error generating static params for locale ${locale}:`, error);
+    }
+  }
+
+  return allParams;
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }) {
@@ -136,7 +152,9 @@ export default async function TreatmentPage({ params }: { params: Promise<{ loca
                     alt={translation.title}
                     fill
                     className="object-cover"
-                    priority
+                    priority={false}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    quality={85}
                   />
                 </div>
 
@@ -342,6 +360,9 @@ export default async function TreatmentPage({ params }: { params: Promise<{ loca
                     alt={`${translation.title} - Tecnologia`}
                     fill
                     className="object-cover"
+                    loading="lazy"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    quality={80}
                   />
                 </div>
                 <div>
@@ -424,6 +445,9 @@ export default async function TreatmentPage({ params }: { params: Promise<{ loca
                     alt={`${translation.title} - Equipa`}
                     fill
                     className="object-cover"
+                    loading="lazy"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    quality={80}
                   />
                 </div>
               </div>

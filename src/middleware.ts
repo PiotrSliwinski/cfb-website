@@ -9,36 +9,40 @@ let middlewareCache: {
   timestamp: number;
 } | null = null;
 
-const MIDDLEWARE_CACHE_DURATION = 60000; // 1 minute
+const MIDDLEWARE_CACHE_DURATION = 3600000; // 1 hour (was 1 minute)
 
 async function getMiddlewareConfig() {
   const now = Date.now();
 
+  // Return cached config if available and not expired
   if (middlewareCache && now - middlewareCache.timestamp < MIDDLEWARE_CACHE_DURATION) {
     return middlewareCache;
   }
 
-  try {
-    const [locales, defaultLocale] = await Promise.all([
-      getLocales(),
-      getDefaultLocaleValue()
-    ]);
+  // Always return fallback immediately for fast response
+  const fallbackConfig = {
+    locales: [...fallbackLocales],
+    defaultLocale: fallbackDefaultLocale,
+    timestamp: now
+  };
 
-    middlewareCache = {
-      locales: locales.length > 0 ? locales : [...fallbackLocales],
-      defaultLocale: defaultLocale || fallbackDefaultLocale,
-      timestamp: now
-    };
-
-    return middlewareCache;
-  } catch (error) {
-    console.error('[middleware] Error fetching locales:', error);
-    return {
-      locales: [...fallbackLocales],
-      defaultLocale: fallbackDefaultLocale,
-      timestamp: now
-    };
+  // If cache is expired, try to fetch fresh data but don't block
+  if (!middlewareCache || now - middlewareCache.timestamp >= MIDDLEWARE_CACHE_DURATION) {
+    // Update cache in background (don't await)
+    Promise.all([getLocales(), getDefaultLocaleValue()])
+      .then(([locales, defaultLocale]) => {
+        middlewareCache = {
+          locales: locales.length > 0 ? locales : [...fallbackLocales],
+          defaultLocale: defaultLocale || fallbackDefaultLocale,
+          timestamp: now
+        };
+      })
+      .catch((error) => {
+        console.error('[middleware] Error fetching locales:', error);
+      });
   }
+
+  return middlewareCache || fallbackConfig;
 }
 
 export default async function middleware(request: NextRequest) {

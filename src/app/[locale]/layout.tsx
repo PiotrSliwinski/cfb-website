@@ -8,10 +8,12 @@ import { Poppins } from 'next/font/google';
 import '../globals.css';
 
 const poppins = Poppins({
-  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  weight: ['400', '600', '700'], // Reduced from 7 weights to 3 (regular, semibold, bold)
   subsets: ['latin'],
   variable: '--font-poppins',
   display: 'swap',
+  preload: true,
+  fallback: ['system-ui', 'arial'],
 });
 
 export function generateStaticParams() {
@@ -35,6 +37,12 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} className={poppins.variable}>
+      <head>
+        {/* Preconnect to external domains for faster loading */}
+        <link rel="preconnect" href="https://hkrpefnergidmviuewkt.supabase.co" />
+        <link rel="preconnect" href="https://maps.googleapis.com" />
+        <link rel="dns-prefetch" href="https://booking.clinicaferreiraborges.pt" />
+      </head>
       <body className="flex min-h-screen flex-col font-sans">
         <NextIntlClientProvider messages={messages}>
           <Header />
