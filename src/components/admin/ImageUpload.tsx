@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
 import Image from 'next/image';
+import { AIImageGenerate } from './AIImageGenerate';
 
 interface ImageUploadProps {
   value?: string | null;
@@ -14,6 +15,8 @@ interface ImageUploadProps {
   maxSizeMB?: number;
   disabled?: boolean;
   className?: string;
+  showAIGenerate?: boolean;
+  aiPromptHint?: string;
 }
 
 export function ImageUpload({
@@ -26,6 +29,8 @@ export function ImageUpload({
   maxSizeMB = 5,
   disabled = false,
   className = '',
+  showAIGenerate = true,
+  aiPromptHint = '',
 }: ImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -222,6 +227,20 @@ export function ImageUpload({
         <p className="text-xs text-gray-500">
           Images will be stored in Supabase Storage and accessible via public URL
         </p>
+
+        {/* AI Image Generation */}
+        {showAIGenerate && !disabled && (
+          <div className="pt-3 border-t border-gray-200">
+            <AIImageGenerate
+              onApply={(url) => {
+                setPreview(url);
+                onChange(url);
+              }}
+              bucket={bucket}
+              defaultPrompt={aiPromptHint}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

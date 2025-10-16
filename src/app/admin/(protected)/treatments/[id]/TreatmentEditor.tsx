@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import { saveTreatmentFromEditor, type EditorTreatmentData } from '@/app/actions/treatments'
 import { JsonEditor } from '@/components/admin/JsonEditor'
 import { ImageUpload } from '@/components/admin/ImageUpload'
+import { AITextAssist } from '@/components/admin/AITextAssist'
 
 const treatmentSchema = z.object({
   slug: z.string().min(1, 'Slug is required'),
@@ -56,6 +57,8 @@ export default function TreatmentEditor({ treatment }: TreatmentEditorProps) {
     register,
     handleSubmit,
     control,
+    watch,
+    setValue,
     formState: { errors, isDirty },
   } = useForm<TreatmentFormData>({
     resolver: zodResolver(treatmentSchema),
@@ -80,6 +83,8 @@ export default function TreatmentEditor({ treatment }: TreatmentEditorProps) {
       en_section_content: enTranslation?.section_content || {},
     },
   })
+
+  const watchedValues = watch()
 
   const onSubmit = async (data: TreatmentFormData) => {
     setSaving(true)
@@ -180,11 +185,13 @@ export default function TreatmentEditor({ treatment }: TreatmentEditorProps) {
               <ImageUpload
                 label="Treatment Icon"
                 value={watchedValues.icon_url}
-                onChange={(url) => setValue('icon_url', url)}
-                onRemove={() => setValue('icon_url', null)}
+                onChange={(url) => setValue('icon_url', url, { shouldDirty: true })}
+                onRemove={() => setValue('icon_url', null, { shouldDirty: true })}
                 bucket="treatments"
                 accept="image/svg+xml,image/png,image/webp"
                 maxSizeMB={2}
+                showAIGenerate={true}
+                aiPromptHint={`A simple, clean icon representing ${watchedValues.pt_title || watchedValues.slug || 'dental treatment'}, suitable for a modern dental clinic website`}
               />
               <p className="mt-1 text-xs text-gray-500">
                 Recommended: SVG icon, 64x64px or larger
@@ -195,11 +202,13 @@ export default function TreatmentEditor({ treatment }: TreatmentEditorProps) {
               <ImageUpload
                 label="Hero Image"
                 value={watchedValues.hero_image_url}
-                onChange={(url) => setValue('hero_image_url', url)}
-                onRemove={() => setValue('hero_image_url', null)}
+                onChange={(url) => setValue('hero_image_url', url, { shouldDirty: true })}
+                onRemove={() => setValue('hero_image_url', null, { shouldDirty: true })}
                 bucket="treatments"
                 accept="image/jpeg,image/png,image/webp"
                 maxSizeMB={5}
+                showAIGenerate={true}
+                aiPromptHint={`A professional hero image for ${watchedValues.pt_title || watchedValues.slug || 'dental treatment'} - modern dental clinic, warm lighting, professional atmosphere`}
               />
               <p className="mt-1 text-xs text-gray-500">
                 Recommended: 1200x600px or larger, JPG/WebP format
@@ -272,6 +281,14 @@ export default function TreatmentEditor({ treatment }: TreatmentEditorProps) {
                   {errors.pt_title && (
                     <p className="mt-1 text-sm text-red-600">{errors.pt_title.message}</p>
                   )}
+                  <div className="mt-2">
+                    <AITextAssist
+                      prompt={`Suggest a compelling title for a dental treatment about: ${watchedValues.slug || 'dental treatment'}`}
+                      contextType="treatment_title"
+                      onApply={(text) => setValue('pt_title', text, { shouldDirty: true })}
+                      maxTokens={100}
+                    />
+                  </div>
                 </div>
 
                 <div>
@@ -283,6 +300,14 @@ export default function TreatmentEditor({ treatment }: TreatmentEditorProps) {
                     {...register('pt_subtitle')}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                  <div className="mt-2">
+                    <AITextAssist
+                      prompt={`Write a subtitle for a dental treatment titled "${watchedValues.pt_title || watchedValues.slug}"`}
+                      contextType="treatment_subtitle"
+                      onApply={(text) => setValue('pt_subtitle', text, { shouldDirty: true })}
+                      maxTokens={150}
+                    />
+                  </div>
                 </div>
 
                 <div>
@@ -294,6 +319,14 @@ export default function TreatmentEditor({ treatment }: TreatmentEditorProps) {
                     rows={6}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                  <div className="mt-2">
+                    <AITextAssist
+                      prompt={`Write a detailed, patient-friendly description in Portuguese for the dental treatment "${watchedValues.pt_title || watchedValues.slug}". Include what the treatment is, who it's for, and key benefits.`}
+                      contextType="treatment_description"
+                      onApply={(text) => setValue('pt_description', text, { shouldDirty: true })}
+                      maxTokens={800}
+                    />
+                  </div>
                 </div>
 
                 <Controller
@@ -349,6 +382,14 @@ export default function TreatmentEditor({ treatment }: TreatmentEditorProps) {
                   {errors.en_title && (
                     <p className="mt-1 text-sm text-red-600">{errors.en_title.message}</p>
                   )}
+                  <div className="mt-2">
+                    <AITextAssist
+                      prompt={`Suggest a compelling title in English for a dental treatment about: ${watchedValues.slug || 'dental treatment'}`}
+                      contextType="treatment_title"
+                      onApply={(text) => setValue('en_title', text, { shouldDirty: true })}
+                      maxTokens={100}
+                    />
+                  </div>
                 </div>
 
                 <div>
@@ -360,6 +401,14 @@ export default function TreatmentEditor({ treatment }: TreatmentEditorProps) {
                     {...register('en_subtitle')}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                  <div className="mt-2">
+                    <AITextAssist
+                      prompt={`Write a subtitle in English for a dental treatment titled "${watchedValues.en_title || watchedValues.slug}"`}
+                      contextType="treatment_subtitle"
+                      onApply={(text) => setValue('en_subtitle', text, { shouldDirty: true })}
+                      maxTokens={150}
+                    />
+                  </div>
                 </div>
 
                 <div>
@@ -371,6 +420,14 @@ export default function TreatmentEditor({ treatment }: TreatmentEditorProps) {
                     rows={6}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                  <div className="mt-2">
+                    <AITextAssist
+                      prompt={`Write a detailed, patient-friendly description in English for the dental treatment "${watchedValues.en_title || watchedValues.slug}". Include what the treatment is, who it's for, and key benefits.`}
+                      contextType="treatment_description"
+                      onApply={(text) => setValue('en_description', text, { shouldDirty: true })}
+                      maxTokens={800}
+                    />
+                  </div>
                 </div>
 
                 <Controller
