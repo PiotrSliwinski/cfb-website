@@ -57,13 +57,14 @@ const routes = [
   { path: '/api/hero-sections', method: 'GET', expectedStatus: 200, description: 'Get hero sections', category: 'API - Public' },
   { path: '/api/cta-sections', method: 'GET', expectedStatus: 200, description: 'Get CTA sections', category: 'API - Public' },
 
-  // API Routes - Admin
-  // Note: The following admin API routes are write-only (POST/PUT/DELETE) and don't support GET:
+  // API Routes - Admin (require authentication)
+  // Note: Admin API routes now require authentication and return 401 when not authenticated
+  // The following routes are write-only (POST/PUT/DELETE) and don't support GET:
   // - /api/admin/faqs (POST, PUT, DELETE only)
   // - /api/admin/submissions (PUT, DELETE only)
   // - /api/admin/clinic-settings (PUT only)
   // - /api/admin/settings/contact (POST, PUT, DELETE only)
-  { path: '/api/admin/languages', method: 'GET', expectedStatus: 200, description: 'Get languages', category: 'API - Admin' },
+  { path: '/api/admin/languages', method: 'GET', expectedStatus: 401, requiresAuth: true, description: 'Get languages (requires auth)', category: 'API - Admin' },
 ];
 
 async function testRoute(route) {
