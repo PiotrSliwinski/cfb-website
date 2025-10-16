@@ -2,7 +2,7 @@
 -- Separate from settings for enhanced security
 
 CREATE TABLE IF NOT EXISTS api_keys (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name VARCHAR(255) UNIQUE NOT NULL,
   key_value TEXT NOT NULL,
   service VARCHAR(100) NOT NULL,

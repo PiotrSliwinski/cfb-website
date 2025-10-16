@@ -1,6 +1,6 @@
 -- Create junction table for team members and their treatment specialties
 CREATE TABLE team_member_specialties (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   team_member_id UUID REFERENCES team_members(id) ON DELETE CASCADE,
   treatment_id UUID REFERENCES treatments(id) ON DELETE CASCADE,
   display_order INT DEFAULT 0,

@@ -2,7 +2,7 @@
 -- Replaces hardcoded config values with admin-editable settings
 
 CREATE TABLE IF NOT EXISTS settings (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   key VARCHAR(255) UNIQUE NOT NULL,
   value JSONB NOT NULL,
   category VARCHAR(100) NOT NULL,
