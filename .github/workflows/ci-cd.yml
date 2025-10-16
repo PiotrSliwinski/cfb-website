@@ -65,11 +65,40 @@ jobs:
         run: npx tsc --noEmit
         continue-on-error: true
 
-  # Job 2: Build
-  build:
-    name: Build Application
+  # Job 2: Determine Environment
+  determine-environment:
+    name: Determine Deployment Environment
     runs-on: ubuntu-latest
     needs: lint
+    outputs:
+      environment: ${{ steps.set-env.outputs.environment }}
+      is-staging: ${{ steps.set-env.outputs.is-staging }}
+      is-production: ${{ steps.set-env.outputs.is-production }}
+
+    steps:
+      - name: Determine environment from branch
+        id: set-env
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+            echo "is-staging=false" >> $GITHUB_OUTPUT
+            echo "is-production=true" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+            echo "environment=staging" >> $GITHUB_OUTPUT
+            echo "is-staging=true" >> $GITHUB_OUTPUT
+            echo "is-production=false" >> $GITHUB_OUTPUT
+          else
+            echo "environment=none" >> $GITHUB_OUTPUT
+            echo "is-staging=false" >> $GITHUB_OUTPUT
+            echo "is-production=false" >> $GITHUB_OUTPUT
+          fi
+
+  # Job 3: Build (Staging)
+  build-staging:
+    name: Build Application (Staging)
+    runs-on: ubuntu-latest
+    needs: determine-environment
+    if: needs.determine-environment.outputs.is-staging == 'true'
 
     steps:
       - name: Checkout code
@@ -86,11 +115,11 @@ jobs:
 
       - name: Create .env file for build
         run: |
-          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env.production
-          echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env.production
-          echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> .env.production
-          echo "GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }}" >> .env.production
-          echo "GOOGLE_PLACE_ID=${{ secrets.GOOGLE_PLACE_ID }}" >> .env.production
+          echo "SUPABASE_URL=${{ secrets.STAGING_SUPABASE_URL }}" >> .env.production
+          echo "SUPABASE_ANON_KEY=${{ secrets.STAGING_SUPABASE_ANON_KEY }}" >> .env.production
+          echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.STAGING_SUPABASE_SERVICE_ROLE_KEY }}" >> .env.production
+          echo "GOOGLE_PLACES_API_KEY=${{ secrets.STAGING_GOOGLE_PLACES_API_KEY }}" >> .env.production
+          echo "GOOGLE_PLACE_ID=${{ secrets.STAGING_GOOGLE_PLACE_ID }}" >> .env.production
 
       - name: Build Next.js application
         run: npm run build
@@ -100,18 +129,64 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts
+          name: build-artifacts-staging
           path: |
             .next/
             public/
           retention-days: 1
 
-  # Job 3: Route Tests
+  # Job 4: Build (Production)
+  build-production:
+    name: Build Application (Production)
+    runs-on: ubuntu-latest
+    needs: determine-environment
+    if: needs.determine-environment.outputs.is-production == 'true'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create .env file for build
+        run: |
+          echo "SUPABASE_URL=${{ secrets.PRODUCTION_SUPABASE_URL }}" >> .env.production
+          echo "SUPABASE_ANON_KEY=${{ secrets.PRODUCTION_SUPABASE_ANON_KEY }}" >> .env.production
+          echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.PRODUCTION_SUPABASE_SERVICE_ROLE_KEY }}" >> .env.production
+          echo "GOOGLE_PLACES_API_KEY=${{ secrets.PRODUCTION_GOOGLE_PLACES_API_KEY }}" >> .env.production
+          echo "GOOGLE_PLACE_ID=${{ secrets.PRODUCTION_GOOGLE_PLACE_ID }}" >> .env.production
+
+      - name: Build Next.js application
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-production
+          path: |
+            .next/
+            public/
+          retention-days: 1
+
+  # Job 5: Route Tests
   test-routes:
     name: Route Tests
     runs-on: ubuntu-latest
-    needs: build
-    if: github.event.inputs.skip_tests != 'true' || github.event_name != 'workflow_dispatch'
+    needs: [determine-environment, build-staging, build-production]
+    if: |
+      always() &&
+      !cancelled() &&
+      (github.event.inputs.skip_tests != 'true' || github.event_name != 'workflow_dispatch') &&
+      (needs.build-staging.result == 'success' || needs.build-production.result == 'success')
 
     steps:
       - name: Checkout code
@@ -155,7 +230,7 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: build-artifacts
+          name: ${{ needs.determine-environment.outputs.is-staging == 'true' && 'build-artifacts-staging' || 'build-artifacts-production' }}
 
       - name: Start application
         run: |
@@ -180,19 +255,20 @@ jobs:
         if: always()
         run: supabase stop --no-backup
 
-  # Job 4: Build and Push Docker Image
-  docker-build:
-    name: Build & Push Docker Image
+  # Job 6: Build and Push Docker Image (Staging)
+  docker-build-staging:
+    name: Build & Push Docker Image (Staging)
     runs-on: ubuntu-latest
-    needs: [build, test-routes]
+    needs: [determine-environment, build-staging, test-routes]
     if: |
       always() &&
       !cancelled() &&
-      (needs.build.result == 'success') &&
+      needs.determine-environment.outputs.is-staging == 'true' &&
+      (needs.build-staging.result == 'success') &&
       (needs['test-routes'].result == 'success' || needs['test-routes'].result == 'skipped') &&
       (
         github.event_name == 'workflow_dispatch' ||
-        (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'))
+        (github.event_name == 'push' && github.ref == 'refs/heads/develop')
       )
 
     steps:
@@ -212,45 +288,90 @@ jobs:
       - name: Configure Docker for GCR
         run: gcloud auth configure-docker
 
-      - name: Extract branch name
-        shell: bash
-        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
-
       - name: Build Docker image
         run: |
           docker build \
-            --build-arg SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
-            --build-arg SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
-            --build-arg SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} \
-            --build-arg GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }} \
-            --build-arg GOOGLE_PLACE_ID=${{ secrets.GOOGLE_PLACE_ID }} \
-            -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
-            -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ env.BRANCH_NAME }} \
-            -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:latest \
+            --build-arg SUPABASE_URL=${{ secrets.STAGING_SUPABASE_URL }} \
+            --build-arg SUPABASE_ANON_KEY=${{ secrets.STAGING_SUPABASE_ANON_KEY }} \
+            --build-arg SUPABASE_SERVICE_ROLE_KEY=${{ secrets.STAGING_SUPABASE_SERVICE_ROLE_KEY }} \
+            --build-arg GOOGLE_PLACES_API_KEY=${{ secrets.STAGING_GOOGLE_PLACES_API_KEY }} \
+            --build-arg GOOGLE_PLACE_ID=${{ secrets.STAGING_GOOGLE_PLACE_ID }} \
+            -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:staging-${{ github.sha }} \
+            -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:staging-latest \
             .
 
       - name: Push Docker image
         run: |
-          docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
-          docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ env.BRANCH_NAME }}
-          docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:latest
+          docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:staging-${{ github.sha }}
+          docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:staging-latest
 
-  # Job 5: Deploy to Cloud Run (Staging)
-  deploy-staging:
-    name: Deploy to Cloud Run (Staging)
+  # Job 7: Build and Push Docker Image (Production)
+  docker-build-production:
+    name: Build & Push Docker Image (Production)
     runs-on: ubuntu-latest
-    needs: docker-build
+    needs: [determine-environment, build-production, test-routes]
     if: |
       always() &&
       !cancelled() &&
-      (needs.docker-build.result == 'success') &&
+      needs.determine-environment.outputs.is-production == 'true' &&
+      (needs.build-production.result == 'success') &&
+      (needs['test-routes'].result == 'success' || needs['test-routes'].result == 'skipped') &&
+      (
+        github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'push' && github.ref == 'refs/heads/main')
+      )
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GOOGLE_PROJECT_ID }}
+
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Configure Docker for GCR
+        run: gcloud auth configure-docker
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg SUPABASE_URL=${{ secrets.PRODUCTION_SUPABASE_URL }} \
+            --build-arg SUPABASE_ANON_KEY=${{ secrets.PRODUCTION_SUPABASE_ANON_KEY }} \
+            --build-arg SUPABASE_SERVICE_ROLE_KEY=${{ secrets.PRODUCTION_SUPABASE_SERVICE_ROLE_KEY }} \
+            --build-arg GOOGLE_PLACES_API_KEY=${{ secrets.PRODUCTION_GOOGLE_PLACES_API_KEY }} \
+            --build-arg GOOGLE_PLACE_ID=${{ secrets.PRODUCTION_GOOGLE_PLACE_ID }} \
+            -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
+            -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:latest \
+            .
+
+      - name: Push Docker image
+        run: |
+          docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:latest
+
+  # Job 8: Deploy to Cloud Run (Staging)
+  deploy-staging:
+    name: Deploy to Cloud Run (Staging)
+    runs-on: ubuntu-latest
+    needs: [determine-environment, docker-build-staging]
+    if: |
+      always() &&
+      !cancelled() &&
+      needs.determine-environment.outputs.is-staging == 'true' &&
+      (needs.docker-build-staging.result == 'success') &&
       (
         (github.event_name == 'workflow_dispatch' && (github.event.inputs.environment == 'staging' || github.event.inputs.environment == 'both')) ||
         (github.event_name == 'push' && github.ref == 'refs/heads/develop')
       )
     environment:
       name: staging
-      url: https://cfb-website-staging.run.app
+      url: https://cfb-website-staging-clinica-ferreira-borges.run.app
 
     steps:
       - name: Checkout code
@@ -269,12 +390,12 @@ jobs:
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy ${{ env.SERVICE_NAME }}-staging \
-            --image=${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:develop \
+            --image=${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:staging-${{ github.sha }} \
             --platform=managed \
             --region=${{ env.REGION }} \
             --allow-unauthenticated \
             --set-env-vars="NODE_ENV=production" \
-            --set-secrets="SUPABASE_URL=SUPABASE_URL:latest,SUPABASE_ANON_KEY=SUPABASE_ANON_KEY:latest,SUPABASE_SERVICE_ROLE_KEY=SUPABASE_SERVICE_ROLE_KEY:latest,GOOGLE_PLACES_API_KEY=GOOGLE_PLACES_API_KEY:latest,GOOGLE_PLACE_ID=GOOGLE_PLACE_ID:latest" \
+            --set-secrets="SUPABASE_URL=staging-supabase-url:latest,SUPABASE_ANON_KEY=staging-supabase-anon-key:latest,SUPABASE_SERVICE_ROLE_KEY=staging-supabase-service-role-key:latest,GOOGLE_PLACES_API_KEY=staging-google-places-api-key:latest,GOOGLE_PLACE_ID=staging-google-place-id:latest" \
             --memory=512Mi \
             --cpu=1 \
             --timeout=300 \
@@ -294,15 +415,16 @@ jobs:
           curl -f ${{ env.STAGING_URL }} || exit 1
           curl -f ${{ env.STAGING_URL }}/api/settings || exit 1
 
-  # Job 6: Deploy to Cloud Run (Production)
+  # Job 9: Deploy to Cloud Run (Production)
   deploy-production:
     name: Deploy to Cloud Run (Production)
     runs-on: ubuntu-latest
-    needs: docker-build
+    needs: [determine-environment, docker-build-production]
     if: |
       always() &&
       !cancelled() &&
-      (needs.docker-build.result == 'success') &&
+      needs.determine-environment.outputs.is-production == 'true' &&
+      (needs.docker-build-production.result == 'success') &&
       (
         (github.event_name == 'workflow_dispatch' && (github.event.inputs.environment == 'production' || github.event.inputs.environment == 'both')) ||
         (github.event_name == 'push' && github.ref == 'refs/heads/main')
@@ -328,12 +450,12 @@ jobs:
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy ${{ env.SERVICE_NAME }} \
-            --image=${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
+            --image=${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
             --platform=managed \
             --region=${{ env.REGION }} \
             --allow-unauthenticated \
             --set-env-vars="NODE_ENV=production" \
-            --set-secrets="SUPABASE_URL=SUPABASE_URL:latest,SUPABASE_ANON_KEY=SUPABASE_ANON_KEY:latest,SUPABASE_SERVICE_ROLE_KEY=SUPABASE_SERVICE_ROLE_KEY:latest,GOOGLE_PLACES_API_KEY=GOOGLE_PLACES_API_KEY:latest,GOOGLE_PLACE_ID=GOOGLE_PLACE_ID:latest" \
+            --set-secrets="SUPABASE_URL=production-supabase-url:latest,SUPABASE_ANON_KEY=production-supabase-anon-key:latest,SUPABASE_SERVICE_ROLE_KEY=production-supabase-service-role-key:latest,GOOGLE_PLACES_API_KEY=production-google-places-api-key:latest,GOOGLE_PLACE_ID=production-google-place-id:latest" \
             --memory=1Gi \
             --cpu=2 \
             --timeout=300 \
