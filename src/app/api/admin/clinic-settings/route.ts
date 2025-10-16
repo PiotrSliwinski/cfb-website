@@ -1,7 +1,14 @@
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
+import { requireAdminApi } from '@/lib/auth/server'
 
 export async function PUT(request: Request) {
+  // Require authentication
+  const authResult = await requireAdminApi();
+  if (authResult instanceof NextResponse) {
+    return authResult;
+  }
+
   try {
     const supabase = await createServerClient()
     const settings = await request.json()

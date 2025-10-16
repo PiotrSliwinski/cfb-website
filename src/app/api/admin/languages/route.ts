@@ -2,8 +2,15 @@ import { NextResponse } from 'next/server'
 import { getLanguages, createLanguage } from '@/lib/supabase/queries/languages'
 import { clearLocaleCache } from '@/lib/i18n/config'
 import type { LanguageCreate } from '@/types/admin/language'
+import { requireAdminApi } from '@/lib/auth/server'
 
 export async function GET() {
+  // Require authentication
+  const authResult = await requireAdminApi();
+  if (authResult instanceof NextResponse) {
+    return authResult;
+  }
+
   try {
     const languages = await getLanguages(false)
 
@@ -27,6 +34,12 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  // Require authentication
+  const authResult = await requireAdminApi();
+  if (authResult instanceof NextResponse) {
+    return authResult;
+  }
+
   try {
     const body: LanguageCreate = await request.json()
 
