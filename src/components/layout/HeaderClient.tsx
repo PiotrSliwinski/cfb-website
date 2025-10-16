@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { Logo } from './Logo';
 import { Phone, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 // Treatment icon mapping
@@ -43,7 +44,25 @@ export function HeaderClient({
   locale,
 }: HeaderClientProps) {
   const t = useTranslations('nav');
+  const router = useRouter();
   const [showMegaMenu, setShowMegaMenu] = useState(false);
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Handle navigation with proper cleanup
+  const handleNavigation = (href: string) => {
+    // Clear any existing timeout
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+
+    // Start navigation immediately
+    router.push(href);
+
+    // Close menu with a small delay to ensure navigation starts
+    closeTimeoutRef.current = setTimeout(() => {
+      setShowMegaMenu(false);
+    }, 100);
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-200">
@@ -103,17 +122,16 @@ export function HeaderClient({
                   {practiceLinks.map((link) => {
                     const IconComponent = link.icon;
                     return (
-                      <Link
+                      <button
                         key={link.href}
-                        href={link.href}
-                        className="group flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition-colors"
-                        onClick={() => setShowMegaMenu(false)}
+                        onClick={() => handleNavigation(link.href)}
+                        className="group flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition-colors w-full text-left"
                       >
                         <IconComponent className="w-5 h-5 text-gray-400 group-hover:text-primary-600 transition-colors flex-shrink-0" />
                         <span className="text-sm font-medium text-gray-700 group-hover:text-primary-600 transition-colors">
                           {link.label}
                         </span>
-                      </Link>
+                      </button>
                     );
                   })}
                 </div>
@@ -131,16 +149,17 @@ export function HeaderClient({
                   {treatments.map((treatment) => {
                     const translation = treatment.treatment_translations[0];
                     const isPopular = treatment.is_popular;
+                    const href = `/${locale}/tratamentos/${treatment.slug}`;
+
                     return (
-                      <Link
+                      <button
                         key={treatment.id}
-                        href={`/${locale}/tratamentos/${treatment.slug}`}
-                        className={`group relative flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-colors ${
+                        onClick={() => handleNavigation(href)}
+                        className={`group relative flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-colors text-left w-full ${
                           isPopular
                             ? 'bg-primary-50 hover:bg-primary-100'
                             : 'hover:bg-gray-50'
                         }`}
-                        onClick={() => setShowMegaMenu(false)}
                       >
                         {isPopular && (
                           <div className="absolute -top-1 -right-1 w-2 h-2 bg-primary-500 rounded-full"></div>
@@ -179,7 +198,7 @@ export function HeaderClient({
                         >
                           {translation?.title}
                         </span>
-                      </Link>
+                      </button>
                     );
                   })}
                 </div>
