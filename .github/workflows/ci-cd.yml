@@ -329,6 +329,8 @@ jobs:
     name: Apply Migrations (Staging)
     runs-on: ubuntu-latest
     needs: [determine-environment, docker-build-staging]
+    # Note: Using repository-level SUPABASE_ACCESS_TOKEN
+    # But environment-specific SUPABASE_URL and SUPABASE_DB_PASSWORD from Staging
     environment: Staging
     if: |
       always() &&
