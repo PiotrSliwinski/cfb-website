@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { saveTeamMemberFromEditor, type EditorTeamMemberData } from '@/app/actions/team'
 
 const teamMemberSchema = z.object({
   slug: z.string().min(1, 'Slug is required'),
@@ -101,63 +101,33 @@ export default function TeamMemberEditor({ member, treatments }: TeamMemberEdito
     setError(null)
 
     try {
-      const supabase = createClient()
-
-      // Upsert team member
-      const memberData = {
-        id: member?.id || undefined,
+      // Prepare data for server action
+      const editorData: EditorTeamMemberData = {
+        id: member?.id,
         slug: data.slug,
         display_order: data.display_order,
         is_published: data.is_published,
         photo_url: data.photo_url || null,
-        email: data.email || null,
-        phone: data.phone || null,
+        email: data.email,
+        phone: data.phone,
+        pt_name: data.pt_name,
+        pt_title: data.pt_title,
+        pt_specialty: data.pt_specialty,
+        pt_bio: data.pt_bio,
+        pt_credentials: data.pt_credentials,
+        en_name: data.en_name,
+        en_title: data.en_title,
+        en_specialty: data.en_specialty,
+        en_bio: data.en_bio,
+        en_credentials: data.en_credentials,
+        specialties: data.specialties,
       }
 
-      const { data: savedMember, error: memberError } = await supabase
-        .from('team_members')
-        .upsert(memberData)
-        .select()
-        .single()
+      // Call server action
+      const result = await saveTeamMemberFromEditor(editorData)
 
-      if (memberError) throw memberError
-
-      // Upsert PT translation
-      await supabase.from('team_member_translations').upsert({
-        member_id: savedMember.id,
-        language_code: 'pt',
-        name: data.pt_name,
-        title: data.pt_title || null,
-        specialty: data.pt_specialty || null,
-        bio: data.pt_bio || null,
-        credentials: data.pt_credentials || null,
-      })
-
-      // Upsert EN translation
-      await supabase.from('team_member_translations').upsert({
-        member_id: savedMember.id,
-        language_code: 'en',
-        name: data.en_name,
-        title: data.en_title || null,
-        specialty: data.en_specialty || null,
-        bio: data.en_bio || null,
-        credentials: data.en_credentials || null,
-      })
-
-      // Update specialties
-      // First, delete existing specialties
-      await supabase
-        .from('team_member_specialties')
-        .delete()
-        .eq('member_id', savedMember.id)
-
-      // Then insert new specialties
-      if (data.specialties && data.specialties.length > 0) {
-        const specialtiesData = data.specialties.map(treatmentId => ({
-          member_id: savedMember.id,
-          treatment_id: treatmentId,
-        }))
-        await supabase.from('team_member_specialties').insert(specialtiesData)
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to save team member')
       }
 
       // Success - redirect to team list

@@ -5,7 +5,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { saveTreatmentFromEditor, type EditorTreatmentData } from '@/app/actions/treatments'
 import { JsonEditor } from '@/components/admin/JsonEditor'
 
 const treatmentSchema = z.object({
@@ -85,50 +85,35 @@ export default function TreatmentEditor({ treatment }: TreatmentEditorProps) {
     setError(null)
 
     try {
-      const supabase = createClient()
-
-      // Upsert treatment
-      const treatmentData = {
-        id: treatment?.id || undefined,
+      // Prepare data for server action
+      const editorData: EditorTreatmentData = {
+        id: treatment?.id,
         slug: data.slug,
         display_order: data.display_order,
         is_published: data.is_published,
         is_featured: data.is_featured,
         icon_url: data.icon_url || null,
         hero_image_url: data.hero_image_url || null,
+        pt_title: data.pt_title,
+        pt_subtitle: data.pt_subtitle,
+        pt_description: data.pt_description,
+        pt_benefits: data.pt_benefits,
+        pt_process_steps: data.pt_process_steps,
+        pt_section_content: data.pt_section_content,
+        en_title: data.en_title,
+        en_subtitle: data.en_subtitle,
+        en_description: data.en_description,
+        en_benefits: data.en_benefits,
+        en_process_steps: data.en_process_steps,
+        en_section_content: data.en_section_content,
       }
 
-      const { data: savedTreatment, error: treatmentError } = await supabase
-        .from('treatments')
-        .upsert(treatmentData)
-        .select()
-        .single()
+      // Call server action
+      const result = await saveTreatmentFromEditor(editorData)
 
-      if (treatmentError) throw treatmentError
-
-      // Upsert PT translation
-      await supabase.from('treatment_translations').upsert({
-        treatment_id: savedTreatment.id,
-        language_code: 'pt',
-        title: data.pt_title,
-        subtitle: data.pt_subtitle || null,
-        description: data.pt_description || null,
-        benefits: data.pt_benefits || [],
-        process_steps: data.pt_process_steps || [],
-        section_content: data.pt_section_content || {},
-      })
-
-      // Upsert EN translation
-      await supabase.from('treatment_translations').upsert({
-        treatment_id: savedTreatment.id,
-        language_code: 'en',
-        title: data.en_title,
-        subtitle: data.en_subtitle || null,
-        description: data.en_description || null,
-        benefits: data.en_benefits || [],
-        process_steps: data.en_process_steps || [],
-        section_content: data.en_section_content || {},
-      })
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to save treatment')
+      }
 
       // Success - redirect to treatments list
       router.push('/admin/treatments')

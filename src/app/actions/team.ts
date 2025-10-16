@@ -1,6 +1,9 @@
 'use server';
 
 import { createClient as createAdminClient } from '@supabase/supabase-js';
+import { createClient } from '@/lib/supabase/server';
+import { revalidatePath } from 'next/cache';
+import { requireAuth } from '@/lib/auth/server';
 
 /**
  * Server Actions for Team Member Management
@@ -16,9 +19,6 @@ import { createClient as createAdminClient } from '@supabase/supabase-js';
  *
  * @module actions/team
  */
-
-import { createClient } from '@/lib/supabase/server';
-import { revalidatePath } from 'next/cache';
 
 /**
  * Team member data structure for create/update operations
@@ -109,6 +109,9 @@ export interface SaveResult {
  * ```
  */
 export async function saveTeamMember(memberData: TeamMemberData): Promise<SaveResult> {
+  // Require authentication
+  await requireAuth();
+
   const supabase = await createClient();
 
   try {
@@ -288,6 +291,9 @@ export async function saveTeamMember(memberData: TeamMemberData): Promise<SaveRe
 }
 
 export async function deleteTeamMember(id: string): Promise<SaveResult> {
+  // Require authentication
+  await requireAuth();
+
   const supabase = await createClient();
 
   try {
@@ -356,6 +362,154 @@ export async function updateTeamMembersOrder(
     return {
       success: false,
       error: error.message || 'Failed to update display order',
+    };
+  }
+}
+
+/**
+ * Save team member from editor (handles the flattened form structure)
+ * Used by TeamMemberEditor component
+ */
+export interface EditorTeamMemberData {
+  id?: string;
+  slug: string;
+  display_order: number;
+  is_published: boolean;
+  photo_url?: string | null;
+  email?: string;
+  phone?: string;
+  // Portuguese fields
+  pt_name: string;
+  pt_title?: string;
+  pt_specialty?: string;
+  pt_bio?: string;
+  pt_credentials?: string;
+  // English fields
+  en_name: string;
+  en_title?: string;
+  en_specialty?: string;
+  en_bio?: string;
+  en_credentials?: string;
+  // Specialties
+  specialties?: string[];
+}
+
+export async function saveTeamMemberFromEditor(data: EditorTeamMemberData): Promise<SaveResult> {
+  // Require authentication
+  await requireAuth();
+
+  const supabase = await createClient();
+
+  try {
+    console.log('💾 Saving team member from editor:', data.slug);
+
+    // Prepare team member data
+    const memberData = {
+      slug: data.slug,
+      display_order: data.display_order,
+      is_published: data.is_published,
+      photo_url: data.photo_url || null,
+      email: data.email || null,
+      phone: data.phone || null,
+    };
+
+    let memberId = data.id;
+
+    if (memberId) {
+      // UPDATE existing team member
+      const { error: memberError } = await supabase
+        .from('team_members')
+        .update(memberData)
+        .eq('id', memberId);
+
+      if (memberError) throw memberError;
+    } else {
+      // CREATE new team member
+      const { data: newMember, error: memberError } = await supabase
+        .from('team_members')
+        .insert(memberData)
+        .select()
+        .single();
+
+      if (memberError || !newMember) throw memberError;
+      memberId = newMember.id;
+    }
+
+    // Upsert Portuguese translation
+    const { error: ptError } = await supabase
+      .from('team_member_translations')
+      .upsert(
+        {
+          member_id: memberId,
+          language_code: 'pt',
+          name: data.pt_name,
+          title: data.pt_title || null,
+          specialty: data.pt_specialty || null,
+          bio: data.pt_bio || null,
+          credentials: data.pt_credentials || null,
+        },
+        {
+          onConflict: 'member_id,language_code',
+        }
+      );
+
+    if (ptError) throw ptError;
+
+    // Upsert English translation
+    const { error: enError } = await supabase
+      .from('team_member_translations')
+      .upsert(
+        {
+          member_id: memberId,
+          language_code: 'en',
+          name: data.en_name,
+          title: data.en_title || null,
+          specialty: data.en_specialty || null,
+          bio: data.en_bio || null,
+          credentials: data.en_credentials || null,
+        },
+        {
+          onConflict: 'member_id,language_code',
+        }
+      );
+
+    if (enError) throw enError;
+
+    // Handle specialties
+    // Delete existing specialties
+    const { error: deleteError } = await supabase
+      .from('team_member_specialties')
+      .delete()
+      .eq('team_member_id', memberId);
+
+    if (deleteError) throw deleteError;
+
+    // Insert new specialties
+    if (data.specialties && data.specialties.length > 0) {
+      const specialtiesToInsert = data.specialties.map((treatmentId, index) => ({
+        team_member_id: memberId,
+        treatment_id: treatmentId,
+        display_order: index,
+      }));
+
+      const { error: specialtiesError } = await supabase
+        .from('team_member_specialties')
+        .insert(specialtiesToInsert);
+
+      if (specialtiesError) throw specialtiesError;
+    }
+
+    // Revalidate pages
+    revalidatePath('/admin/team');
+    revalidatePath('/[locale]/equipa');
+
+    console.log('✅ Team member saved successfully!');
+    return { success: true, data: { id: memberId } };
+  } catch (error: any) {
+    console.error('❌ Save team member from editor error:', error);
+    return {
+      success: false,
+      error: error.message || 'Failed to save team member',
     };
   }
 }

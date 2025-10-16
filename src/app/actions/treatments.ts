@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
 import { revalidatePath } from 'next/cache';
+import { requireAuth } from '@/lib/auth/server';
 
 export interface TreatmentTranslation {
   language_code: string;
@@ -36,6 +37,9 @@ export interface ActionResult {
 }
 
 export async function saveTreatment(treatmentData: TreatmentData): Promise<ActionResult> {
+  // Require authentication
+  await requireAuth();
+
   const supabase = await createClient();
 
   try {
@@ -164,6 +168,9 @@ export async function saveTreatment(treatmentData: TreatmentData): Promise<Actio
 }
 
 export async function deleteTreatment(id: string): Promise<ActionResult> {
+  // Require authentication
+  await requireAuth();
+
   const supabase = await createClient();
 
   try {
@@ -308,6 +315,134 @@ export async function updateTreatmentsOrder(
     return {
       success: false,
       error: error.message || 'Failed to update display order',
+    };
+  }
+}
+
+/**
+ * Save treatment from editor (handles the flattened form structure)
+ * Used by TreatmentEditor component
+ */
+export interface EditorTreatmentData {
+  id?: string;
+  slug: string;
+  display_order: number;
+  is_published: boolean;
+  is_featured?: boolean;
+  icon_url?: string | null;
+  hero_image_url?: string | null;
+  // Portuguese fields
+  pt_title: string;
+  pt_subtitle?: string;
+  pt_description?: string;
+  pt_benefits?: any;
+  pt_process_steps?: any;
+  pt_section_content?: any;
+  // English fields
+  en_title: string;
+  en_subtitle?: string;
+  en_description?: string;
+  en_benefits?: any;
+  en_process_steps?: any;
+  en_section_content?: any;
+}
+
+export async function saveTreatmentFromEditor(data: EditorTreatmentData): Promise<ActionResult> {
+  // Require authentication
+  await requireAuth();
+
+  const supabase = await createClient();
+
+  try {
+    console.log('💾 Saving treatment from editor:', data.slug);
+
+    // Prepare treatment data
+    const treatmentData = {
+      id: data.id,
+      slug: data.slug,
+      display_order: data.display_order,
+      is_published: data.is_published,
+      is_featured: data.is_featured ?? false,
+      icon_url: data.icon_url || null,
+      hero_image_url: data.hero_image_url || null,
+    };
+
+    let treatmentId = data.id;
+
+    if (treatmentId) {
+      // UPDATE existing treatment
+      const { error: treatmentError } = await supabase
+        .from('treatments')
+        .update(treatmentData)
+        .eq('id', treatmentId);
+
+      if (treatmentError) throw treatmentError;
+    } else {
+      // CREATE new treatment
+      const { data: newTreatment, error: treatmentError } = await supabase
+        .from('treatments')
+        .insert(treatmentData)
+        .select()
+        .single();
+
+      if (treatmentError || !newTreatment) throw treatmentError;
+      treatmentId = newTreatment.id;
+    }
+
+    // Upsert Portuguese translation
+    const { error: ptError } = await supabase
+      .from('treatment_translations')
+      .upsert(
+        {
+          treatment_id: treatmentId,
+          language_code: 'pt',
+          title: data.pt_title,
+          subtitle: data.pt_subtitle || null,
+          description: data.pt_description || null,
+          benefits: data.pt_benefits || null,
+          process_steps: data.pt_process_steps || null,
+          section_content: data.pt_section_content || null,
+        },
+        {
+          onConflict: 'treatment_id,language_code',
+        }
+      );
+
+    if (ptError) throw ptError;
+
+    // Upsert English translation
+    const { error: enError } = await supabase
+      .from('treatment_translations')
+      .upsert(
+        {
+          treatment_id: treatmentId,
+          language_code: 'en',
+          title: data.en_title,
+          subtitle: data.en_subtitle || null,
+          description: data.en_description || null,
+          benefits: data.en_benefits || null,
+          process_steps: data.en_process_steps || null,
+          section_content: data.en_section_content || null,
+        },
+        {
+          onConflict: 'treatment_id,language_code',
+        }
+      );
+
+    if (enError) throw enError;
+
+    // Revalidate pages
+    revalidatePath('/admin/treatments');
+    revalidatePath('/[locale]/tratamentos');
+    revalidatePath('/[locale]/tratamentos/[slug]');
+
+    console.log('✅ Treatment saved successfully!');
+    return { success: true, data: { id: treatmentId } };
+  } catch (error: any) {
+    console.error('❌ Save treatment from editor error:', error);
+    return {
+      success: false,
+      error: error.message || 'Failed to save treatment',
     };
   }
 }
