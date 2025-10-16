@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { signIn } from '@/app/actions/auth'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -17,24 +17,14 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      const supabase = createClient()
+      console.log('Attempting login with:', { email })
 
-      console.log('Attempting login with:', {
-        email,
-        url: process.env.NEXT_PUBLIC_SUPABASE_URL,
-        hasKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-      })
+      // Call Server Action
+      const result = await signIn(email, password)
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
-
-      console.log('Login response:', { data, error })
-
-      if (error) {
-        console.error('Login error details:', error)
-        setError(`${error.message} (Code: ${error.status || 'unknown'})`)
+      if (!result.success) {
+        console.error('Login error:', result.error)
+        setError(result.error || 'Authentication failed')
       } else {
         console.log('Login successful, redirecting...')
         router.push('/admin')

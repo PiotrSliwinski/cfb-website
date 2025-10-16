@@ -131,17 +131,19 @@ See [supabase/migrations/20251005223123_initial_schema.sql](supabase/migrations/
 Create a \`.env.local\` file with:
 
 \`\`\`env
-# Supabase (NEXT_PUBLIC_ prefix required for client-side access)
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+# Supabase (server-only, NO client-side access for maximum security)
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
-# Google Places API (server-only, no NEXT_PUBLIC_ prefix for security)
+# Google Places API (server-only)
 GOOGLE_PLACES_API_KEY=your_google_places_api_key
 GOOGLE_PLACE_ID=ChIJI6mkuRNzJA0RNwj5bykp9vk
 \`\`\`
 
 For local development, Supabase variables are set automatically when you run \`npx supabase start\`.
+
+**⚠️ Security Note:** All environment variables are server-only (no `NEXT_PUBLIC_` prefix). Database and API access happens exclusively through authenticated Server Actions.
 
 **For Google reviews integration**, see [docs/GOOGLE_REVIEWS_SETUP.md](docs/GOOGLE_REVIEWS_SETUP.md) for detailed setup instructions.
 
