@@ -21,28 +21,14 @@ import {
   ChevronDown
 } from 'lucide-react';
 
-// Enable static generation with revalidation
+// Enable dynamic rendering with revalidation (uses cookies for Supabase auth)
+export const dynamic = 'force-dynamic';
 export const revalidate = 3600; // Revalidate every hour
 
 export async function generateStaticParams() {
-  // Generate static pages for all treatments at build time
-  const locales = ['pt', 'en'];
-  const allParams: { locale: string; slug: string }[] = [];
-
-  for (const locale of locales) {
-    try {
-      const treatments = await getAllTreatments(locale);
-      const params = treatments.map((treatment: any) => ({
-        locale,
-        slug: treatment.slug
-      }));
-      allParams.push(...params);
-    } catch (error) {
-      console.error(`Error generating static params for locale ${locale}:`, error);
-    }
-  }
-
-  return allParams;
+  // Return empty array - pages will be generated on-demand
+  // This is necessary because the page uses cookies() via Supabase client
+  return [];
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }) {
