@@ -33,7 +33,8 @@ on:
 
 env:
   NODE_VERSION: '20'
-  REGISTRY: gcr.io
+  REGISTRY: europe-west1-docker.pkg.dev  # Artifact Registry (GCR is deprecated)
+  REPOSITORY: cfb-website  # Artifact Registry repository name
   PROJECT_ID: ${{ secrets.GOOGLE_PROJECT_ID }}
   SERVICE_NAME: cfb-website
   REGION: europe-west1
@@ -292,8 +293,8 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Configure Docker for GCR
-        run: gcloud auth configure-docker
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGISTRY }} --quiet
 
       - name: Build Docker image
         run: |
@@ -305,14 +306,14 @@ jobs:
             --build-arg SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} \
             --build-arg GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }} \
             --build-arg GOOGLE_PLACE_ID=${{ secrets.GOOGLE_PLACE_ID }} \
-            -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:staging-${{ github.sha }} \
-            -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:staging-latest \
+            -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:staging-${{ github.sha }} \
+            -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:staging-latest \
             .
 
       - name: Push Docker image
         run: |
-          docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:staging-${{ github.sha }}
-          docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:staging-latest
+          docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:staging-${{ github.sha }}
+          docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:staging-latest
 
   # Job 7: Apply Database Migrations (Staging)
   migrate-staging:
@@ -400,8 +401,8 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Configure Docker for GCR
-        run: gcloud auth configure-docker
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGISTRY }} --quiet
 
       - name: Build Docker image
         run: |
@@ -413,14 +414,14 @@ jobs:
             --build-arg SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} \
             --build-arg GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }} \
             --build-arg GOOGLE_PLACE_ID=${{ secrets.GOOGLE_PLACE_ID }} \
-            -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
-            -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:latest \
+            -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
+            -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest \
             .
 
       - name: Push Docker image
         run: |
-          docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
-          docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:latest
+          docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          docker push ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest
 
   # Job 9: Apply Database Migrations (Production)
   migrate-production:
@@ -513,7 +514,7 @@ jobs:
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy ${{ env.SERVICE_NAME }}-staging \
-            --image=${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:staging-${{ github.sha }} \
+            --image=${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:staging-${{ github.sha }} \
             --platform=managed \
             --region=${{ env.REGION }} \
             --allow-unauthenticated \
@@ -573,7 +574,7 @@ jobs:
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy ${{ env.SERVICE_NAME }} \
-            --image=${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
+            --image=${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
             --platform=managed \
             --region=${{ env.REGION }} \
             --allow-unauthenticated \
