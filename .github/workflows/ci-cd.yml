@@ -116,7 +116,9 @@ jobs:
 
       - name: Create .env file for build
         run: |
-          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env.production
+          # Support both vars and secrets (vars preferred for non-sensitive data like URLs)
+          SUPABASE_URL="${{ vars.SUPABASE_URL }}${{ secrets.SUPABASE_URL }}"
+          echo "SUPABASE_URL=$SUPABASE_URL" >> .env.production
           echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env.production
           echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> .env.production
           echo "GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }}" >> .env.production
@@ -159,7 +161,9 @@ jobs:
 
       - name: Create .env file for build
         run: |
-          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env.production
+          # Support both vars and secrets (vars preferred for non-sensitive data like URLs)
+          SUPABASE_URL="${{ vars.SUPABASE_URL }}${{ secrets.SUPABASE_URL }}"
+          echo "SUPABASE_URL=$SUPABASE_URL" >> .env.production
           echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env.production
           echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> .env.production
           echo "GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }}" >> .env.production
@@ -285,7 +289,13 @@ jobs:
       - name: Link to Supabase project
         run: |
           # Extract project reference from SUPABASE_URL
-          PROJECT_REF=$(echo "${{ secrets.SUPABASE_URL }}" | sed -n 's/.*https:\/\/\([^.]*\).*/\1/p')
+          # Try vars first, fallback to secrets
+          SUPABASE_URL="${{ vars.SUPABASE_URL }}"
+          if [ -z "$SUPABASE_URL" ]; then
+            SUPABASE_URL="${{ secrets.SUPABASE_URL }}"
+          fi
+
+          PROJECT_REF=$(echo "$SUPABASE_URL" | sed -n 's/.*https:\/\/\([^.]*\).*/\1/p')
           echo "Linking to project: $PROJECT_REF"
 
           # Create connection string for linking
@@ -330,7 +340,13 @@ jobs:
       - name: Link to Supabase project
         run: |
           # Extract project reference from SUPABASE_URL
-          PROJECT_REF=$(echo "${{ secrets.SUPABASE_URL }}" | sed -n 's/.*https:\/\/\([^.]*\).*/\1/p')
+          # Try vars first, fallback to secrets
+          SUPABASE_URL="${{ vars.SUPABASE_URL }}"
+          if [ -z "$SUPABASE_URL" ]; then
+            SUPABASE_URL="${{ secrets.SUPABASE_URL }}"
+          fi
+
+          PROJECT_REF=$(echo "$SUPABASE_URL" | sed -n 's/.*https:\/\/\([^.]*\).*/\1/p')
           echo "Linking to project: $PROJECT_REF"
 
           # Create connection string for linking
@@ -383,8 +399,10 @@ jobs:
 
       - name: Build Docker image
         run: |
+          # Support both vars and secrets for SUPABASE_URL
+          SUPABASE_URL="${{ vars.SUPABASE_URL }}${{ secrets.SUPABASE_URL }}"
           docker build \
-            --build-arg SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+            --build-arg SUPABASE_URL="$SUPABASE_URL" \
             --build-arg SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
             --build-arg SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} \
             --build-arg GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }} \
@@ -435,8 +453,10 @@ jobs:
 
       - name: Build Docker image
         run: |
+          # Support both vars and secrets for SUPABASE_URL
+          SUPABASE_URL="${{ vars.SUPABASE_URL }}${{ secrets.SUPABASE_URL }}"
           docker build \
-            --build-arg SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+            --build-arg SUPABASE_URL="$SUPABASE_URL" \
             --build-arg SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
             --build-arg SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} \
             --build-arg GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }} \
