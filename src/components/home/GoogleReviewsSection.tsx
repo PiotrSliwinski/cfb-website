@@ -6,7 +6,7 @@ import StarRating from '@/components/ui/StarRating';
 import { getGoogleReviews } from '@/lib/google-reviews';
 
 export default async function GoogleReviewsSection() {
-  const t = await getTranslations({ namespace: 'testimonials' });
+  const t = await getTranslations('testimonials');
   const reviewsData = await getGoogleReviews(5);
 
   if (reviewsData.warning && reviewsData.reviews.length === 0) {

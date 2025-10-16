@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 
 export async function CommitmentSection() {
-  const t = await getTranslations({ namespace: 'home.commitment' });
+  const t = await getTranslations('home.commitment');
 
   return (
     <section className="py-20 bg-white">

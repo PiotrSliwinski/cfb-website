@@ -8,7 +8,7 @@ import { getClinicSettings } from '@/lib/supabase/queries/clinic';
 
 export async function Footer() {
   const locale = await getLocale();
-  const t = await getTranslations({ namespace: 'footer' });
+  const t = await getTranslations('footer');
   const clinicSettings = await getClinicSettings();
 
   const phone = clinicSettings?.phone || '+351935189807';

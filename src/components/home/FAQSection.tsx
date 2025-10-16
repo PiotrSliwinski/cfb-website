@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 
 export async function FAQSection() {
-  const t = await getTranslations({ namespace: 'home.faqs' });
+  const t = await getTranslations('home.faqs');
 
   const faqs = [
     { id: 1, question: t('q1.question'), answer: t('q1.answer') },

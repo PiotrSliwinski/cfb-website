@@ -2,7 +2,7 @@ import { Shield, Droplets, Thermometer, Sparkles, ClipboardCheck, Users } from '
 import { getTranslations } from 'next-intl/server';
 
 export async function SafetySection() {
-  const t = await getTranslations({ namespace: 'home.safety' });
+  const t = await getTranslations('home.safety');
 
   const safetyMeasures = [
     {

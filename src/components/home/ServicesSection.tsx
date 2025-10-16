@@ -34,7 +34,7 @@ interface ServicesSectionProps {
 }
 
 export async function ServicesSection({ locale }: ServicesSectionProps) {
-  const t = await getTranslations({ namespace: 'home.services' });
+  const t = await getTranslations('home.services');
   const treatments = await getAllTreatments(locale);
 
   return (

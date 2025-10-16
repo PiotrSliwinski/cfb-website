@@ -2,7 +2,7 @@ import { Shield, Award, Users, Heart, CheckCircle, Star } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 
 export async function CertificationBadges() {
-  const t = await getTranslations({ namespace: 'home.certifications' });
+  const t = await getTranslations('home.certifications');
 
   const certifications = [
     {

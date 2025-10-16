@@ -6,7 +6,7 @@ interface TeamCredentialsSectionProps {
 }
 
 export async function TeamCredentialsSection({ locale }: TeamCredentialsSectionProps) {
-  const t = await getTranslations({ namespace: 'home.teamCredentials' });
+  const t = await getTranslations('home.teamCredentials');
 
   const credentials = [
     {
