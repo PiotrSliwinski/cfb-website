@@ -16,20 +16,11 @@ RUN npm ci && \
 # Copy application code
 COPY . .
 
-# Build arguments for environment variables (server-only)
-ARG SUPABASE_URL
-ARG SUPABASE_ANON_KEY
-ARG SUPABASE_SERVICE_ROLE_KEY
-ARG GOOGLE_PLACES_API_KEY
-ARG GOOGLE_PLACE_ID
-ARG OPENAI_API_KEY
-
-ENV SUPABASE_URL=$SUPABASE_URL
-ENV SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY
-ENV SUPABASE_SERVICE_ROLE_KEY=$SUPABASE_SERVICE_ROLE_KEY
-ENV GOOGLE_PLACES_API_KEY=$GOOGLE_PLACES_API_KEY
-ENV GOOGLE_PLACE_ID=$GOOGLE_PLACE_ID
-ENV OPENAI_API_KEY=$OPENAI_API_KEY
+# Build Next.js application
+# Note: Environment variables are NOT needed at build time because:
+# 1. We use standalone output which bundles everything
+# 2. All secrets are injected at runtime via Cloud Run (Google Secret Manager)
+# 3. No environment variables are inlined during build
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 

@@ -311,15 +311,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          # Support both vars and secrets for SUPABASE_URL
-          SUPABASE_URL="${{ vars.SUPABASE_URL }}${{ secrets.SUPABASE_URL }}"
+          # Build without secrets - they're injected at runtime via Google Secret Manager
           docker build \
-            --build-arg SUPABASE_URL="$SUPABASE_URL" \
-            --build-arg SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
-            --build-arg SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} \
-            --build-arg GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }} \
-            --build-arg GOOGLE_PLACE_ID=${{ secrets.GOOGLE_PLACE_ID }} \
-            --build-arg OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
             -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:staging-${{ github.sha }} \
             -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:staging-latest \
             .
@@ -433,15 +426,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          # Support both vars and secrets for SUPABASE_URL
-          SUPABASE_URL="${{ vars.SUPABASE_URL }}${{ secrets.SUPABASE_URL }}"
+          # Build without secrets - they're injected at runtime via Google Secret Manager
           docker build \
-            --build-arg SUPABASE_URL="$SUPABASE_URL" \
-            --build-arg SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
-            --build-arg SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} \
-            --build-arg GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }} \
-            --build-arg GOOGLE_PLACE_ID=${{ secrets.GOOGLE_PLACE_ID }} \
-            --build-arg OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
             -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
             -t ${{ env.REGISTRY }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest \
             .
@@ -547,7 +533,7 @@ jobs:
             --region=${{ env.REGION }} \
             --allow-unauthenticated \
             --set-env-vars="NODE_ENV=production" \
-            --set-secrets="SUPABASE_URL=supabase-url-staging:latest,SUPABASE_ANON_KEY=supabase-anon-key-staging:latest,SUPABASE_SERVICE_ROLE_KEY=supabase-service-role-key-staging:latest,GOOGLE_PLACES_API_KEY=google-places-api-key-staging:latest,GOOGLE_PLACE_ID=google-place-id-staging:latest" \
+            --set-secrets="SUPABASE_URL=supabase-url-staging:latest,SUPABASE_ANON_KEY=supabase-anon-key-staging:latest,SUPABASE_SERVICE_ROLE_KEY=supabase-service-role-key-staging:latest,GOOGLE_PLACES_API_KEY=google-places-api-key-staging:latest,GOOGLE_PLACE_ID=google-place-id-staging:latest,OPENAI_API_KEY=openai-api-key-staging:latest" \
             --memory=512Mi \
             --cpu=1 \
             --timeout=300 \
@@ -607,7 +593,7 @@ jobs:
             --region=${{ env.REGION }} \
             --allow-unauthenticated \
             --set-env-vars="NODE_ENV=production" \
-            --set-secrets="SUPABASE_URL=supabase-url-production:latest,SUPABASE_ANON_KEY=supabase-anon-key-production:latest,SUPABASE_SERVICE_ROLE_KEY=supabase-service-role-key-production:latest,GOOGLE_PLACES_API_KEY=google-places-api-key-production:latest,GOOGLE_PLACE_ID=google-place-id-production:latest" \
+            --set-secrets="SUPABASE_URL=supabase-url-production:latest,SUPABASE_ANON_KEY=supabase-anon-key-production:latest,SUPABASE_SERVICE_ROLE_KEY=supabase-service-role-key-production:latest,GOOGLE_PLACES_API_KEY=google-places-api-key-production:latest,GOOGLE_PLACE_ID=google-place-id-production:latest,OPENAI_API_KEY=openai-api-key-production:latest" \
             --memory=1Gi \
             --cpu=2 \
             --timeout=300 \
