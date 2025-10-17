@@ -8,7 +8,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test:routes": "node scripts/test-routes.mjs"
+    "type-check": "tsc --noEmit",
+    "test:routes": "node scripts/test-routes.mjs",
+    "test:build": "OPENAI_API_KEY=test_key GOOGLE_PLACES_API_KEY=test_key GOOGLE_PLACE_ID=test_id npm run build",
+    "pre-commit": "bash scripts/pre-commit-check.sh",
+    "check-all": "npm run lint && npm run type-check && npm run test:build"
   },
   "repository": {
     "type": "git",
