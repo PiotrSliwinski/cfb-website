@@ -216,15 +216,14 @@ jobs:
           version: latest
 
       - name: Start Supabase local instance
-        run: timeout 10m supabase start || echo "Supabase start took longer than expected but may still be running"
-        timeout-minutes: 12
+        run: supabase start
 
       - name: Set Supabase environment variables
         run: |
           # Supabase local uses well-documented default JWT keys (safe for testing)
-          # Server-only variables (no NEXT_PUBLIC prefix for security)
-          echo "SUPABASE_URL=http://127.0.0.1:54321" >> $GITHUB_ENV
-          echo "SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0" >> $GITHUB_ENV
+          # These are public keys used by all Supabase local instances
+          echo "NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0" >> $GITHUB_ENV
           echo "SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU" >> $GITHUB_ENV
           # Set mock Google API credentials for testing (API will return empty data gracefully)
           echo "GOOGLE_PLACES_API_KEY=test_api_key_for_ci" >> $GITHUB_ENV
@@ -235,22 +234,9 @@ jobs:
       - name: Verify Supabase is running
         run: |
           echo "Waiting for Supabase to be ready..."
-          # Wait up to 5 minutes for Supabase services to be fully running
-          for i in {1..60}; do
-            if supabase status 2>/dev/null | grep -q "API URL" && curl -s http://127.0.0.1:54321/rest/v1/ >/dev/null 2>&1; then
-              echo "✅ Supabase is ready!"
-              supabase status
-              break
-            fi
-            echo "Attempt $i/60: Supabase not ready yet, waiting 5 seconds..."
-            sleep 5
-          done
-          # Final check
-          if ! curl -s http://127.0.0.1:54321/rest/v1/ >/dev/null 2>&1; then
-            echo "❌ Supabase failed to start properly"
-            supabase status || true
-            exit 1
-          fi
+          npx wait-on http://127.0.0.1:54321/rest/v1/ -t 30000
+          echo "✅ Supabase is ready"
+          echo "URL: http://127.0.0.1:54321"
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
