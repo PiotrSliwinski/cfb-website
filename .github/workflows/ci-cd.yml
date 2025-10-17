@@ -216,7 +216,8 @@ jobs:
           version: latest
 
       - name: Start Supabase local instance
-        run: supabase start
+        run: timeout 10m supabase start || echo "Supabase start took longer than expected but may still be running"
+        timeout-minutes: 12
 
       - name: Set Supabase environment variables
         run: |
@@ -228,6 +229,8 @@ jobs:
           # Set mock Google API credentials for testing (API will return empty data gracefully)
           echo "GOOGLE_PLACES_API_KEY=test_api_key_for_ci" >> $GITHUB_ENV
           echo "GOOGLE_PLACE_ID=test_place_id_for_ci" >> $GITHUB_ENV
+          # Set mock OpenAI API key for testing (optional features will gracefully handle failures)
+          echo "OPENAI_API_KEY=test_openai_key_for_ci" >> $GITHUB_ENV
 
       - name: Verify Supabase is running
         run: |
