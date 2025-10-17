@@ -16,12 +16,12 @@ export async function GET() {
     {
       id: 'gpt-5-mini',
       name: 'GPT-5 Mini',
-      description: 'Default - Lightweight, fast & cost-effective'
+      description: 'Default'
     },
     {
       id: 'gpt-5',
       name: 'GPT-5',
-      description: 'Premium - Advanced logic, reasoning & multimodal'
+      description: 'Premium'
     },
   ];
 
