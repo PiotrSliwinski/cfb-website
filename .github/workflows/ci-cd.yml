@@ -235,9 +235,22 @@ jobs:
       - name: Verify Supabase is running
         run: |
           echo "Waiting for Supabase to be ready..."
-          npx wait-on http://127.0.0.1:54321/rest/v1/ -t 300000
-          echo "✅ Supabase is ready"
-          echo "URL: http://127.0.0.1:54321"
+          # Wait up to 5 minutes for Supabase services to be fully running
+          for i in {1..60}; do
+            if supabase status 2>/dev/null | grep -q "API URL" && curl -s http://127.0.0.1:54321/rest/v1/ >/dev/null 2>&1; then
+              echo "✅ Supabase is ready!"
+              supabase status
+              break
+            fi
+            echo "Attempt $i/60: Supabase not ready yet, waiting 5 seconds..."
+            sleep 5
+          done
+          # Final check
+          if ! curl -s http://127.0.0.1:54321/rest/v1/ >/dev/null 2>&1; then
+            echo "❌ Supabase failed to start properly"
+            supabase status || true
+            exit 1
+          fi
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
