@@ -67,6 +67,12 @@ export default async function ProtectedAdminLayout({
                 >
                   Settings
                 </Link>
+                <Link
+                  href="/admin/ai-playground"
+                  className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  AI Playground
+                </Link>
               </nav>
             </div>
             <div className="flex items-center space-x-4">
