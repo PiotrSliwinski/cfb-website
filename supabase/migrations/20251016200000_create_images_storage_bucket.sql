@@ -36,6 +36,3 @@ CREATE POLICY "Allow public read access to images"
 ON storage.objects FOR SELECT
 TO public
 USING (bucket_id = 'images');
-
--- Add helpful comment
-COMMENT ON TABLE storage.objects IS 'Storage for uploaded images from admin panel (team photos, treatment icons, hero images)';
