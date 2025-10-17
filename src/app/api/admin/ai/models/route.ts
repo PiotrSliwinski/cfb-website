@@ -11,16 +11,16 @@ function getOpenAIClient() {
 }
 
 export async function GET() {
-  // Return 2 models: Default (GPT-5 Mini) and Premium (GPT-5)
+  // Return 2 models: Default (GPT-4o Mini) and Premium (GPT-4o)
   const chatModels = [
     {
-      id: 'gpt-5-mini',
-      name: 'GPT-5 Mini',
+      id: 'gpt-4o-mini',
+      name: 'GPT-4o Mini',
       description: 'Default'
     },
     {
-      id: 'gpt-5',
-      name: 'GPT-5',
+      id: 'gpt-4o',
+      name: 'GPT-4o',
       description: 'Premium'
     },
   ];

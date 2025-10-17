@@ -19,7 +19,7 @@ export default function AIPlayground() {
 
   // Text generation state
   const [textPrompt, setTextPrompt] = useState('')
-  const [textModel, setTextModel] = useState('gpt-5-mini')
+  const [textModel, setTextModel] = useState('gpt-4o-mini')
   const [textContext, setTextContext] = useState('general')
   const [maxTokens, setMaxTokens] = useState(500)
   const [temperature, setTemperature] = useState(0.7)
@@ -215,8 +215,8 @@ export default function AIPlayground() {
                     onChange={(e) => setTextModel(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   >
-                    <option value="gpt-5-mini">GPT-5 Mini (Default)</option>
-                    <option value="gpt-5">GPT-5 (Premium)</option>
+                    <option value="gpt-4o-mini">GPT-4o Mini (Default)</option>
+                    <option value="gpt-4o">GPT-4o (Premium)</option>
                   </select>
                 </div>
 
