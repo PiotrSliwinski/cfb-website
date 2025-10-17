@@ -235,7 +235,7 @@ jobs:
       - name: Verify Supabase is running
         run: |
           echo "Waiting for Supabase to be ready..."
-          npx wait-on http://127.0.0.1:54321/rest/v1/ -t 30000
+          npx wait-on http://127.0.0.1:54321/rest/v1/ -t 300000
           echo "✅ Supabase is ready"
           echo "URL: http://127.0.0.1:54321"
 
