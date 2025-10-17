@@ -1,29 +1,61 @@
 import { NextResponse } from 'next/server';
-import OpenAI from 'openai';
 
-// Lazy-load OpenAI client to avoid build-time initialization
-function getOpenAIClient() {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    throw new Error('OPENAI_API_KEY is not configured');
-  }
-  return new OpenAI({ apiKey });
-}
+import {
+  GPT_MODEL_METADATA,
+  getOpenAIClient,
+  resolveCanonicalModel,
+} from '../openai-utils';
 
 export async function GET() {
-  // Return 2 models: Default (GPT-4o Mini) and Premium (GPT-4o)
-  const chatModels = [
-    {
-      id: 'gpt-4o-mini',
-      name: 'GPT-4o Mini',
-      description: 'Default'
-    },
-    {
-      id: 'gpt-4o',
-      name: 'GPT-4o',
-      description: 'Premium'
-    },
-  ];
+  try {
+    const openai = getOpenAIClient();
+    const { data } = await openai.models.list();
 
-  return NextResponse.json({ models: chatModels });
+    const availableModels = new Set<string>();
+
+    for (const model of data) {
+      const canonical = resolveCanonicalModel(model.id);
+      if (canonical) {
+        availableModels.add(canonical);
+      }
+    }
+
+    const models = GPT_MODEL_METADATA.map(({ id, name, description }) => ({
+      id,
+      name,
+      description,
+      available: availableModels.has(id),
+    }));
+
+    const availableCount = models.filter((model) => model.available).length;
+    let warning: string | undefined;
+
+    if (availableCount === 0) {
+      warning = 'No GPT-5 models were returned for this API key.';
+    } else if (availableCount < GPT_MODEL_METADATA.length) {
+      const missing = models
+        .filter((model) => !model.available)
+        .map((model) => model.name);
+      warning = `Some GPT-5 models are unavailable for this API key (${missing.join(', ')}).`;
+    }
+
+    return NextResponse.json(
+      warning ? { models, warning } : { models }
+    );
+  } catch (error) {
+    console.error('Failed to fetch models:', error);
+    return NextResponse.json(
+      {
+        error: 'Failed to load models from OpenAI',
+        models: [
+          {
+            id: 'gpt-5-mini',
+            name: 'GPT-5 Mini',
+            description: 'Default (error fallback)',
+          },
+        ],
+      },
+      { status: 500 }
+    );
+  }
 }

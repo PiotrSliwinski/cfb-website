@@ -14,6 +14,7 @@ interface Model {
   id: string
   name: string
   description: string
+  available: boolean
 }
 
 export function AIChat() {
@@ -22,11 +23,21 @@ export function AIChat() {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [models, setModels] = useState<Model[]>([])
-  const [selectedModel, setSelectedModel] = useState('gpt-4o-mini')
-  const [isLoadingModels, setIsLoadingModels] = useState(false)
+  const [models, setModels] = useState<Model[]>([
+    { id: 'gpt-5-mini', name: 'GPT-5 Mini', description: 'Fast & lightweight', available: true },
+    { id: 'gpt-5', name: 'GPT-5', description: 'Balanced performance', available: true },
+    { id: 'gpt-5-pro', name: 'GPT-5 Pro', description: 'Advanced reasoning', available: true },
+  ])
+  const [selectedModel, setSelectedModel] = useState('gpt-5-mini')
+  const [isLoadingModels, setIsLoadingModels] = useState(true)
+  const [modelMessage, setModelMessage] = useState<string | null>(null)
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null)
-  const [position, setPosition] = useState({ x: window.innerWidth - 420, y: window.innerHeight - 600 })
+  const [position, setPosition] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return { x: window.innerWidth - 420, y: window.innerHeight - 600 }
+    }
+    return { x: 0, y: 0 }
+  })
   const [isDragging, setIsDragging] = useState(false)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
 
@@ -37,29 +48,41 @@ export function AIChat() {
   useEffect(() => {
     const fetchModels = async () => {
       setIsLoadingModels(true)
+      setModelMessage(null)
       try {
         const response = await fetch('/api/admin/ai/models')
-        if (response.ok) {
-          const data = await response.json()
-          setModels(data.models)
-        } else {
-          // Fallback to static models if API fails
-          setModels([
-            { id: 'gpt-4o-mini', name: 'GPT-4o Mini', description: 'Fast & affordable' },
-            { id: 'gpt-4o', name: 'GPT-4o', description: 'Balanced performance' },
-            { id: 'gpt-4-turbo', name: 'GPT-4 Turbo', description: 'High quality' },
-            { id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo', description: 'Cheapest' },
-          ])
+        const payload = await response.json()
+
+        if (!response.ok) {
+          throw new Error(payload.error || 'Failed to load models')
         }
+
+        const fetchedModels: Model[] = Array.isArray(payload.models)
+          ? payload.models.map((model: Model) => ({
+              id: model.id,
+              name: model.name ?? model.id,
+              description: model.description ?? 'Available',
+              available: model.available !== false,
+            }))
+          : []
+
+        if (fetchedModels.length === 0) {
+          throw new Error('No AI models available for this API key')
+        }
+
+        setModels(fetchedModels)
+        setSelectedModel((current) => {
+          if (fetchedModels.some((model) => model.id === current)) {
+            return current
+          }
+          return fetchedModels[0]?.id ?? current
+        })
+        setModelMessage(payload.warning ?? null)
       } catch (error) {
         console.error('Failed to fetch models:', error)
-        // Use fallback models
-        setModels([
-          { id: 'gpt-4o-mini', name: 'GPT-4o Mini', description: 'Fast & affordable' },
-          { id: 'gpt-4o', name: 'GPT-4o', description: 'Balanced performance' },
-          { id: 'gpt-4-turbo', name: 'GPT-4 Turbo', description: 'High quality' },
-          { id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo', description: 'Cheapest' },
-        ])
+        setModelMessage(
+          error instanceof Error ? error.message : 'Unable to load models'
+        )
       } finally {
         setIsLoadingModels(false)
       }
@@ -121,6 +144,16 @@ export function AIChat() {
     setInput('')
     setIsLoading(true)
 
+    // Create a placeholder message for the assistant's response
+    const assistantMessageId = (Date.now() + 1).toString()
+    const assistantMessage: Message = {
+      id: assistantMessageId,
+      role: 'assistant',
+      content: '',
+      timestamp: new Date(),
+    }
+    setMessages((prev) => [...prev, assistantMessage])
+
     try {
       const response = await fetch('/api/admin/ai/chat', {
         method: 'POST',
@@ -135,27 +168,89 @@ export function AIChat() {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to get response')
+        let errorMessage = 'Failed to get AI response'
+        try {
+          const errorBody = await response.json()
+          errorMessage =
+            errorBody?.details ||
+            errorBody?.error ||
+            (typeof errorBody === 'string' ? errorBody : errorMessage)
+        } catch {
+          // Ignore JSON parsing errors and use default message
+        }
+        throw new Error(errorMessage)
       }
 
-      const data = await response.json()
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: data.response,
-        timestamp: new Date(),
+      // Handle streaming response
+      const reader = response.body?.getReader()
+      const decoder = new TextDecoder()
+
+      if (!reader) {
+        throw new Error('Response body is not readable')
       }
 
-      setMessages((prev) => [...prev, assistantMessage])
+      let accumulatedText = ''
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        const chunk = decoder.decode(value, { stream: true })
+        const lines = chunk.split('\n')
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const data = line.slice(6)
+            if (data === '[DONE]') {
+              break
+            }
+
+            try {
+              const parsed = JSON.parse(data)
+
+              // Check for error in response
+              if (parsed.error) {
+                throw new Error(parsed.error)
+              }
+
+              if (parsed.text) {
+                accumulatedText = parsed.text
+                // Update the message content in real-time
+                setMessages((prev) =>
+                  prev.map((msg) =>
+                    msg.id === assistantMessageId
+                      ? { ...msg, content: accumulatedText }
+                      : msg
+                  )
+                )
+              }
+            } catch (e) {
+              if (e instanceof Error && e.message !== 'Unexpected end of JSON input') {
+                throw e
+              }
+              // Ignore JSON parse errors for incomplete chunks
+            }
+          }
+        }
+      }
+
+      if (!accumulatedText) {
+        throw new Error('No response received from AI')
+      }
     } catch (error) {
       console.error('Chat error:', error)
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.',
-        timestamp: new Date(),
-      }
-      setMessages((prev) => [...prev, errorMessage])
+      const errorContent =
+        error instanceof Error
+          ? `Sorry, I encountered an error: ${error.message}`
+          : 'Sorry, I encountered an error. Please try again.'
+
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === assistantMessageId
+            ? { ...msg, content: errorContent }
+            : msg
+        )
+      )
     } finally {
       setIsLoading(false)
     }
@@ -235,20 +330,32 @@ export function AIChat() {
         <>
           {/* Model Selector */}
           <div className="p-3 border-b border-gray-200 bg-gray-50 no-drag">
-            <div className="flex items-center gap-2">
-              <label className="text-xs font-medium text-gray-700">Model:</label>
-              <select
-                value={selectedModel}
-                onChange={(e) => setSelectedModel(e.target.value)}
-                disabled={isLoadingModels}
-                className="flex-1 text-sm px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              >
-                {models.map((model) => (
-                  <option key={model.id} value={model.id}>
-                    {model.name} - {model.description}
-                  </option>
-                ))}
-              </select>
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <label className="text-xs font-medium text-gray-700">Model:</label>
+                <select
+                  value={selectedModel}
+                  onChange={(e) => setSelectedModel(e.target.value)}
+                  disabled={isLoadingModels || models.length === 0}
+                  className="flex-1 text-sm px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-gray-100"
+                >
+                  {models.map((model) => (
+                    <option key={model.id} value={model.id}>
+                      {model.name} - {model.description}
+                      {model.available === false ? ' (Not listed for this API key)' : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {isLoadingModels && (
+                <div className="flex items-center gap-1 text-xs text-gray-500">
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                  Loading models...
+                </div>
+              )}
+              {modelMessage && !isLoadingModels && (
+                <p className="text-xs text-gray-500">{modelMessage}</p>
+              )}
             </div>
           </div>
 

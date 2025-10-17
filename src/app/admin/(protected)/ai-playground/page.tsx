@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Wand2, Image as ImageIcon, Loader2, Copy, Download, Trash2 } from 'lucide-react'
 
 interface GeneratedItem {
@@ -13,13 +13,42 @@ interface GeneratedItem {
   parameters?: Record<string, any>
 }
 
+interface TextModelOption {
+  id: string
+  name: string
+  description: string
+  available: boolean
+}
+
 export default function AIPlayground() {
   const [activeTab, setActiveTab] = useState<'text' | 'image'>('text')
   const [history, setHistory] = useState<GeneratedItem[]>([])
 
   // Text generation state
   const [textPrompt, setTextPrompt] = useState('')
-  const [textModel, setTextModel] = useState('gpt-4o-mini')
+  const [textModel, setTextModel] = useState('gpt-5-mini')
+  const [textModels, setTextModels] = useState<TextModelOption[]>([
+    {
+      id: 'gpt-5-mini',
+      name: 'GPT-5 Mini',
+      description: 'Fast & lightweight',
+      available: true,
+    },
+    {
+      id: 'gpt-5',
+      name: 'GPT-5',
+      description: 'Balanced performance',
+      available: true,
+    },
+    {
+      id: 'gpt-5-pro',
+      name: 'GPT-5 Pro',
+      description: 'Advanced reasoning',
+      available: true,
+    },
+  ])
+  const [isLoadingTextModels, setIsLoadingTextModels] = useState(true)
+  const [textModelMessage, setTextModelMessage] = useState<string | null>(null)
   const [textContext, setTextContext] = useState('general')
   const [maxTokens, setMaxTokens] = useState(500)
   const [temperature, setTemperature] = useState(0.7)
@@ -36,9 +65,64 @@ export default function AIPlayground() {
   const [generatedImage, setGeneratedImage] = useState('')
   const [revisedPrompt, setRevisedPrompt] = useState('')
 
+  useEffect(() => {
+    let isMounted = true
+
+    const fetchModels = async () => {
+      try {
+        const response = await fetch('/api/admin/ai/models')
+        const payload = await response.json()
+
+        if (!response.ok) {
+          throw new Error(payload.error || 'Failed to load models')
+        }
+
+        if (!Array.isArray(payload.models) || payload.models.length === 0) {
+          throw new Error('No GPT-5 models returned for this API key')
+        }
+
+        const modelsFromApi: TextModelOption[] = payload.models.map((model: any) => ({
+          id: model.id,
+          name: typeof model.name === 'string' ? model.name : model.id,
+          description:
+            typeof model.description === 'string' ? model.description : 'Available',
+          available: model.available !== false,
+        }))
+
+        if (isMounted) {
+          setTextModels(modelsFromApi)
+
+          setTextModel((current) => {
+            if (modelsFromApi.some((model) => model.id === current)) {
+              return current
+            }
+            return modelsFromApi[0]?.id ?? current
+          })
+
+          setTextModelMessage(payload.warning ?? null)
+        }
+      } catch (error) {
+        if (isMounted) {
+          const message =
+            error instanceof Error ? error.message : 'Unable to load GPT-5 models'
+          setTextModelMessage(message)
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoadingTextModels(false)
+        }
+      }
+    }
+
+    fetchModels()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
   const handleGenerateText = async () => {
     if (!textPrompt.trim()) return
-
     setIsGeneratingText(true)
     setGeneratedText('')
 
@@ -213,11 +297,19 @@ export default function AIPlayground() {
                   <select
                     value={textModel}
                     onChange={(e) => setTextModel(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    disabled={isLoadingTextModels || textModels.length === 0}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-gray-100"
                   >
-                    <option value="gpt-4o-mini">GPT-4o Mini (Default)</option>
-                    <option value="gpt-4o">GPT-4o (Premium)</option>
+                    {textModels.map((model) => (
+                      <option key={model.id} value={model.id}>
+                        {model.name} ({model.description}
+                        {model.available === false ? ' - Not listed for this API key' : ''})
+                      </option>
+                    ))}
                   </select>
+                  {textModelMessage && (
+                    <p className="mt-2 text-xs text-gray-500">{textModelMessage}</p>
+                  )}
                 </div>
 
                 {/* Context Type */}

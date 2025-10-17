@@ -83,38 +83,66 @@ export async function POST(request: NextRequest) {
     const normalizedTemperature = sanitizeTemperature(temperature, 0.7);
     const systemMessage = buildSystemMessage(context?.type);
 
-    const responsesResult = await openai.responses.create({
+    // Create a streaming response
+    const stream = await openai.responses.create({
       model: normalizedModel,
       input: trimmedPrompt,
       instructions: systemMessage,
-      temperature: normalizedTemperature,
       max_output_tokens: maxOutputTokens,
+      stream: true,
     });
 
-    const generatedText = parseResponsesText(responsesResult);
+    // Create a ReadableStream for Server-Sent Events (SSE)
+    const encoder = new TextEncoder();
+    const readableStream = new ReadableStream({
+      async start(controller) {
+        try {
+          let fullText = '';
 
-    if (!generatedText) {
-      return NextResponse.json(
-        { error: 'Failed to generate text' },
-        { status: 500 }
-      );
-    }
+          for await (const chunk of stream) {
+            // Extract text based on chunk type
+            let chunkText = '';
 
-    return NextResponse.json({
-      success: true,
-      text: generatedText,
-      usage: {
-        promptTokens: responsesResult.usage?.input_tokens || 0,
-        completionTokens: responsesResult.usage?.output_tokens || 0,
-        totalTokens:
-          (responsesResult.usage?.input_tokens || 0) +
-          (responsesResult.usage?.output_tokens || 0),
-        endpoint: 'responses',
+            // Handle delta chunks (incremental text)
+            if (chunk.type === 'response.output_text.delta' && chunk.delta) {
+              chunkText = chunk.delta;
+            }
+            // Handle done chunk (final complete text)
+            else if (chunk.type === 'response.output_text.done' && chunk.text) {
+              fullText = chunk.text; // Use the complete text
+              const data = JSON.stringify({ text: fullText });
+              controller.enqueue(encoder.encode(`data: ${data}\n\n`));
+              continue;
+            }
+
+            // Accumulate delta text
+            if (chunkText) {
+              fullText += chunkText;
+              // Send the full accumulated text so far
+              const data = JSON.stringify({ text: fullText });
+              controller.enqueue(encoder.encode(`data: ${data}\n\n`));
+            }
+          }
+
+          // Send completion signal
+          controller.enqueue(encoder.encode(`data: [DONE]\n\n`));
+          controller.close();
+        } catch (error) {
+          console.error('Streaming error:', error);
+          const errorData = JSON.stringify({
+            error: error instanceof Error ? error.message : 'Streaming failed'
+          });
+          controller.enqueue(encoder.encode(`data: ${errorData}\n\n`));
+          controller.close();
+        }
       },
-      metadata: {
-        model: normalizedModel,
-        temperature: normalizedTemperature,
-        maxOutputTokens,
+    });
+
+    return new Response(readableStream, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
       },
     });
   } catch (error) {
